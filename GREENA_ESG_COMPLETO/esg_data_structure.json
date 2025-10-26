@@ -1,0 +1,14 @@
+{
+  "E": {
+    "name": "Ambiental",
+    "themes": {}
+  },
+  "S": {
+    "name": "Social",
+    "themes": {}
+  },
+  "G": {
+    "name": "Governança",
+    "themes": {}
+  }
+}

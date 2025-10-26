@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  companyName  String?  @map("company_name")
+  cnpj         String?
+  sector       String?
+  employees    Int?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  diagnoses     Diagnosis[]
+  activityLogs  ActivityLog[]
+
+  @@map("users")
+}
+
+model Pillar {
+  id          Int     @id @default(autoincrement())
+  code        String  @unique // 'E', 'S', 'G'
+  name        String  // 'Ambiental', 'Social', 'Governança'
+  description String?
+  icon        String?
+  color       String?
+
+  themes           Theme[]
+  strategicInsights StrategicInsight[]
+
+  @@map("pillars")
+}
+
+model Theme {
+  id       Int    @id @default(autoincrement())
+  pillarId Int    @map("pillar_id")
+  name     String
+  order    Int
+
+  pillar   Pillar     @relation(fields: [pillarId], references: [id])
+  criteria Criteria[]
+
+  @@map("themes")
+}
+
+model Criteria {
+  id      Int    @id @default(autoincrement())
+  themeId Int    @map("theme_id")
+  name    String
+  order   Int
+
+  theme           Theme            @relation(fields: [themeId], references: [id])
+  assessmentItems AssessmentItem[]
+
+  @@map("criteria")
+}
+
+model AssessmentItem {
+  id         Int    @id @default(autoincrement())
+  criteriaId Int    @map("criteria_id")
+  question   String
+  order      Int
+
+  criteria  Criteria   @relation(fields: [criteriaId], references: [id])
+  responses Response[]
+
+  @@map("assessment_items")
+}
+
+model Diagnosis {
+  id                 String    @id @default(uuid())
+  userId             String    @map("user_id")
+  status             String    @default("in_progress") // 'in_progress', 'completed'
+  overallScore       Decimal?  @map("overall_score") @db.Decimal(5, 2)
+  environmentalScore Decimal?  @map("environmental_score") @db.Decimal(5, 2)
+  socialScore        Decimal?  @map("social_score") @db.Decimal(5, 2)
+  governanceScore    Decimal?  @map("governance_score") @db.Decimal(5, 2)
+  rankingPosition    Int?      @map("ranking_position")
+  startedAt          DateTime  @default(now()) @map("started_at")
+  completedAt        DateTime? @map("completed_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  user              User               @relation(fields: [userId], references: [id])
+  responses         Response[]
+  actionPlans       ActionPlan[]
+  strategicInsights StrategicInsight[]
+
+  @@map("diagnoses")
+}
+
+model Response {
+  id               Int      @id @default(autoincrement())
+  diagnosisId      String   @map("diagnosis_id")
+  assessmentItemId Int      @map("assessment_item_id")
+  importance       String   // 'Sem Importância', 'Importante', 'Muito Importante', 'Crítico'
+  importanceValue  Int      @map("importance_value") // 0, 3, 6, 9
+  evaluation       String   // 'Não se aplica', 'Não é feito', 'É mal feito', 'É feito', 'É bem feito'
+  evaluationValue  Int      @map("evaluation_value") // 0, 0, 3, 6, 9
+  score            Decimal  @db.Decimal(5, 2) // importance_value * evaluation_value
+  observations     String?
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  diagnosis      Diagnosis      @relation(fields: [diagnosisId], references: [id])
+  assessmentItem AssessmentItem @relation(fields: [assessmentItemId], references: [id])
+
+  @@unique([diagnosisId, assessmentItemId])
+  @@map("responses")
+}
+
+model ActionPlan {
+  id              Int      @id @default(autoincrement())
+  diagnosisId     String   @map("diagnosis_id")
+  title           String
+  description     String?
+  priority        String   // 'low', 'medium', 'high', 'critical'
+  priorityLabel   String   @map("priority_label") // 'BAIXA PRIORIDADE', 'ALTA PRIORIDADE', etc
+  investment      String   // 'low', 'medium', 'high'
+  investmentLabel String   @map("investment_label") // 'Baixo', 'Médio', 'Alto'
+  deadlineDays    Int      @map("deadline_days")
+  status          String   @default("pending") // 'pending', 'in_progress', 'completed'
+  impactScore     Decimal  @map("impact_score") @db.Decimal(5, 2)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+
+  @@map("action_plans")
+}
+
+model StrategicInsight {
+  id            Int      @id @default(autoincrement())
+  diagnosisId   String   @map("diagnosis_id")
+  category      String   // 'critical', 'attention', 'excellent'
+  categoryLabel String   @map("category_label") // 'Crítico', 'Atenção', 'Excelente'
+  title         String
+  description   String
+  pillarId      Int?     @map("pillar_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+  pillar    Pillar?   @relation(fields: [pillarId], references: [id])
+
+  @@map("strategic_insights")
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  userId      String   @map("user_id")
+  actionType  String   @map("action_type")
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
+}

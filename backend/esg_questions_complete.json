@@ -1,0 +1,1522 @@
+{
+  "E": {
+    "name": "Ambiental",
+    "questions": [
+      {
+        "id": "E.1",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Mitigação de emissões de gases de efeito estufa (GEE)",
+        "question": "Estabelecimento de sistema para mensurar e reportar níveis de emissão de GEE"
+      },
+      {
+        "id": "E.2",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Mitigação de emissões de gases de efeito estufa (GEE)",
+        "question": "Elaboração de inventário de emissões de gases de efeito estufa (GEE)"
+      },
+      {
+        "id": "E.3",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Mitigação de emissões de gases de efeito estufa (GEE)",
+        "question": "Elaboração de plano de mitigação com metas de redução, remoção ou compensação"
+      },
+      {
+        "id": "E.4",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Mitigação de emissões de gases de efeito estufa (GEE)",
+        "question": "Adesão a plataformas, campanhas e iniciativas para trazer padrão e transparência ao compromisso climático"
+      },
+      {
+        "id": "E.5",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Mitigação de emissões de gases de efeito estufa (GEE)",
+        "question": "Dar publicidade ao inventário de emissões GEE, ao plano de mitigação e aos resultados conquistados"
+      },
+      {
+        "id": "E.6",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Adaptação às mudanças climáticas",
+        "question": "Construção de grupo de trabalho multidisciplinar para plano de adaptação"
+      },
+      {
+        "id": "E.7",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Adaptação às mudanças climáticas",
+        "question": "Levantamento de cenários de ameaça de mudanças climáticas, risco de impactos e potenciais oportunidades"
+      },
+      {
+        "id": "E.8",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Adaptação às mudanças climáticas",
+        "question": "Elaboração de plano de adaptação com priorização"
+      },
+      {
+        "id": "E.9",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Adaptação às mudanças climáticas",
+        "question": "Realização de ações de engajamento com públicos de interesse internos e externos"
+      },
+      {
+        "id": "E.10",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Adaptação às mudanças climáticas",
+        "question": "Comunicação do plano de adaptação e de seus resultados para públicos de interesse internos e externos"
+      },
+      {
+        "id": "E.11",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Eficiência energética",
+        "question": "Diagnóstico e estabelecimento de metas de desempenho energético com revisões periódicas para avaliar o consumo de equipamentos e instalações"
+      },
+      {
+        "id": "E.12",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Eficiência energética",
+        "question": "Uso de fontes de energia renovável (placas solares, gestão distribuída, etc)"
+      },
+      {
+        "id": "E.13",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Eficiência energética",
+        "question": "Priorização de aquisição de produtos com melhor eficiência energética (Selo Procel, Selo Conpet, Categoria A do Programa Br de Etiquetagem)"
+      },
+      {
+        "id": "E.14",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Eficiência energética",
+        "question": "Substituição de lâmpadas incandescentes ou fluorescentes por lâmpadas LED e uso de sensores de presença"
+      },
+      {
+        "id": "E.15",
+        "pillar": "E",
+        "theme": "Mudanças climáticas",
+        "criteria": "Eficiência energética",
+        "question": "Adequação às normas da ISO 50001 (gestão de energia)"
+      },
+      {
+        "id": "E.16",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Uso da água",
+        "question": "Mapeamento da demanda de água da organização documentado em um \"mapa da água\", \"fluxo da água\" ou \"balanço hídrico\""
+      },
+      {
+        "id": "E.17",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Uso da água",
+        "question": "Avaliação do contexto local identificando condições de estresse e impacto social na comunidade local"
+      },
+      {
+        "id": "E.18",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Uso da água",
+        "question": "Implantação de projetos de reaprovaitamento de água da chuva e de reúso de água (sem tratamento ou após o tratamento)"
+      },
+      {
+        "id": "E.19",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Uso da água",
+        "question": "Sanitários possuem válvula de racionamento, filtros de água são inspecionados e higienizados periodicamente"
+      },
+      {
+        "id": "E.20",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Uso da água",
+        "question": "Adequação às normas da ISO 24516 (boas práticas no gerenciamento de ativos de água)"
+      },
+      {
+        "id": "E.21",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Gestão de efluentes",
+        "question": "Operação funciona segundo a legislação aplicável (em âmbito nacional, estadual e municipal)"
+      },
+      {
+        "id": "E.22",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Gestão de efluentes",
+        "question": "Elaboração de plano de redução de volume de efluentes gerados"
+      },
+      {
+        "id": "E.23",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Gestão de efluentes",
+        "question": "Substituição de matérias primas e outras substâncias utilizadas na operação da empresa que possam gerar impactos negativos ao ambiente"
+      },
+      {
+        "id": "E.24",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Gestão de efluentes",
+        "question": "Uso de soluções para o tratamento de efluentes (biodigestão, destinação alternativa de lodo, biotecnologias, wetlands, etc)"
+      },
+      {
+        "id": "E.25",
+        "pillar": "E",
+        "theme": "Recursos hídricos",
+        "criteria": "Gestão de efluentes",
+        "question": "Adoção de padrões voluntários de controle ambiental mais restritivos que os requisitos legais (como"
+      },
+      {
+        "id": "E.26",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável da biodiversidade",
+        "question": "Identificação de possíveis impactos negativos à biodiversidade, em especial a localização das instalações da empresa"
+      },
+      {
+        "id": "E.27",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável da biodiversidade",
+        "question": "Estabelecimento de estratégias para mitigar os impactos negativos e monitoramento dos resultados"
+      },
+      {
+        "id": "E.28",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável da biodiversidade",
+        "question": "Promoção da conservação da biodiversidade por meio de projetos de inovação tecnológica"
+      },
+      {
+        "id": "E.29",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável da biodiversidade",
+        "question": "Promoção da conservação da biodiversidade por meio de projetos de reflorestamento e conservação de áreas protegidas"
+      },
+      {
+        "id": "E.30",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável da biodiversidade",
+        "question": "Avaliação de oportunidades de negócio relacionadas à biodiversidade"
+      },
+      {
+        "id": "E.31",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável dos oceanos",
+        "question": "Substituição de matérias primas plásticas e outras substâncias utilizadas na operação da empresa que possam gerar impactos negativos aos oceanos"
+      },
+      {
+        "id": "E.32",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável dos oceanos",
+        "question": "Realização de pesca sustentável, com estabelecimento de bases e políticas baseadas em estudos científicos"
+      },
+      {
+        "id": "E.33",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável dos oceanos",
+        "question": "Identificação de possíveis impactos negativos à biodiversidade, em especial em áreas costeiras como manguezais, estuários e restingas"
+      },
+      {
+        "id": "E.34",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável dos oceanos",
+        "question": "Planejamento de possíveis eventos climáticos, econômicos e geopolíticos que possam afetar a cadeia logística dependente de transporte marítimo"
+      },
+      {
+        "id": "E.35",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Conservação e uso sustentável dos oceanos",
+        "question": "Elaboração de plano de risco e adaptação climática com avaliação de riscos relaticos aos oceanos, considerando eventos climáticos extremos na operação da empresa"
+      },
+      {
+        "id": "E.36",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Uso sustentável do solo",
+        "question": "Participação em arranjos locais e regionais para evitar desmatamento e degradação do solo"
+      },
+      {
+        "id": "E.37",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Uso sustentável do solo",
+        "question": "Priorização na operação e de fornecedores que adotem o Manejo Integrado de Pragas (MIP) com uso de agrotóxicos adequados"
+      },
+      {
+        "id": "E.38",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Uso sustentável do solo",
+        "question": "Mapeamento periódico dos riscos e oportunidades em relação ao uso do solo"
+      },
+      {
+        "id": "E.39",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Uso sustentável do solo",
+        "question": "Implementação de um sistema de rastreabilidade da origem da produção, desde a área plantada até a etapa final"
+      },
+      {
+        "id": "E.40",
+        "pillar": "E",
+        "theme": "Biodiversidade e serviços ecossistêmicos",
+        "criteria": "Uso sustentável do solo",
+        "question": "Obtenção de certificações e boas práticas em relação ao uso do solo"
+      },
+      {
+        "id": "E.41",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Economia circular",
+        "question": "Desenvolvimento de produtos que contemplem o uso de formas de recirculação de recursos, com menos dependência de matérias primas virgens"
+      },
+      {
+        "id": "E.42",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Economia circular",
+        "question": "Priorização de materiais renováveis, reciclados, recondicionados ou remanufaturados"
+      },
+      {
+        "id": "E.43",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Economia circular",
+        "question": "Adoção de medidas de extensão da vida do produto e de seus componentes por meio de reparo ou reuso"
+      },
+      {
+        "id": "E.44",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Economia circular",
+        "question": "Desenvolvimento de cadeias de suprimento reversas, por meio de parcerias locais"
+      },
+      {
+        "id": "E.45",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Economia circular",
+        "question": "Adoção de modelos de virtualização, com a desmaterialização de ativos físicos (loja virtual, armazenamento na nuvem, leitores virtuais, etc)"
+      },
+      {
+        "id": "E.46",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Gestão de resíduos",
+        "question": "Adoção de Plano de Gestão de Resíduos Sólidos (PGRS)"
+      },
+      {
+        "id": "E.47",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Gestão de resíduos",
+        "question": "Implementação de processos para segregação de resíduos, coleta seletiva e destinação"
+      },
+      {
+        "id": "E.48",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Gestão de resíduos",
+        "question": "Adoção de práticas para atender às normas técnicas nacionais e internacionais"
+      },
+      {
+        "id": "E.49",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Gestão de resíduos",
+        "question": "Mensuração e divulgação dos dados sobre o gerenciamento de resíduos"
+      },
+      {
+        "id": "E.50",
+        "pillar": "E",
+        "theme": "Economia circular e gestão de resíduos",
+        "criteria": "Gestão de resíduos",
+        "question": "Adequação às normas da ISO 14001 (gestão de resíduos sólidos)"
+      },
+      {
+        "id": "E.51",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gestão ambiental",
+        "question": "Implantação de um Sistema de Gestão Ambiental (SGA)"
+      },
+      {
+        "id": "E.52",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gestão ambiental",
+        "question": "Conhecimento e adequação às legislações municipais, estaduais e nacionais aplicáveis à empresa"
+      },
+      {
+        "id": "E.53",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gestão ambiental",
+        "question": "Etabelecimento e monitoramento de indicadores de desempenho ambientais (consumo de recursos naturais, geração de resíduos, emissão de GEE, etc)"
+      },
+      {
+        "id": "E.54",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gestão ambiental",
+        "question": "Fomento à conscientização dos colaboradores sobre sua atuação em relação ao meio ambiente"
+      },
+      {
+        "id": "E.55",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gestão ambiental",
+        "question": "Inclusão de resultados de Avaliação de Ciclo de Vida (ACV) dos produtos e/ou serviços comercializados"
+      },
+      {
+        "id": "E.56",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Prevenção da poluição sonora (ruídos e vibrações)",
+        "question": "Uso de Equipamentos de Proteção Individual (EPI) relacionados à atenuação de ruídos e vibrações sofridos por colaboradores"
+      },
+      {
+        "id": "E.57",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Prevenção da poluição sonora (ruídos e vibrações)",
+        "question": "Realização de inspeções periódicas nos processos produtivos com objetivo de evitar a emissão de sons indesejáveis"
+      },
+      {
+        "id": "E.58",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Prevenção da poluição sonora (ruídos e vibrações)",
+        "question": "Estabelecimento de canais de diálogo com possíveis afetados pelo ruído emitido pelas atividades da organização"
+      },
+      {
+        "id": "E.59",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Prevenção da poluição sonora (ruídos e vibrações)",
+        "question": "Realização de avaliações quantitativas dos níveis de pressão sonora gerados pelo funcionamento da empresa"
+      },
+      {
+        "id": "E.60",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Prevenção da poluição sonora (ruídos e vibrações)",
+        "question": "Adoção de isolamento ou barreiras acústicas que impeçam a emissão e/ou propagação de ruído gerado pela operação do negócio"
+      },
+      {
+        "id": "E.61",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Qualidade do ar (emissão de poluentes)",
+        "question": "Planejamento da localização geográfica do empreendimento, avaliando emissões potenciais, nível de saturação da bacia área e zoneamento de planos diretores"
+      },
+      {
+        "id": "E.62",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Qualidade do ar (emissão de poluentes)",
+        "question": "Uso de equipamentos que funcionem com base em eletricidade (fornos, caldeiras, reatores, máquinas, sistemas de calefação e resfriamento, etc)"
+      },
+      {
+        "id": "E.63",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Qualidade do ar (emissão de poluentes)",
+        "question": "Uso de transportes que funcionem com base em eletricidade (carros, caminhões, ônibus, motos, tratores, navios, aviões, etc)"
+      },
+      {
+        "id": "E.64",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Qualidade do ar (emissão de poluentes)",
+        "question": "Monitoramento e registro de dados de emissão de poluentes, garantindo o atendimento aos padrões estabelecidos"
+      },
+      {
+        "id": "E.65",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Qualidade do ar (emissão de poluentes)",
+        "question": "Adequação de processos produtivos com objetivo na redução de emissões atmosféricas (automações, melhor eficiência energética, uso de filtros, etc)"
+      },
+      {
+        "id": "E.66",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gerenciamento de áreas contaminadas",
+        "question": "Planejamento da localização geográfica do empreendimento, avaliando potencial de contaminação do solo e da água"
+      },
+      {
+        "id": "E.67",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gerenciamento de áreas contaminadas",
+        "question": "Uso de equipamentos e insumos com menor risco de contaminação e poluição"
+      },
+      {
+        "id": "E.68",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gerenciamento de áreas contaminadas",
+        "question": "Realização do armazenamento adequado de insumos, matérias primas e resíduos para evitar o contato com o solo"
+      },
+      {
+        "id": "E.69",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gerenciamento de áreas contaminadas",
+        "question": "Implementação de medidas de controle como diques de contenção, filtros, caixas separadoras e outros equipamentos ou sistemas"
+      },
+      {
+        "id": "E.70",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Gerenciamento de áreas contaminadas",
+        "question": "Elaboração de plano de intervenção e monitoramento para mitigação de danos em caso de contaminação do solo ou água"
+      },
+      {
+        "id": "E.71",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Produtos perigosos",
+        "question": "Uso de plano de gestão em todos os processos que envolvam o uso de produtos perigosos (fabricação, importação, comercialização, uso, manuseio, sinalização, etc)"
+      },
+      {
+        "id": "E.72",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Produtos perigosos",
+        "question": "Realização de análise de Ficha de Informação de Segurança do Produto Químico (FISPQ) dos produtos químicos antes de sua aquisição (por profissional capacitado)"
+      },
+      {
+        "id": "E.73",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Produtos perigosos",
+        "question": "Realização de etiquetagem rotulagem, sinalização e armazenamento dos produtos perigosos"
+      },
+      {
+        "id": "E.74",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Produtos perigosos",
+        "question": "Adoção de procedimentos padronizados para emergências, primeiros socorros e atendimento médico"
+      },
+      {
+        "id": "E.75",
+        "pillar": "E",
+        "theme": "Gestão ambiental e prevenção da poluição",
+        "criteria": "Produtos perigosos",
+        "question": "Realização de manutenção periódica das instalações de armazenamento de produtos perigosos"
+      }
+    ]
+  },
+  "S": {
+    "name": "Social",
+    "questions": [
+      {
+        "id": "S.1",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Investimento Social Privado (ISP)",
+        "question": "Mapeamento de organizações da sociedade civil que tenham sinergia com a empresa e análise de suas principais demandas"
+      },
+      {
+        "id": "S.2",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Investimento Social Privado (ISP)",
+        "question": "Estímulo que colaboradores da empresa façam doações às organizações da sociedade civil por meio de voluntariado corporativo ou doação (com matching, se possível)"
+      },
+      {
+        "id": "S.3",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Investimento Social Privado (ISP)",
+        "question": "Oferta de recursos financeiros, produtos e/ou serviços para organizações da sociedade civil para executar seus projetos"
+      },
+      {
+        "id": "S.4",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Investimento Social Privado (ISP)",
+        "question": "Oferta de bolsas de estudo, prêmios ou fellowships para indivíduos com atuação destacada e restrições financeiras"
+      },
+      {
+        "id": "S.5",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Investimento Social Privado (ISP)",
+        "question": "Criação e monitoramento de indicadores relacionados às atividades de ISP"
+      },
+      {
+        "id": "S.6",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Diálogo e engajamento das partes interessadas (stakeholders)",
+        "question": "Elaboração de um plano de comunicação interno (colaboradores) e externo (partes interessadas) para dar transparência às decisões da empresa"
+      },
+      {
+        "id": "S.7",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Diálogo e engajamento das partes interessadas (stakeholders)",
+        "question": "Realização de pesquisas, campanhas e entrevistas para conhecer melhor os stakeholders da empresa"
+      },
+      {
+        "id": "S.8",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Diálogo e engajamento das partes interessadas (stakeholders)",
+        "question": "Uso de indicadores e metas relacionadas às temáticas mais relevantes para as partes interessadas"
+      },
+      {
+        "id": "S.9",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Diálogo e engajamento das partes interessadas (stakeholders)",
+        "question": "Realização de engajamento social por meio de reuniões formais ou informais (conferências, workshops, audiências públicas, consulta, fóruns, etc)"
+      },
+      {
+        "id": "S.10",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Diálogo e engajamento das partes interessadas (stakeholders)",
+        "question": "Estímulo da relação dos colaboradores com a comunidade por meio de ações e campanhas"
+      },
+      {
+        "id": "S.11",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Impacto social",
+        "question": "Envolvimento com a comunidade por meio de da participação em fóruns promovidos por representantes locais como associação de moradores ou grupos representativos"
+      },
+      {
+        "id": "S.12",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Impacto social",
+        "question": "Identificação de formadores de opinião, partes interessadas e agentes públicos para que todas as partes interessadas tenham representação"
+      },
+      {
+        "id": "S.13",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Impacto social",
+        "question": "Criação de planejamento para mitigação de impactos negativos e potencialização de impactos positivos na comunidade do entorno"
+      },
+      {
+        "id": "S.14",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Impacto social",
+        "question": "Capacitação da comunidade local do entorno para que possam se tornar parceiros, fornecedores, colaboradores ou consumidores"
+      },
+      {
+        "id": "S.15",
+        "pillar": "S",
+        "theme": "Diálogo social e desenvolvimento territorial",
+        "criteria": "Impacto social",
+        "question": "Priorização de aquisição de produtos e serviços de fornecedores locais"
+      },
+      {
+        "id": "S.16",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Respeito aos direitos humanos",
+        "question": "Criação de política e canais de denúncia para a garantia dos direitos humanos na empresa"
+      },
+      {
+        "id": "S.17",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Respeito aos direitos humanos",
+        "question": "Garantia de um ambiente de trabalho limpo e salubre"
+      },
+      {
+        "id": "S.18",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Respeito aos direitos humanos",
+        "question": "Realização de due diligence em todos os fornecedores para garantir que eles estão em conformidade com a CLT e normas de trabalho necessárias"
+      },
+      {
+        "id": "S.19",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Respeito aos direitos humanos",
+        "question": "Mapeamento e planejamento de ações para mitigação de impactos negativos de direitos humanos"
+      },
+      {
+        "id": "S.20",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Respeito aos direitos humanos",
+        "question": "Participação em pactos, iniciativas e redes multissetoriais de direitos humanos"
+      },
+      {
+        "id": "S.21",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho forçado ou compulsório",
+        "question": "Realização de avaliação interna (auditoria social) para identificação de possíveis desvios ou impactos"
+      },
+      {
+        "id": "S.22",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho forçado ou compulsório",
+        "question": "Análise do funcionamento da empresa está em conformidade com as leis aplicáveis (CLT) e princípios fundamentais dos direitos humanos e trabalhistas"
+      },
+      {
+        "id": "S.23",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho forçado ou compulsório",
+        "question": "Análise do funcionamento de fornecedores está em conformidade com as leis aplicáveis (CLT) e princípios fundamentais dos direitos humanos e trabalhistas"
+      },
+      {
+        "id": "S.24",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho forçado ou compulsório",
+        "question": "Treinamento de colaboradores para garantir níveis efetivos de cumprimento de políticas trabalhistas"
+      },
+      {
+        "id": "S.25",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho forçado ou compulsório",
+        "question": "Comunicação das atividades da empresa às partes interessadas por meio de site, relatório anual e outras mídias"
+      },
+      {
+        "id": "S.26",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho infantil",
+        "question": "Mapeamento de atividades da empresa que possam apresentar risco de ocorrência de trabalho infantil"
+      },
+      {
+        "id": "S.27",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho infantil",
+        "question": "Mapeamento de atividades de fornecedores que possam apresentar risco de ocorrência de trabalho infantil"
+      },
+      {
+        "id": "S.28",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho infantil",
+        "question": "Estabelecimento de políticas claras de combate ao trabalho infantil"
+      },
+      {
+        "id": "S.29",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho infantil",
+        "question": "Estabelecimento de políticas claras de combate de trabalhadores jovens expostos a situações de alta periculosidade ou insalubridade"
+      },
+      {
+        "id": "S.30",
+        "pillar": "S",
+        "theme": "Direitos humanos",
+        "criteria": "Combate ao trabalho infantil",
+        "question": "Implantação de cláusulas específicas em contratos que coibam o trabalho infantil"
+      },
+      {
+        "id": "S.31",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Políticas e práticas de diversidade e equidade",
+        "question": "Criação de uma política onde todos devam ser tratados de maneira igual sem discriminação por raça, gênero, orientação sexual, etnia, idade, deficiência ou religião"
+      },
+      {
+        "id": "S.32",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Políticas e práticas de diversidade e equidade",
+        "question": "Implementação de diretrizes claras sobre possíveis sanções em caso de violações de conduta em relação à diversidade e equidade"
+      },
+      {
+        "id": "S.33",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Políticas e práticas de diversidade e equidade",
+        "question": "Implementação de políticas de apoio à diversidade e contratação de colaboradores LGBTQIA+"
+      },
+      {
+        "id": "S.34",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Políticas e práticas de diversidade e equidade",
+        "question": "Treinamento das equipes de comunicação sobre o tema diversidade, equidade e inclusão"
+      },
+      {
+        "id": "S.35",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Políticas e práticas de diversidade e equidade",
+        "question": "Promoção de um ambiente de respeito a todos os colaboradores com igualdade de oportunidades"
+      },
+      {
+        "id": "S.36",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Cultura e promoção de inclusão",
+        "question": "Estabelecimento de Política de Diversidade e Inclusão (PDI) que estabeleça os parâmetros que a empresa irá seguir para a tomada de decisões"
+      },
+      {
+        "id": "S.37",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Cultura e promoção de inclusão",
+        "question": "Elaboração de planos de ação de diversidade e inclusão para incorporar o tema aos processos e à cultura da empresa"
+      },
+      {
+        "id": "S.38",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Cultura e promoção de inclusão",
+        "question": "Apoio à criação de grupos de afinidade (colaboradores com interesses comuns) para elaboração de propostas vinculadas às temáticas de inclusão"
+      },
+      {
+        "id": "S.39",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Cultura e promoção de inclusão",
+        "question": "Realização de pesquisa de percepção em relação à diversidade com os colaboradores da empresa periodicamente"
+      },
+      {
+        "id": "S.40",
+        "pillar": "S",
+        "theme": "Diversidade, equidade e inclusão",
+        "criteria": "Cultura e promoção de inclusão",
+        "question": "Organização de atividades de sensibilização e capacitação sobre inclusão com as lideranças da empresa"
+      },
+      {
+        "id": "S.41",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com consumidores e clientes",
+        "question": "Manutenção de canais de comunicação (chat online, email, telefone, etc) garantindo um bom atendimento ao cliente"
+      },
+      {
+        "id": "S.42",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com consumidores e clientes",
+        "question": "Disponibilização de maneira clara das informações relevantes da empresa e de seus produtos (no site, em rótulos dos produtos, em redes sociais, etc)"
+      },
+      {
+        "id": "S.43",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com consumidores e clientes",
+        "question": "Implantação de mecanismos degestão da segurança da informação de clientes, preservando sua privacidade"
+      },
+      {
+        "id": "S.44",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com consumidores e clientes",
+        "question": "Prática de marketing leal com transparência e sem uso de informações falsas ou enganosas (greewashing)"
+      },
+      {
+        "id": "S.45",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com consumidores e clientes",
+        "question": "Adesão a iniciativas no mercado que promovam o desenvolvimento sustentável como o pacto global, sistema B, etc"
+      },
+      {
+        "id": "S.46",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com os fornecedores",
+        "question": "Utilização de critérios ESG para escolha de fornecedores (respeito à legislação, boas práticas socioambientais, etc)"
+      },
+      {
+        "id": "S.47",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com os fornecedores",
+        "question": "Priorização de fornecedores que comprovadamente apresentem resultados ESG (em relatórios anuais, com certificações como a Empresa B, etc)"
+      },
+      {
+        "id": "S.48",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com os fornecedores",
+        "question": "Implementação de mecanismos de avaliação de fornecedores para validar a conformidade de suas operações"
+      },
+      {
+        "id": "S.49",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com os fornecedores",
+        "question": "Criação de canal de comunicação com fornecedores"
+      },
+      {
+        "id": "S.50",
+        "pillar": "S",
+        "theme": "Promoção de responsabilidade social na cadeia de valor",
+        "criteria": "Relacionamento com os fornecedores",
+        "question": "Incentivo e recompensa de fornecedores que tem boas práticas socioambientais"
+      },
+      {
+        "id": "S.51",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Desenvolvimento profissional",
+        "question": "Criação de uma política de desenvolvimento dos colaboradores baseada em avaliações periódicas e feedbacks baseados em competências"
+      },
+      {
+        "id": "S.52",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Desenvolvimento profissional",
+        "question": "Criação de plano de carreira baseado no desempenho profissional de acordo com avaliações periódicas baseadas em competências"
+      },
+      {
+        "id": "S.53",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Desenvolvimento profissional",
+        "question": "Análise de lacunas de competências e necessidades de capacitações por áreas e níveis da empresa"
+      },
+      {
+        "id": "S.54",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Desenvolvimento profissional",
+        "question": "Implementação de programa de capacitação de acordo com a necessidade das áreas e dos níveis da empresa"
+      },
+      {
+        "id": "S.55",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Desenvolvimento profissional",
+        "question": "Oferta de incentivos como bolsas de estudo parciais ou integrais para fortalecer a educação continuada dos colaboradores"
+      },
+      {
+        "id": "S.56",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Saúde e segurança ocupacional",
+        "question": "Utilização de mecanismos de sinalização de segurança para prevenção de acidentes (cores, imagens, placas, avisos, etc)"
+      },
+      {
+        "id": "S.57",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Saúde e segurança ocupacional",
+        "question": "Utilização de equipamentos de proteção individual (EPI) adequados"
+      },
+      {
+        "id": "S.58",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Saúde e segurança ocupacional",
+        "question": "Uso de ferramentas de avaliação de riscos, com análise de probabilidade de ocorrência e severidade"
+      },
+      {
+        "id": "S.59",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Saúde e segurança ocupacional",
+        "question": "Elaboração e implementação de um Programa de Gerenciamento de Riscos Ocupacionais (PGR)"
+      },
+      {
+        "id": "S.60",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Saúde e segurança ocupacional",
+        "question": "Elaboração e implementação de um Programa de Controle Médico de Saúde Ocupacional (PCMSO)"
+      },
+      {
+        "id": "S.61",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Qualidade de vida",
+        "question": "Realização de Pesquisa de Clima Organizacional (PCO) periodicamente"
+      },
+      {
+        "id": "S.62",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Qualidade de vida",
+        "question": "Criação de estratégias que levam em consideração os principais pontos levantados na pesquisa de clima"
+      },
+      {
+        "id": "S.63",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Qualidade de vida",
+        "question": "Realização de campanhas de sensibilização com temas ligados a hábitos mais saudáveis, prevenção de doenças crônicas, burnout e saúde mental"
+      },
+      {
+        "id": "S.64",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Qualidade de vida",
+        "question": "Adoção de canal de comunicação interno para que colaboradores possam ter acolhimento e apoio emocional"
+      },
+      {
+        "id": "S.65",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Qualidade de vida",
+        "question": "Ímplementação de programas de valorização dos trabalhadores para estimular o senso de pertencimento à organização"
+      },
+      {
+        "id": "S.66",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Liberdade de associação",
+        "question": "Criação de mecanismos de comunicação com sindicatos para levantamento de assuntos relevantes"
+      },
+      {
+        "id": "S.67",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Liberdade de associação",
+        "question": "Promoção do desenvolvimento de lideranças internas responsáveis pela comunicação com sindicatos"
+      },
+      {
+        "id": "S.68",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Liberdade de associação",
+        "question": "Eleição de colaborador responsável por relação com sindicato"
+      },
+      {
+        "id": "S.69",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Liberdade de associação",
+        "question": "Priorização de resolução de problemas levantados pelos sindicatos dentro do planejamento da empresa"
+      },
+      {
+        "id": "S.70",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Liberdade de associação",
+        "question": "Criação de canal de denúncias para apurar problemas com colaboradores que façam parte ou tenham relação com sindicatos"
+      },
+      {
+        "id": "S.71",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Política de remuneração e benefícios",
+        "question": "Prática de remuneração equitativa entre todos os profissionais da empresa independentemente de gênero, orientação sexual ou religiosa, etc"
+      },
+      {
+        "id": "S.72",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Política de remuneração e benefícios",
+        "question": "Prática de remuneração de acordo com a legislação vigente, preferencialmente acima do que é praticado no mercado"
+      },
+      {
+        "id": "S.73",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Política de remuneração e benefícios",
+        "question": "Oferta de benefícios obrigatórios (registro de carteira, horas extras, férias remuneradas, FGTS, INSS, seguro desemprego, etc)"
+      },
+      {
+        "id": "S.74",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Política de remuneração e benefícios",
+        "question": "Oferta de benefícios não obrigatórios básicos (vale alimentação, plano de saúde, plano odontológico, jornada de trabalho flexível)"
+      },
+      {
+        "id": "S.75",
+        "pillar": "S",
+        "theme": "Relações e práticas de trabalho",
+        "criteria": "Política de remuneração e benefícios",
+        "question": "Oferta de benefícios não obrigatórios para qualidade de vida (auxílio creche, auxílio educação, vale cultura, vale academia, previdência privada)"
+      }
+    ]
+  },
+  "G": {
+    "name": "Governança",
+    "questions": [
+      {
+        "id": "G.1",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Estrutura e composição da governança corporativa",
+        "question": "Constituição da organização legalmente por meio de contrato social, estatuto social e acordo de acionistas ou acordo de sócios quotistas"
+      },
+      {
+        "id": "G.2",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Estrutura e composição da governança corporativa",
+        "question": "Estabelecimento de estatuto ou contrato social com regras claras de resolução de conflitos entre sócios"
+      },
+      {
+        "id": "G.3",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Estrutura e composição da governança corporativa",
+        "question": "Adoção de práticas recomendadas por normas internacionais, normas nacionais ou por orientações de organizações como o Instituto Brasileiro de Governança Corporativa (IBGC)"
+      },
+      {
+        "id": "G.4",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Estrutura e composição da governança corporativa",
+        "question": "Estabelecimento de políticas de seleção e remuneração para a diretoria e para o conselho da empresa"
+      },
+      {
+        "id": "G.5",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Estrutura e composição da governança corporativa",
+        "question": "Criação de regras claras de governança e compliance para a diretoria e para o conselho da empresa"
+      },
+      {
+        "id": "G.6",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Propósito e estratégia em relação à sustentabilidade",
+        "question": "Implementação de um comitê ESG ou de sustentabilidade com uma equipe dedicada"
+      },
+      {
+        "id": "G.7",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Propósito e estratégia em relação à sustentabilidade",
+        "question": "Integração do planejamento de ações ESG com a estratégia da empresa por meio da missão, visão, valores e políticas corporativas"
+      },
+      {
+        "id": "G.8",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Propósito e estratégia em relação à sustentabilidade",
+        "question": "Estabelecimento de objetivos, metas, indicadores e ações ESG como parte da estratégia principal da organização"
+      },
+      {
+        "id": "G.9",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Propósito e estratégia em relação à sustentabilidade",
+        "question": "Adesão da empresa ao Pacto Global, com incorporação dos princípios universais na gestão da empresa"
+      },
+      {
+        "id": "G.10",
+        "pillar": "G",
+        "theme": "Governança corporativa",
+        "criteria": "Propósito e estratégia em relação à sustentabilidade",
+        "question": "Utilização dos Objetivos de Desenvolvimento Sustantável (ODS) e Agenda 2030 como referência para identificação de aspectos relevantes e temas materiais da empresa"
+      },
+      {
+        "id": "G.11",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Compliance, programa de integridade e práticas anticorrupção",
+        "question": "Implementação de um código de conduta que reflita a cultura de integridade e transparência da organização"
+      },
+      {
+        "id": "G.12",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Compliance, programa de integridade e práticas anticorrupção",
+        "question": "Criação de um comitê ou área de compliance na empresa com definição de um responsável que tenha independência e acesso à todas as áreas da empresa"
+      },
+      {
+        "id": "G.13",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Compliance, programa de integridade e práticas anticorrupção",
+        "question": "Identificação contínua e adequação às obrigações legais e de compliance resultantes das atividades da organização"
+      },
+      {
+        "id": "G.14",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Compliance, programa de integridade e práticas anticorrupção",
+        "question": "Implementação de um sistema de gestão de denúncias para colaboradores e terceiros"
+      },
+      {
+        "id": "G.15",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Compliance, programa de integridade e práticas anticorrupção",
+        "question": "Realização de due diligence na contratação e promoção de colaboradores, garantindo transparência e uma equipe alinhada com a cultura da empresa"
+      },
+      {
+        "id": "G.16",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Práticas de combate à concorrência desleal (antitruste)",
+        "question": "Estabelecimento de política anticoncorrencial com diretrizes e regras para o relacionamento de colaboradores com fornecedores, concorrentes e clientes"
+      },
+      {
+        "id": "G.17",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Práticas de combate à concorrência desleal (antitruste)",
+        "question": "Estabelecimento de política de preços de produtos e serviços"
+      },
+      {
+        "id": "G.18",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Práticas de combate à concorrência desleal (antitruste)",
+        "question": "Mapeamento de concorrentes do mesmo segmento de atuação e monitoramento de riscos de criação de cartéis, fraudes econômicas e ajustes de preços"
+      },
+      {
+        "id": "G.19",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Práticas de combate à concorrência desleal (antitruste)",
+        "question": "Proibição da participação de colaboradores e gestores da empresa em situações sensíveis com integrantes de empresas concorrentes"
+      },
+      {
+        "id": "G.20",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Práticas de combate à concorrência desleal (antitruste)",
+        "question": "Engajamento em confederações, conselhos, associações e outras entidades para monitoramento de práticas anticoncorrenciais"
+      },
+      {
+        "id": "G.21",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Engajamento das partes interessadas",
+        "question": "Identificação de stakeholders que podem afetar a empresa positiva ou negativamente"
+      },
+      {
+        "id": "G.22",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Engajamento das partes interessadas",
+        "question": "Realização de uma avaliação de materialidade para determinar quais são os principais stakeholders"
+      },
+      {
+        "id": "G.23",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Engajamento das partes interessadas",
+        "question": "Mapeamento de oportunidades e aprendizados com os stakeholders que podem afetar sua empresa positivamente"
+      },
+      {
+        "id": "G.24",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Engajamento das partes interessadas",
+        "question": "Mapeamento de ameaças e riscos com os stakeholders que podem afetar sua empresa negativamente"
+      },
+      {
+        "id": "G.25",
+        "pillar": "G",
+        "theme": "Conduta empresarial",
+        "criteria": "Engajamento das partes interessadas",
+        "question": "Engajamento e estabelecimento de parcerias e trocas com os principais stakeholders da sua organização"
+      },
+      {
+        "id": "G.26",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Responsabilização (prestação de contas)",
+        "question": "Estabelecimento de objetivos e metas ESG de forma integrada no planejamento estratégico"
+      },
+      {
+        "id": "G.27",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Responsabilização (prestação de contas)",
+        "question": "Criação de lista de responsabilidades por função e competências necessárias para seu exercício"
+      },
+      {
+        "id": "G.28",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Responsabilização (prestação de contas)",
+        "question": "Uso dos recursos financeiros em conformidade com o planejamento orçamentário da organização"
+      },
+      {
+        "id": "G.29",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Responsabilização (prestação de contas)",
+        "question": "Prestação de contas da empresa por meio de reuniões periódicas (pelo menos mensais) para apresentação de objetivos, metas e indicadores"
+      },
+      {
+        "id": "G.30",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Responsabilização (prestação de contas)",
+        "question": "Criação de plano de comunicação que evidencie a transparência da organização para a sociedade e stakeholders (relatório de sustentabilidade, certificações, auditorias, etc)"
+      },
+      {
+        "id": "G.31",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Relatórios ESG, de sustentabilidade e/ou relato integrado",
+        "question": "Realização de uma avaliação de materialidade para determinar quais são os principais temas materiais (importantes) que impactam a empresa"
+      },
+      {
+        "id": "G.32",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Relatórios ESG, de sustentabilidade e/ou relato integrado",
+        "question": "Criação de um relatório de sustentabilidade anual seguindo pelo menos um padrão internacionalmente aceito como o GRI, SASB, CDP, etc"
+      },
+      {
+        "id": "G.33",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Relatórios ESG, de sustentabilidade e/ou relato integrado",
+        "question": "Asseguração interna de que as informações contidas no relatório são confiáveis (reais, sem omissões ou deturpações) e rastreáveis (com uso de indicadores para corroborar)"
+      },
+      {
+        "id": "G.34",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Relatórios ESG, de sustentabilidade e/ou relato integrado",
+        "question": "Asseguração externa (com contratação de empresa independente) de que as informações contidas no relatório são confiáveis e rastreáveis"
+      },
+      {
+        "id": "G.35",
+        "pillar": "G",
+        "theme": "Transparência na gestão",
+        "criteria": "Relatórios ESG, de sustentabilidade e/ou relato integrado",
+        "question": "Uso de canais de comunicação (site, redes sociais, aviso aos stakeholders, etc) para dar publicidade e transparência aos relatórios criados"
+      },
+      {
+        "id": "G.36",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão de riscos do negócio",
+        "question": "Implementação de política de gestão de riscos da empresa"
+      },
+      {
+        "id": "G.37",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão de riscos do negócio",
+        "question": "Identificação dos principais riscos e oportunidades relacionados ao tema ESG e sustentabilidade"
+      },
+      {
+        "id": "G.38",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão de riscos do negócio",
+        "question": "Desenvolvimento de matriz de riscos para analisar e categorizar a probabilidade dos riscos acontecerem e a severidade do impacto que será gerado caso aconteçam"
+      },
+      {
+        "id": "G.39",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão de riscos do negócio",
+        "question": "Criação de um plano de tratamento aos riscos mapeados para diminuir a chance deles acontecerem no futuro"
+      },
+      {
+        "id": "G.40",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão de riscos do negócio",
+        "question": "Criação de um plano de resposta aos riscos mapeados para diminuir o impacto causado pela ocorrência de um ou mais deles no futuro"
+      },
+      {
+        "id": "G.41",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Controles internos",
+        "question": "Criação de estrutura de gestão com diretores e colaboradores com responsabilidades e processos bem definidos"
+      },
+      {
+        "id": "G.42",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Controles internos",
+        "question": "Criação de um órgão de governança (como um conselho) ao qual se presta contas para garantia de integridade e transparência da gestão da empresa"
+      },
+      {
+        "id": "G.43",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Controles internos",
+        "question": "Criação de uma área de auditoria interna independente para análise dos processos, metas e indicadores"
+      },
+      {
+        "id": "G.44",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Controles internos",
+        "question": "Avaliação (pelo menos anual) da eficácia dos controles internos e prestação de contas ao órgão de governança"
+      },
+      {
+        "id": "G.45",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Controles internos",
+        "question": "Atualização rotineira dos controles e processos internos com o objetivo de garantir uma melhoria contínua"
+      },
+      {
+        "id": "G.46",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Auditorias interna e externa",
+        "question": "Garantia de que a subordinação da auditoria interna e externa sejam para o mais alto órgão de governança da empresa"
+      },
+      {
+        "id": "G.47",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Auditorias interna e externa",
+        "question": "Uso de auditoria externa (realizada por empresa terceira) para verificação das contas e processos internos (pode ser financeira, legal, técnica, forense, etc)"
+      },
+      {
+        "id": "G.48",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Auditorias interna e externa",
+        "question": "Disponibilização de recursos para a execução de programas de auditoria interna e externa"
+      },
+      {
+        "id": "G.49",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Auditorias interna e externa",
+        "question": "Participação em pelo menos uma certificação relacionada ao tema ESG e sustentabilidade (Empresa B, LEED, ISO 14001, Selo FSC, etc) com auditoria externa validando o resultado"
+      },
+      {
+        "id": "G.50",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Auditorias interna e externa",
+        "question": "Estabelecimento de mecanismos de comunicação dos resultados das auditorias"
+      },
+      {
+        "id": "G.51",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Ambiente legal e regulatório",
+        "question": "Criação de inventário de regulamentações aplicáveis vigentes com classificação por órgão emissor, tema, áreas afetadas e responsáveis"
+      },
+      {
+        "id": "G.52",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Ambiente legal e regulatório",
+        "question": "Uso de mecanismos de supervisão e monitoramento do cumprimento regulatório legal para as leis aplicáveis e vigentes"
+      },
+      {
+        "id": "G.53",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Ambiente legal e regulatório",
+        "question": "Uso de mecanismos de supervisão e monitoramento das perdas associadas a multas e infrações ocorridas em consequencia do descumprimento da lei"
+      },
+      {
+        "id": "G.54",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Ambiente legal e regulatório",
+        "question": "Uso de mecanismos de supervisão e monitoramento de regulamentações em tramitação que podem afetar a empresa"
+      },
+      {
+        "id": "G.55",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Ambiente legal e regulatório",
+        "question": "Criação de programa de compliance com colaboradores dedicados para acompanhamento e realização de auditoria interna"
+      },
+      {
+        "id": "G.56",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão da segurança da informação",
+        "question": "Estabelecimento de um Sistema de Gestão de Segurança da Informação (SGSI) com políticas explícitas, documentadas e acessíveis a todos os colaboradores da empresa"
+      },
+      {
+        "id": "G.57",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão da segurança da informação",
+        "question": "Utilização de sistemas operacionais e softwares com licenças devidamente legalizadas e oficiais"
+      },
+      {
+        "id": "G.58",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão da segurança da informação",
+        "question": "Realização de rotinas de cópias de segurança (backup) e restauração de dados da empresa em mídias externas ou em nuvem com periodicidade adequada ao volume de dados guardado"
+      },
+      {
+        "id": "G.59",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão da segurança da informação",
+        "question": "Adoção de atualização de senhas periodicamente e de estrutura de alta complexidade para controle das senhas de acesso (1pass, etc) aumentando a segurança dos dados da empresa"
+      },
+      {
+        "id": "G.60",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Gestão da segurança da informação",
+        "question": "Garantia de que contratos com terceiros tenham cláusulas explícitas que assegurem um nível adequado de confidencialidade e segurança das informações compartilhadas"
+      },
+      {
+        "id": "G.61",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Privacidade de dados pessoais",
+        "question": "Conhecimento e adequação à Lei Geral de Proteção de Dados (LGPD) que protege os direitos fundamentais de liberdade e de privacidade"
+      },
+      {
+        "id": "G.62",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Privacidade de dados pessoais",
+        "question": "Implementação de políticas de segurança da informação para os colaboradores da empresa com ênfase na privacidade de clientes, fornecedores e dos próprios colaboradores"
+      },
+      {
+        "id": "G.63",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Privacidade de dados pessoais",
+        "question": "Realização de coleta e controle de consentimento para qualquer ação que seja necessária"
+      },
+      {
+        "id": "G.64",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Privacidade de dados pessoais",
+        "question": "Criação de inventário de dados pessoais e sensíveis existentes nos documentos e bancos de dados da organização"
+      },
+      {
+        "id": "G.65",
+        "pillar": "G",
+        "theme": "Práticas de controle e gestão",
+        "criteria": "Privacidade de dados pessoais",
+        "question": "Definição de critérios de segurança para os dados pessoais e sensíveis existentes nos documentos e bancos de dados da organização"
+      }
+    ]
+  }
+}

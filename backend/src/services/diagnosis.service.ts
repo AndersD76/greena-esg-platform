@@ -1,0 +1,219 @@
+import prisma from '../config/database';
+import { ScoringService } from './scoring.service';
+import { InsightsService } from './insights.service';
+import { ActionPlanService } from './actionPlan.service';
+
+export class DiagnosisService {
+  private scoringService: ScoringService;
+  private insightsService: InsightsService;
+  private actionPlanService: ActionPlanService;
+
+  constructor() {
+    this.scoringService = new ScoringService();
+    this.insightsService = new InsightsService();
+    this.actionPlanService = new ActionPlanService();
+  }
+
+  /**
+   * Cria novo diagnóstico
+   */
+  async create(userId: string) {
+    // Verificar se já existe diagnóstico em progresso
+    const existingDiagnosis = await prisma.diagnosis.findFirst({
+      where: {
+        userId,
+        status: 'in_progress',
+      },
+    });
+
+    if (existingDiagnosis) {
+      return existingDiagnosis;
+    }
+
+    const diagnosis = await prisma.diagnosis.create({
+      data: {
+        userId,
+        status: 'in_progress',
+      },
+    });
+
+    // Log de atividade
+    await prisma.activityLog.create({
+      data: {
+        userId,
+        actionType: 'diagnosis_started',
+        description: 'Diagnóstico ESG iniciado',
+      },
+    });
+
+    return diagnosis;
+  }
+
+  /**
+   * Lista diagnósticos do usuário
+   */
+  async list(userId: string) {
+    return prisma.diagnosis.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  /**
+   * Busca diagnóstico por ID
+   */
+  async getById(id: string, userId: string) {
+    const diagnosis = await prisma.diagnosis.findFirst({
+      where: { id, userId },
+      include: {
+        responses: {
+          include: {
+            assessmentItem: {
+              include: {
+                criteria: {
+                  include: {
+                    theme: {
+                      include: {
+                        pillar: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!diagnosis) {
+      throw new Error('Diagnóstico não encontrado');
+    }
+
+    return diagnosis;
+  }
+
+  /**
+   * Completa diagnóstico e gera insights e plano de ação
+   */
+  async complete(id: string, userId: string) {
+    const diagnosis = await this.getById(id, userId);
+
+    if (diagnosis.status === 'completed') {
+      throw new Error('Diagnóstico já foi concluído');
+    }
+
+    // Calcular scores
+    const scores = await this.scoringService.calculateAllScores(id);
+
+    // Gerar insights
+    await this.insightsService.generateInsights(id);
+
+    // Gerar plano de ação
+    await this.actionPlanService.generateActionPlan(id);
+
+    // Atualizar diagnóstico
+    const updatedDiagnosis = await prisma.diagnosis.update({
+      where: { id },
+      data: {
+        status: 'completed',
+        completedAt: new Date(),
+      },
+    });
+
+    // Log de atividade
+    await prisma.activityLog.create({
+      data: {
+        userId,
+        actionType: 'diagnosis_completed',
+        description: `Diagnóstico ESG concluído com score ${scores.overall}`,
+      },
+    });
+
+    return {
+      diagnosis: updatedDiagnosis,
+      scores,
+    };
+  }
+
+  /**
+   * Busca resultados de um diagnóstico
+   */
+  async getResults(id: string, userId: string) {
+    const diagnosis = await this.getById(id, userId);
+
+    if (diagnosis.status !== 'completed') {
+      throw new Error('Diagnóstico ainda não foi concluído');
+    }
+
+    const insights = await this.insightsService.getInsights(id);
+    const actionPlan = await this.actionPlanService.getActionPlan(id);
+
+    return {
+      diagnosis,
+      scores: {
+        overall: Number(diagnosis.overallScore),
+        environmental: Number(diagnosis.environmentalScore),
+        social: Number(diagnosis.socialScore),
+        governance: Number(diagnosis.governanceScore),
+      },
+      insights,
+      actionPlan,
+    };
+  }
+
+  /**
+   * Calcula progresso do diagnóstico
+   */
+  async getProgress(id: string, userId: string) {
+    const diagnosis = await this.getById(id, userId);
+
+    // Contar total de questões
+    const totalQuestions = await prisma.assessmentItem.count();
+
+    // Contar questões respondidas
+    const answeredQuestions = diagnosis.responses.length;
+
+    const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+
+    return {
+      total: totalQuestions,
+      answered: answeredQuestions,
+      remaining: totalQuestions - answeredQuestions,
+      progress,
+    };
+  }
+
+  /**
+   * Finaliza diagnóstico (alias for complete)
+   */
+  async finalize(id: string, userId: string) {
+    return this.complete(id, userId);
+  }
+
+  /**
+   * Busca apenas insights de um diagnóstico
+   */
+  async getInsights(id: string, userId: string) {
+    const diagnosis = await this.getById(id, userId);
+
+    if (diagnosis.status !== 'completed') {
+      throw new Error('Diagnóstico ainda não foi concluído');
+    }
+
+    return this.insightsService.getInsights(id);
+  }
+
+  /**
+   * Busca apenas plano de ação de um diagnóstico
+   */
+  async getActionPlans(id: string, userId: string) {
+    const diagnosis = await this.getById(id, userId);
+
+    if (diagnosis.status !== 'completed') {
+      throw new Error('Diagnóstico ainda não foi concluído');
+    }
+
+    return this.actionPlanService.getActionPlan(id);
+  }
+}
