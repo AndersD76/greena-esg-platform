@@ -16,5 +16,6 @@ router.get('/:id/results', (req, res) => diagnosisController.getResults(req, res
 router.get('/:id/progress', (req, res) => diagnosisController.getProgress(req, res));
 router.get('/:id/insights', (req, res) => diagnosisController.getInsights(req, res));
 router.get('/:id/action-plans', (req, res) => diagnosisController.getActionPlans(req, res));
+router.get('/:id/partial-scores', (req, res) => diagnosisController.getPartialScores(req, res));
 
 export default router;

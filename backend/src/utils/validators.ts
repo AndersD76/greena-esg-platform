@@ -19,7 +19,7 @@ export const responseSchema = z.object({
   assessmentItemId: z.number(),
   importance: z.enum(['Sem Importância', 'Importante', 'Muito Importante', 'Crítico']),
   evaluation: z.enum(['Não se aplica', 'Não é feito', 'É mal feito', 'É feito', 'É bem feito']),
-  observations: z.string().optional(),
+  observations: z.string().nullable().optional(),
 });
 
 export const importanceValues: Record<string, number> = {

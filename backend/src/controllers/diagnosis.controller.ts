@@ -110,4 +110,16 @@ export class DiagnosisController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  async getPartialScores(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { id } = req.params;
+      const partialScores = await diagnosisService.getPartialScores(id, userId);
+
+      res.json(partialScores);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }

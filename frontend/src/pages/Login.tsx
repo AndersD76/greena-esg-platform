@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Button } from '../components/common/Button';
-import { Input } from '../components/common/Input';
-import { Card } from '../components/common/Card';
 
 export default function Login() {
   const { signIn } = useAuth();
@@ -30,68 +27,124 @@ export default function Login() {
     }
   }
 
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <span className="text-4xl">🌱</span>
-            <span className="text-3xl font-bold text-primary ml-2">GREENA</span>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #152F27 0%, #2d5a45 50%, #7B9965 100%)' }}>
+      {/* Header */}
+      <div className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-3">
+          <div className="flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3">
+              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
+            </Link>
+            <Link
+              to="/register"
+              className="text-sm font-semibold transition-colors"
+              style={{ color: '#152F27' }}
+            >
+              Criar Conta
+            </Link>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Bem-vindo de volta</h2>
-          <p className="text-gray-600 mt-2">Faça login para acessar sua conta</p>
         </div>
+      </div>
 
-        <Card>
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{error}</p>
+      {/* Content */}
+      <div className="flex items-center justify-center px-4 py-20">
+        <div className="max-w-md w-full">
+          {/* Logo e Título */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mb-6">
+              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-32" />
             </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Email"
-              type="email"
-              placeholder="seu@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
-
-            <Input
-              label="Senha"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              required
-            />
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="rounded border-gray-300 text-primary focus:ring-primary" />
-                <span className="ml-2 text-sm text-gray-700">Lembrar-me</span>
-              </label>
-              <a href="#" className="text-sm text-primary hover:underline">
-                Esqueceu a senha?
-              </a>
-            </div>
-
-            <Button type="submit" fullWidth loading={loading}>
-              Entrar
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Não tem uma conta?{' '}
-              <Link to="/register" className="text-primary hover:underline font-medium">
-                Cadastre-se grátis
-              </Link>
-            </p>
+            <h2 className="text-4xl font-black text-white mb-3">Bem-vindo de volta</h2>
+            <p className="text-xl text-white opacity-90">Faça login para acessar sua plataforma ESG</p>
           </div>
-        </Card>
+
+          {/* Form Card */}
+          <div className="bg-white rounded-3xl shadow-2xl p-8">
+            {error && (
+              <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: '#fee', border: '2px solid #fcc' }}>
+                <p className="text-sm font-semibold" style={{ color: '#c33' }}>{error}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
+                  style={{ borderColor: '#e0e0e0' }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                  Senha
+                </label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
+                  style={{ borderColor: '#e0e0e0' }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 rounded"
+                    style={{ accentColor: '#7B9965' }}
+                  />
+                  <span className="ml-2 text-sm font-semibold" style={{ color: '#152F27' }}>
+                    Lembrar-me
+                  </span>
+                </label>
+                <a href="#" className="text-sm font-bold hover:underline" style={{ color: '#7B9965' }}>
+                  Esqueceu a senha?
+                </a>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 rounded-xl text-white font-black text-lg transition-all hover:opacity-90 disabled:opacity-50 shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+              >
+                {loading ? 'Entrando...' : 'Entrar na Plataforma'}
+              </button>
+            </form>
+
+            <div className="mt-8 text-center">
+              <p className="text-sm font-semibold" style={{ color: '#666' }}>
+                Não tem uma conta?{' '}
+                <Link to="/register" className="font-black hover:underline" style={{ color: '#7B9965' }}>
+                  Cadastre-se grátis
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          {/* Voltar para home */}
+          <div className="mt-6 text-center">
+            <Link to="/" className="text-sm font-bold text-white hover:underline flex items-center justify-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Voltar para página inicial
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

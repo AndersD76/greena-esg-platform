@@ -6,7 +6,7 @@ interface ResponseData {
   assessmentItemId: number;
   importance: string;
   evaluation: string;
-  observations?: string;
+  observations?: string | null;
 }
 
 export class ResponseService {

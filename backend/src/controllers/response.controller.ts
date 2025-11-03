@@ -9,11 +9,14 @@ export class ResponseController {
   async upsert(req: AuthRequest, res: Response) {
     try {
       const { diagnosisId } = req.params;
+      console.log('🔍 Dados recebidos:', JSON.stringify(req.body, null, 2));
       const data = responseSchema.parse(req.body);
+      console.log('✅ Dados validados:', data);
       const response = await responseService.upsert(diagnosisId, data);
 
       res.json(response);
     } catch (error: any) {
+      console.error('❌ Erro no upsert:', error);
       res.status(400).json({ error: error.message });
     }
   }

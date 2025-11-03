@@ -22,8 +22,10 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  diagnoses     Diagnosis[]
-  activityLogs  ActivityLog[]
+  diagnoses       Diagnosis[]
+  activityLogs    ActivityLog[]
+  subscriptions   UserSubscription[]
+  certificates    Certificate[]
 
   @@map("users")
 }
@@ -95,6 +97,7 @@ model Diagnosis {
   responses         Response[]
   actionPlans       ActionPlan[]
   strategicInsights StrategicInsight[]
+  certificates      Certificate[]
 
   @@map("diagnoses")
 }
@@ -164,4 +167,73 @@ model ActivityLog {
   user User @relation(fields: [userId], references: [id])
 
   @@map("activity_logs")
+}
+
+model SubscriptionPlan {
+  id            String   @id @default(uuid())
+  name          String
+  code          String   @unique
+  price         Decimal  @db.Decimal(10, 2)
+  billingCycle  String   @map("billing_cycle")
+  maxDiagnoses  Int?     @map("max_diagnoses")
+  consultationHours Int  @default(0) @map("consultation_hours")
+  features      Json
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  subscriptions UserSubscription[]
+
+  @@map("subscription_plans")
+}
+
+model UserSubscription {
+  id                     String    @id @default(uuid())
+  userId                 String    @map("user_id")
+  planId                 String    @map("plan_id")
+  status                 String    @default("active")
+  startedAt              DateTime  @default(now()) @map("started_at")
+  expiresAt              DateTime? @map("expires_at")
+  trialEndsAt            DateTime? @map("trial_ends_at")
+  consultationHoursUsed  Int       @default(0) @map("consultation_hours_used")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  user User             @relation(fields: [userId], references: [id])
+  plan SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  @@map("user_subscriptions")
+}
+
+model Certificate {
+  id                String    @id @default(uuid())
+  userId            String    @map("user_id")
+  diagnosisId       String    @map("diagnosis_id")
+  certificateNumber String    @unique @map("certificate_number")
+  level             String
+  score             Decimal   @db.Decimal(5, 2)
+  issuedAt          DateTime  @default(now()) @map("issued_at")
+  expiresAt         DateTime? @map("expires_at")
+  certificateUrl    String?   @map("certificate_url")
+  pdfPath           String?   @map("pdf_path")
+  isValid           Boolean   @default(true) @map("is_valid")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  user      User      @relation(fields: [userId], references: [id])
+  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+
+  @@map("certificates")
+}
+
+model CertificationBenefit {
+  id          String   @id @default(uuid())
+  level       String
+  benefitType String   @map("benefit_type")
+  title       String
+  description String
+  value       String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("certification_benefits")
 }

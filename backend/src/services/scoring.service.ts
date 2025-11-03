@@ -123,4 +123,91 @@ export class ScoringService {
     }
     return { level: 'excellent', label: 'Excelente', color: '#22C55E' };
   }
+
+  /**
+   * Retorna o nível de certificação ESG baseado na pontuação
+   */
+  getCertificationLevel(score: number): {
+    level: 'bronze' | 'silver' | 'gold';
+    name: string;
+    title: string;
+    message: string;
+    color: string;
+    icon: string;
+    scoreRange: string;
+    characteristics: string[];
+  } {
+    if (score < 40) {
+      return {
+        level: 'bronze',
+        name: 'Compromisso ESG',
+        title: 'Fundamentos ESG',
+        message: 'Quem dá o primeiro passo na transformação sustentável.',
+        color: '#CD7F32',
+        icon: '🥉',
+        scoreRange: '0-39',
+        characteristics: [
+          'Atua na conformidade básica legal e regulatória',
+          'Possui políticas iniciais ou ações pontuais de sustentabilidade',
+          'Liderança comprometida com o tema, mas ainda sem integração estratégica',
+          'Iniciou sua trajetória rumo à sustentabilidade corporativa'
+        ]
+      };
+    }
+
+    if (score < 70) {
+      return {
+        level: 'silver',
+        name: 'Integração ESG',
+        title: 'Gestão ESG',
+        message: 'Quem transforma intenções em práticas consistentes.',
+        color: '#C0C0C0',
+        icon: '🥈',
+        scoreRange: '40-69',
+        characteristics: [
+          'Gestão integrada das dimensões ESG',
+          'Políticas estruturadas e metas claras para reduzir impactos',
+          'Indicadores ESG integrados ao planejamento estratégico',
+          'Práticas de governança ativas, com transparência e compliance',
+          'Comunicação interna e externa sobre ações e resultados ESG'
+        ]
+      };
+    }
+
+    return {
+      level: 'gold',
+      name: 'Liderança ESG',
+      title: 'Excelência ESG',
+      message: 'Quem inspira o mercado e multiplica o impacto positivo.',
+      color: '#FFD700',
+      icon: '🥇',
+      scoreRange: '70-100',
+      characteristics: [
+        'Excelência em ESG com impacto positivo em todo ecossistema',
+        'Estratégia ESG integrada à governança e cultura organizacional',
+        'Relatórios públicos seguindo padrões reconhecidos (GRI, SASB, IFRS)',
+        'Engajamento ativo com comunidades, fornecedores e stakeholders',
+        'Referência setorial em inovação e impacto positivo',
+        'Contribui para um futuro regenerativo e de baixo carbono'
+      ]
+    };
+  }
+
+  /**
+   * Calcula scores parciais baseado nas respostas atuais (mesmo sem finalizar)
+   */
+  async calculatePartialScores(diagnosisId: string) {
+    const environmentalScore = await this.calculatePillarScore(diagnosisId, 'E');
+    const socialScore = await this.calculatePillarScore(diagnosisId, 'S');
+    const governanceScore = await this.calculatePillarScore(diagnosisId, 'G');
+
+    const overallScore = (environmentalScore + socialScore + governanceScore) / 3;
+
+    return {
+      environmental: environmentalScore,
+      social: socialScore,
+      governance: governanceScore,
+      overall: Math.round(overallScore * 100) / 100,
+    };
+  }
 }

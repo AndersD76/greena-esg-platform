@@ -1,10 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { Button } from '../common/Button';
 
 export function Header() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   function handleSignOut() {
     signOut();
@@ -12,53 +12,113 @@ export function Header() {
   }
 
   return (
-    <header className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/dashboard" className="flex items-center space-x-2">
-            <span className="text-2xl">🌱</span>
-            <span className="text-xl font-bold text-primary">GREENA</span>
+    <header className="bg-white shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-3">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Link to="/dashboard" className="flex items-center gap-3">
+            <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
           </Link>
 
           {user && (
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/dashboard" className="text-gray-700 hover:text-primary transition-colors">
+            <nav className="hidden md:flex items-center gap-6">
+              <Link
+                to="/dashboard"
+                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                  location.pathname === '/dashboard' ? 'border-b-2' : ''
+                }`}
+                style={{
+                  color: location.pathname === '/dashboard' ? '#7B9965' : '#152F27',
+                  borderColor: '#7B9965'
+                }}
+              >
                 Dashboard
               </Link>
-              <Link to="/diagnosis/new" className="text-gray-700 hover:text-primary transition-colors">
+              <Link
+                to="/diagnosis/new"
+                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                  location.pathname.startsWith('/diagnosis') ? 'border-b-2' : ''
+                }`}
+                style={{
+                  color: location.pathname.startsWith('/diagnosis') ? '#7B9965' : '#152F27',
+                  borderColor: '#7B9965'
+                }}
+              >
                 Novo Diagnóstico
               </Link>
-              <Link to="/reports" className="text-gray-700 hover:text-primary transition-colors">
+              <Link
+                to="/insights"
+                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                  location.pathname === '/insights' ? 'border-b-2' : ''
+                }`}
+                style={{
+                  color: location.pathname === '/insights' ? '#7B9965' : '#152F27',
+                  borderColor: '#7B9965'
+                }}
+              >
+                Insights
+              </Link>
+              <Link
+                to="/reports"
+                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                  location.pathname === '/reports' ? 'border-b-2' : ''
+                }`}
+                style={{
+                  color: location.pathname === '/reports' ? '#7B9965' : '#152F27',
+                  borderColor: '#7B9965'
+                }}
+              >
                 Relatórios
               </Link>
-              <Link to="/profile" className="text-gray-700 hover:text-primary transition-colors">
+              <Link
+                to="/profile"
+                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                  location.pathname === '/profile' ? 'border-b-2' : ''
+                }`}
+                style={{
+                  color: location.pathname === '/profile' ? '#7B9965' : '#152F27',
+                  borderColor: '#7B9965'
+                }}
+              >
                 Perfil
               </Link>
             </nav>
           )}
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             {user ? (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                  <p className="text-sm font-bold" style={{ color: '#152F27' }}>{user.name}</p>
                   {user.companyName && (
-                    <p className="text-xs text-gray-600">{user.companyName}</p>
+                    <p className="text-xs font-semibold" style={{ color: '#7B9965' }}>{user.companyName}</p>
                   )}
                 </div>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <button
+                  onClick={handleSignOut}
+                  className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90"
+                  style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                >
                   Sair
-                </Button>
+                </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-3">
                 <Link to="/login">
-                  <Button variant="outline" size="sm">
+                  <button
+                    className="px-6 py-2.5 text-sm font-semibold transition-colors"
+                    style={{ color: '#152F27' }}
+                  >
                     Entrar
-                  </Button>
+                  </button>
                 </Link>
                 <Link to="/register">
-                  <Button size="sm">Cadastrar</Button>
+                  <button
+                    className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90"
+                    style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                  >
+                    Cadastrar
+                  </button>
                 </Link>
               </div>
             )}

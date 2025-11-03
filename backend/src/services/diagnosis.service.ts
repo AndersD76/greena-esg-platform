@@ -216,4 +216,36 @@ export class DiagnosisService {
 
     return this.actionPlanService.getActionPlan(id);
   }
+
+  /**
+   * Calcula scores parciais baseado nas respostas atuais (mesmo sem finalizar)
+   */
+  async getPartialScores(id: string, userId: string) {
+    const diagnosis = await this.getById(id, userId);
+
+    // Se já está completo, retornar scores oficiais
+    if (diagnosis.status === 'completed') {
+      const overallScore = Number(diagnosis.overallScore);
+      const certification = this.scoringService.getCertificationLevel(overallScore);
+
+      return {
+        overall: overallScore,
+        environmental: Number(diagnosis.environmentalScore),
+        social: Number(diagnosis.socialScore),
+        governance: Number(diagnosis.governanceScore),
+        isPartial: false,
+        certification,
+      };
+    }
+
+    // Calcular scores parciais baseado nas respostas existentes
+    const partialScores = await this.scoringService.calculatePartialScores(id);
+    const certification = this.scoringService.getCertificationLevel(partialScores.overall);
+
+    return {
+      ...partialScores,
+      isPartial: true,
+      certification,
+    };
+  }
 }

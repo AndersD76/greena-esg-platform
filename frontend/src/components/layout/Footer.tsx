@@ -5,7 +5,6 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1">
             <div className="flex items-center space-x-2 mb-4">
-              <span className="text-2xl">🌱</span>
               <span className="text-xl font-bold text-primary">GREENA</span>
             </div>
             <p className="text-sm text-gray-600">
@@ -42,7 +41,7 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-gray-200 text-center">
           <p className="text-sm text-gray-600">
-            © 2025 GREENA. Todos os direitos reservados. Feito com ❤️ para um mundo mais sustentável.
+            © 2025 GREENA. Todos os direitos reservados. Feito para um mundo mais sustentável.
           </p>
         </div>
       </div>

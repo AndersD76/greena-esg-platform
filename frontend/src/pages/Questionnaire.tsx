@@ -133,6 +133,37 @@ export default function Questionnaire() {
   ).length;
   const progress = (answeredCount / questions.length) * 100;
 
+  // Informações do pilar atual
+  const pillarName = currentQuestion?.criteria.theme.pillar.name || '';
+  const pillarCode = currentQuestion?.criteria.theme.pillar.code || '';
+  const themeName = currentQuestion?.criteria.theme.name || '';
+  const criteriaName = currentQuestion?.criteria.name || '';
+
+  // Cores por pilar
+  const pillarColors: Record<string, { bg: string; text: string; border: string }> = {
+    'E': { bg: '#e8f5e9', text: '#1b5e20', border: '#4CAF50' },
+    'S': { bg: '#e3f2fd', text: '#0d47a1', border: '#2196F3' },
+    'G': { bg: '#fff3e0', text: '#e65100', border: '#FF9800' }
+  };
+
+  const currentPillarColor = pillarColors[pillarCode] || pillarColors['E'];
+
+  // Calcular progresso por pilar
+  const pillarProgress: Record<string, { answered: number; total: number }> = {
+    E: { answered: 0, total: 75 },
+    S: { answered: 0, total: 75 },
+    G: { answered: 0, total: 65 }
+  };
+
+  questions.forEach((q) => {
+    const code = q.criteria.theme.pillar.code;
+    if (responses[q.id]?.importance && responses[q.id]?.evaluation) {
+      if (pillarProgress[code]) {
+        pillarProgress[code].answered++;
+      }
+    }
+  });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -166,9 +197,6 @@ export default function Questionnaire() {
   }
 
   const currentResponse = responses[currentQuestion.id] || {};
-  const pillarName = currentQuestion.criteria.theme.pillar.name;
-  const themeName = currentQuestion.criteria.theme.name;
-  const criteriaName = currentQuestion.criteria.name;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -187,22 +215,91 @@ export default function Questionnaire() {
           />
         </div>
 
+        {/* Pillar Progress Cards */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-lg p-4 border-2" style={{ borderColor: '#4CAF50' }}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                   style={{ backgroundColor: '#4CAF50' }}>
+                E
+              </div>
+              <span className="text-2xl font-bold" style={{ color: '#1b5e20' }}>
+                {pillarProgress.E.answered}/{pillarProgress.E.total}
+              </span>
+            </div>
+            <p className="text-xs font-semibold text-gray-600">Ambiental</p>
+            <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+              <div className="h-full rounded-full"
+                   style={{
+                     width: `${(pillarProgress.E.answered / pillarProgress.E.total) * 100}%`,
+                     backgroundColor: '#4CAF50'
+                   }} />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border-2" style={{ borderColor: '#2196F3' }}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                   style={{ backgroundColor: '#2196F3' }}>
+                S
+              </div>
+              <span className="text-2xl font-bold" style={{ color: '#0d47a1' }}>
+                {pillarProgress.S.answered}/{pillarProgress.S.total}
+              </span>
+            </div>
+            <p className="text-xs font-semibold text-gray-600">Social</p>
+            <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+              <div className="h-full rounded-full"
+                   style={{
+                     width: `${(pillarProgress.S.answered / pillarProgress.S.total) * 100}%`,
+                     backgroundColor: '#2196F3'
+                   }} />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border-2" style={{ borderColor: '#FF9800' }}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                   style={{ backgroundColor: '#FF9800' }}>
+                G
+              </div>
+              <span className="text-2xl font-bold" style={{ color: '#e65100' }}>
+                {pillarProgress.G.answered}/{pillarProgress.G.total}
+              </span>
+            </div>
+            <p className="text-xs font-semibold text-gray-600">Governança</p>
+            <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+              <div className="h-full rounded-full"
+                   style={{
+                     width: `${(pillarProgress.G.answered / pillarProgress.G.total) * 100}%`,
+                     backgroundColor: '#FF9800'
+                   }} />
+            </div>
+          </div>
+        </div>
+
         {/* Question Card */}
-        <Card className="mb-6">
+        <Card className="mb-6" style={{
+          borderLeft: `6px solid ${currentPillarColor.border}`,
+          backgroundColor: currentPillarColor.bg
+        }}>
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-                {pillarName}
+              <span className="px-4 py-1.5 rounded-full text-sm font-bold" style={{
+                backgroundColor: currentPillarColor.border,
+                color: 'white'
+              }}>
+                {pillarCode} - {pillarName}
               </span>
               <span className="text-sm text-gray-500">•</span>
-              <span className="text-sm text-gray-600">{themeName}</span>
+              <span className="text-sm text-gray-700 font-medium">{themeName}</span>
               <span className="text-sm text-gray-500">•</span>
-              <span className="text-sm text-gray-600">{criteriaName}</span>
+              <span className="text-sm text-gray-700 font-medium">{criteriaName}</span>
             </div>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm font-semibold mb-4" style={{ color: currentPillarColor.text }}>
               Questão {currentIndex + 1} de {questions.length}
             </p>
-            <h2 className="text-xl font-semibold text-gray-900 leading-relaxed">
+            <h2 className="text-xl font-semibold leading-relaxed" style={{ color: '#152F27' }}>
               {currentQuestion.question}
             </h2>
           </div>
