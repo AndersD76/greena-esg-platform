@@ -48,7 +48,8 @@
       "Bash(nul)",
       "Bash(railway:*)",
       "Bash(del nul 2)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
