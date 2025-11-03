@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ['nodejs-18_x']
+nixPkgs = ["nodejs_18"]
 
 [phases.install]
-cmds = ['npm ci']
+cmds = ["npm ci --prefer-offline --no-audit --progress=false"]
 
 [phases.build]
-cmds = ['npx prisma generate', 'npm run build']
+cmds = ["npm run build", "npx prisma generate"]
 
 [start]
-cmd = 'npx prisma migrate deploy && npm start'
+cmd = "npm run start"

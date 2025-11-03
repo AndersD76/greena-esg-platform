@@ -47,7 +47,8 @@
       "Bash(npx prisma db push:*)",
       "Bash(nul)",
       "Bash(railway:*)",
-      "Bash(del nul 2)"
+      "Bash(del nul 2)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
