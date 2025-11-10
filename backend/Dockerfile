@@ -7,14 +7,15 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN npm install --no-audit --no-fund
+# Install ALL dependencies (including dev) for build
+# Sem Puppeteer, build otimizado (~2min)
+RUN npm install --no-audit --no-fund --prefer-offline
 
 # Generate Prisma client
 RUN npx prisma generate
 
 # Copy source code
-COPY . .
+COPY . ./
 
 # Build the app
 RUN npm run build
@@ -24,14 +25,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and prisma
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install production dependencies only
+# Install ONLY production dependencies
 RUN npm install --production --no-audit --no-fund
 
-# Generate Prisma client
+# Generate Prisma client for production
 RUN npx prisma generate
 
 # Copy built files from builder
@@ -40,5 +41,5 @@ COPY --from=builder /app/dist ./dist
 # Expose port
 EXPOSE 3000
 
-# Start command (will run migrations first, then start)
-CMD npx prisma migrate deploy && npm start
+# Start command (run migrations then start)
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
