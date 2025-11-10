@@ -8,7 +8,7 @@ COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
 
 # Install ALL dependencies (including dev) for build
-RUN npm ci --no-audit --no-fund --prefer-offline
+RUN npm install --no-audit --no-fund
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -29,7 +29,7 @@ COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
 
 # Install ONLY production dependencies
-RUN npm ci --production --no-audit --no-fund --prefer-offline
+RUN npm install --production --no-audit --no-fund
 
 # Generate Prisma client for production
 RUN npx prisma generate
