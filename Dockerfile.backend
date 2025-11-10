@@ -8,7 +8,8 @@ COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
 
 # Install ALL dependencies (including dev) for build
-RUN npm install --no-audit --no-fund
+# Sem Puppeteer, build otimizado (~2min)
+RUN npm install --no-audit --no-fund --prefer-offline
 
 # Generate Prisma client
 RUN npx prisma generate
