@@ -11,16 +11,21 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  name         String
-  companyName  String?  @map("company_name")
-  cnpj         String?
-  sector       String?
-  employees    Int?
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id                String   @id @default(uuid())
+  email             String   @unique
+  passwordHash      String   @map("password_hash")
+  name              String
+  companyName       String?  @map("company_name")
+  cnpj              String?
+  city              String?
+  foundingYear      Int?     @map("founding_year")
+  responsiblePerson String?  @map("responsible_person")
+  responsibleContact String? @map("responsible_contact")
+  companySize       String?  @map("company_size") // Microempresa, Pequena I/II/III, Média, Grande I/II
+  sector            String?  // Agronegócio, Indústria, Construção Civil, etc.
+  employeesRange    String?  @map("employees_range") // 1-9, 10-49, 50-99, 100-499, 500+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
   diagnoses       Diagnosis[]
   activityLogs    ActivityLog[]

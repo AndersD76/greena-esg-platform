@@ -133,7 +133,6 @@ export class ScoringService {
     title: string;
     message: string;
     color: string;
-    icon: string;
     scoreRange: string;
     characteristics: string[];
   } {
@@ -144,7 +143,6 @@ export class ScoringService {
         title: 'Fundamentos ESG',
         message: 'Quem dá o primeiro passo na transformação sustentável.',
         color: '#CD7F32',
-        icon: '🥉',
         scoreRange: '0-39',
         characteristics: [
           'Atua na conformidade básica legal e regulatória',
@@ -162,7 +160,6 @@ export class ScoringService {
         title: 'Gestão ESG',
         message: 'Quem transforma intenções em práticas consistentes.',
         color: '#C0C0C0',
-        icon: '🥈',
         scoreRange: '40-69',
         characteristics: [
           'Gestão integrada das dimensões ESG',
@@ -180,7 +177,6 @@ export class ScoringService {
       title: 'Excelência ESG',
       message: 'Quem inspira o mercado e multiplica o impacto positivo.',
       color: '#FFD700',
-      icon: '🥇',
       scoreRange: '70-100',
       characteristics: [
         'Excelência em ESG com impacto positivo em todo ecossistema',

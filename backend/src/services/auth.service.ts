@@ -8,8 +8,13 @@ interface RegisterData {
   name: string;
   companyName?: string;
   cnpj?: string;
+  city?: string;
+  foundingYear?: number;
+  responsiblePerson?: string;
+  responsibleContact?: string;
+  companySize?: string;
   sector?: string;
-  employees?: number;
+  employeesRange?: string;
 }
 
 interface LoginData {
@@ -36,8 +41,13 @@ export class AuthService {
         name: data.name,
         companyName: data.companyName,
         cnpj: data.cnpj,
+        city: data.city,
+        foundingYear: data.foundingYear,
+        responsiblePerson: data.responsiblePerson,
+        responsibleContact: data.responsibleContact,
+        companySize: data.companySize,
         sector: data.sector,
-        employees: data.employees,
+        employeesRange: data.employeesRange,
       },
       select: {
         id: true,
@@ -97,8 +107,13 @@ export class AuthService {
         name: true,
         companyName: true,
         cnpj: true,
+        city: true,
+        foundingYear: true,
+        responsiblePerson: true,
+        responsibleContact: true,
+        companySize: true,
         sector: true,
-        employees: true,
+        employeesRange: true,
         createdAt: true,
       },
     });
@@ -117,8 +132,13 @@ export class AuthService {
         name: data.name,
         companyName: data.companyName,
         cnpj: data.cnpj,
+        city: data.city,
+        foundingYear: data.foundingYear,
+        responsiblePerson: data.responsiblePerson,
+        responsibleContact: data.responsibleContact,
+        companySize: data.companySize,
         sector: data.sector,
-        employees: data.employees,
+        employeesRange: data.employeesRange,
       },
       select: {
         id: true,
@@ -126,8 +146,13 @@ export class AuthService {
         name: true,
         companyName: true,
         cnpj: true,
+        city: true,
+        foundingYear: true,
+        responsiblePerson: true,
+        responsibleContact: true,
+        companySize: true,
         sector: true,
-        employees: true,
+        employeesRange: true,
       },
     });
 
