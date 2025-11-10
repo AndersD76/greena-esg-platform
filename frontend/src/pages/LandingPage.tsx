@@ -73,15 +73,6 @@ export default function LandingPage() {
     </svg>
   );
 
-  // Ícone Alvo/Target
-  const TargetIcon = ({ size = 48, color = "#152F27" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <circle cx="12" cy="12" r="6"/>
-      <circle cx="12" cy="12" r="2"/>
-    </svg>
-  );
-
   // Ícone Rocket
   const RocketIcon = ({ size = 48, color = "white" }: { size?: number; color?: string }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -279,7 +279,7 @@ export default function Questionnaire() {
         </div>
 
         {/* Question Card */}
-        <Card className="mb-6" style={{
+        <div className="mb-6 bg-white rounded-2xl shadow-lg p-6" style={{
           borderLeft: `6px solid ${currentPillarColor.border}`,
           backgroundColor: currentPillarColor.bg
         }}>
@@ -356,7 +356,7 @@ export default function Questionnaire() {
               />
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Navigation */}
         <div className="flex items-center justify-between">

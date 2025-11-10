@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Link } from 'react-router-dom';
 import api from '../services/api';
 
 interface UserProfile {
@@ -45,7 +44,7 @@ interface UsageStats {
 }
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
   const [availablePlans, setAvailablePlans] = useState<SubscriptionPlan[]>([]);
