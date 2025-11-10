@@ -50,7 +50,9 @@
       "Bash(del nul 2)",
       "Bash(git push:*)",
       "Bash(git rm:*)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(dir:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
