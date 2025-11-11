@@ -3,7 +3,7 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files from backend
 COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
 
@@ -14,7 +14,7 @@ RUN npm install --no-audit --no-fund --prefer-offline
 # Generate Prisma client
 RUN npx prisma generate
 
-# Copy source code
+# Copy source code from backend
 COPY backend/ ./
 
 # Build the app
@@ -25,7 +25,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files and prisma
+# Copy package files and prisma from backend
 COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
 
