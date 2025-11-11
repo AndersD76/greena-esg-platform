@@ -3,8 +3,10 @@ FROM node:18-slim AS builder
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
-RUN apt-get update -y && apt-get install -y openssl
+# Install OpenSSL and required libraries for Prisma
+RUN apt-get update -y && \
+    apt-get install -y openssl libssl-dev ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy package files from backend
 COPY backend/package*.json ./
@@ -28,8 +30,10 @@ FROM node:18-slim
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
-RUN apt-get update -y && apt-get install -y openssl
+# Install OpenSSL and required libraries for Prisma
+RUN apt-get update -y && \
+    apt-get install -y openssl libssl-dev ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy package files and prisma from backend
 COPY backend/package*.json ./
