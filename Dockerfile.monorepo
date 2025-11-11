@@ -1,0 +1,64 @@
+# Stage 1: Build Frontend
+FROM node:18-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+
+# Copy frontend package files
+COPY frontend/package*.json ./
+
+# Install frontend dependencies
+RUN npm install --no-audit --no-fund
+
+# Copy frontend source
+COPY frontend/ ./
+
+# Build frontend
+RUN npm run build
+
+# Stage 2: Build Backend
+FROM node:18 AS backend-builder
+
+WORKDIR /app/backend
+
+# Copy backend package files
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma/
+
+# Install backend dependencies (including dev for build)
+RUN npm install --no-audit --no-fund
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Copy backend source
+COPY backend/ ./
+
+# Build backend
+RUN npm run build
+
+# Stage 3: Production
+FROM node:18
+
+WORKDIR /app
+
+# Copy backend package files and prisma
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma/
+
+# Install ONLY production dependencies
+RUN npm install --production --no-audit --no-fund
+
+# Generate Prisma client for production
+RUN npx prisma generate
+
+# Copy built backend
+COPY --from=backend-builder /app/backend/dist ./dist
+
+# Copy built frontend to public directory
+COPY --from=frontend-builder /app/frontend/dist ./public
+
+# Expose port
+EXPOSE 3000
+
+# Start command (run migrations then start)
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]

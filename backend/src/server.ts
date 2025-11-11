@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import routes from './routes';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 
@@ -24,6 +25,17 @@ app.use('/api', routes);
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'GREENA ESG API is running' });
 });
+
+// Serve frontend static files (production only)
+if (process.env.NODE_ENV === 'production') {
+  const publicPath = path.join(__dirname, '..', 'public');
+  app.use(express.static(publicPath));
+
+  // SPA fallback - serve index.html for all non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(publicPath, 'index.html'));
+  });
+}
 
 // Error handler
 app.use(errorHandler);
