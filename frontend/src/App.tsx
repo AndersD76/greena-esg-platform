@@ -13,8 +13,6 @@ import Profile from './pages/Profile';
 import Reports from './pages/Reports';
 import Insights from './pages/Insights';
 import Certificate from './pages/Certificate';
-import About from './pages/About';
-import Solutions from './pages/Solutions';
 import Contact from './pages/Contact';
 import { diagnosisService } from './services/diagnosis.service';
 import { useEffect } from 'react';
@@ -82,8 +80,6 @@ function AppRoutes() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/solutions" element={<Solutions />} />
           <Route path="/contact" element={<Contact />} />
           <Route
             path="/login"

@@ -50,12 +50,6 @@ export default function Contact() {
               <Link to="/#pilares" className="text-sm font-semibold transition-colors" style={{ color: '#152F27' }}>
                 Pilares ESG
               </Link>
-              <Link to="/about" className="text-sm font-semibold transition-colors" style={{ color: '#152F27' }}>
-                Quem Somos
-              </Link>
-              <Link to="/solutions" className="text-sm font-semibold transition-colors" style={{ color: '#152F27' }}>
-                Soluções
-              </Link>
               <Link
                 to="/login"
                 className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90"
@@ -222,9 +216,10 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Endereço</h3>
                     <p className="text-gray-700 leading-relaxed">
-                      Av. Paulista, 1000 - 10º andar<br/>
-                      Bela Vista, São Paulo - SP<br/>
-                      CEP 01310-100
+                      UPF Parque Científico e Tecnológico,<br/>
+                      Módulo II - Universidade de Passo Fundo,<br/>
+                      BR 285, Bairro São José, 99052-900,<br/>
+                      Passo Fundo / RS
                     </p>
                   </div>
                 </div>
@@ -240,8 +235,7 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Telefone</h3>
                     <p className="text-gray-700 leading-relaxed">
-                      <a href="tel:+551133334444" className="hover:underline">(11) 3333-4444</a><br/>
-                      <a href="tel:+5511999998888" className="hover:underline">(11) 99999-8888</a>
+                      <a href="tel:+5554991897645" className="hover:underline">(54) 99189-7645</a>
                     </p>
                   </div>
                 </div>
@@ -258,8 +252,7 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Email</h3>
                     <p className="text-gray-700 leading-relaxed">
-                      <a href="mailto:contato@greena.com.br" className="hover:underline">contato@greena.com.br</a><br/>
-                      <a href="mailto:suporte@greena.com.br" className="hover:underline">suporte@greena.com.br</a>
+                      <a href="mailto:contato@greenasolucoes.com.br" className="hover:underline">contato@greenasolucoes.com.br</a>
                     </p>
                   </div>
                 </div>
@@ -276,9 +269,7 @@ export default function Contact() {
                   <div>
                     <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Horário de Atendimento</h3>
                     <p className="text-gray-700 leading-relaxed">
-                      Segunda a Sexta: 9h às 18h<br/>
-                      Sábado: 9h às 13h<br/>
-                      Domingo e feriados: Fechado
+                      Segunda a Sexta: 9h às 18h
                     </p>
                   </div>
                 </div>
@@ -289,14 +280,15 @@ export default function Contact() {
                 <h3 className="text-xl font-black mb-4" style={{ color: '#152F27' }}>Redes Sociais</h3>
                 <div className="flex gap-4">
                   {[
-                    { name: 'LinkedIn', icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', color: '#0077B5' },
-                    { name: 'Instagram', icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', color: '#E4405F' },
-                    { name: 'Facebook', icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', color: '#1877F2' },
-                    { name: 'Twitter', icon: 'M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z', color: '#1DA1F2' }
+                    { name: 'LinkedIn', icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', color: '#0077B5', url: 'https://br.linkedin.com/company/greena-solu%C3%A7%C3%B5es-em-sustentabilidade' },
+                    { name: 'Instagram', icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', color: '#E4405F', url: 'https://www.instagram.com/greena.solucoes/' },
+                    { name: 'Facebook', icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', color: '#1877F2', url: 'https://www.facebook.com/profile.php?id=61550708137780' }
                   ].map((social, i) => (
                     <a
                       key={i}
-                      href="#"
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-12 h-12 rounded-full flex items-center justify-center hover:opacity-80 transition"
                       style={{ backgroundColor: social.color }}
                       title={social.name}

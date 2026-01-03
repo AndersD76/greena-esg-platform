@@ -201,20 +201,6 @@ export default function LandingPage() {
                 Pilares ESG
               </a>
               <Link
-                to="/about"
-                className="text-sm font-semibold transition-colors"
-                style={{ color: '#152F27' }}
-              >
-                Quem Somos
-              </Link>
-              <Link
-                to="/solutions"
-                className="text-sm font-semibold transition-colors"
-                style={{ color: '#152F27' }}
-              >
-                Soluções
-              </Link>
-              <Link
                 to="/contact"
                 className="text-sm font-semibold transition-colors"
                 style={{ color: '#152F27' }}
@@ -280,21 +266,6 @@ export default function LandingPage() {
                 </button>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 animate-fade-up delay-400">
-                <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                  <div className="text-5xl font-black mb-1" style={{ color: '#EFD4A8' }}>20+</div>
-                  <div className="text-sm opacity-90">Anos ESG</div>
-                </div>
-                <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                  <div className="text-5xl font-black mb-1" style={{ color: '#EFD4A8' }}>500+</div>
-                  <div className="text-sm opacity-90">Empresas</div>
-                </div>
-                <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                  <div className="text-5xl font-black mb-1" style={{ color: '#EFD4A8' }}>98%</div>
-                  <div className="text-sm opacity-90">Satisfação</div>
-                </div>
-              </div>
             </div>
 
             {/* Right - Visual ESG Cards */}
@@ -309,7 +280,7 @@ export default function LandingPage() {
                     <div className="text-white">
                       <div className="text-3xl font-black mb-1">Environmental</div>
                       <div className="text-lg opacity-90">Gestão Ambiental e Climática</div>
-                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>75 questões • 5 temas</div>
+                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>15 critérios • 5 temas</div>
                     </div>
                   </div>
                 </div>
@@ -323,7 +294,7 @@ export default function LandingPage() {
                     <div className="text-white">
                       <div className="text-3xl font-black mb-1">Social</div>
                       <div className="text-lg opacity-90">Responsabilidade Social</div>
-                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>75 questões • 5 temas</div>
+                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>15 critérios • 5 temas</div>
                     </div>
                   </div>
                 </div>
@@ -337,7 +308,7 @@ export default function LandingPage() {
                     <div className="text-white">
                       <div className="text-3xl font-black mb-1">Governance</div>
                       <div className="text-lg opacity-90">Governança Corporativa</div>
-                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>65 questões • 4 temas</div>
+                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>13 critérios • 4 temas</div>
                     </div>
                   </div>
                 </div>
@@ -375,8 +346,8 @@ export default function LandingPage() {
               },
               {
                 Icon: AwardIcon,
-                title: 'Certificação Global',
-                description: 'Padrões reconhecidos internacionalmente validando sua performance e compromisso ESG',
+                title: 'Certificação ESG Greena',
+                description: 'Certificação que valida sua performance e compromisso ESG com metodologia própria',
                 color: '#924131'
               }
             ].map((feature, i) => (
@@ -392,39 +363,6 @@ export default function LandingPage() {
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Full Width Image Banner - Impacto */}
-      <section className="relative h-[600px] overflow-hidden">
-        <div className="absolute inset-0" style={{ backgroundColor: '#2d5a45' }}>
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white' opacity='0.4'%3E%3Ccircle cx='100' cy='100' r='80'/%3E%3Ccircle cx='100' cy='100' r='60' fill='%232d5a45'/%3E%3Ccircle cx='100' cy='100' r='40'/%3E%3Ccircle cx='100' cy='100' r='20' fill='%232d5a45'/%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '400px 400px'
-          }}/>
-        </div>
-
-        <div className="absolute inset-0 gradient-overlay flex items-center justify-center">
-          <div className="text-center text-white max-w-5xl px-6">
-            <div className="mb-8 flex justify-center">
-              <LeafIcon size={120} color="#7B9965" />
-            </div>
-            <h2 className="text-7xl font-black mb-8">
-              1 Milhão+ Toneladas<br/>de CO₂ Reduzidas
-            </h2>
-            <p className="text-3xl opacity-95 mb-12">
-              Empresas certificadas pela GREENA já evitaram emissões equivalentes a<br/>
-              <strong className="text-yellow-200">plantar 20 milhões de árvores</strong>
-            </p>
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-3 px-12 py-6 bg-white font-black rounded-2xl transition-all hover:scale-110 shadow-2xl text-2xl"
-              style={{ color: '#152F27' }}
-            >
-              Faça Parte Dessa Transformação
-              <TrendingIcon size={28} color="#152F27" />
-            </Link>
           </div>
         </div>
       </section>
@@ -450,7 +388,7 @@ export default function LandingPage() {
                 criterios: '15 critérios avaliados',
                 questoes: '75 questões detalhadas',
                 color: '#7B9965',
-                examples: ['Mudanças Climáticas', 'Recursos Hídricos', 'Biodiversidade', 'Economia Circular']
+                examples: ['Mudanças Climáticas', 'Recursos Hídricos', 'Biodiversidade', 'Economia Circular', 'Gestão Ambiental']
               },
               {
                 title: 'Social',
@@ -460,7 +398,7 @@ export default function LandingPage() {
                 criterios: '15 critérios avaliados',
                 questoes: '75 questões detalhadas',
                 color: '#924131',
-                examples: ['Direitos Humanos', 'Diversidade & Inclusão', 'Saúde e Segurança', 'Comunidade']
+                examples: ['Direitos Humanos', 'Diversidade & Inclusão', 'Saúde e Segurança', 'Comunidade', 'Relações com a cadeia de valor']
               },
               {
                 title: 'Governança',
@@ -510,6 +448,59 @@ export default function LandingPage() {
                       {ex}
                     </div>
                   ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Certification Levels Section */}
+      <section className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #f8fafb 0%, white 100%)' }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-6xl font-black mb-6" style={{ color: '#152F27' }}>
+              Níveis de <span className="text-gradient">Certificação ESG</span>
+            </h2>
+            <p className="text-2xl text-gray-600 mb-4">
+              Sua conquista reconhecida
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            {[
+              {
+                level: 'Bronze',
+                title: 'Compromisso ESG',
+                score: '0-39 pontos',
+                color: '#CD7F32'
+              },
+              {
+                level: 'Prata',
+                title: 'Integração ESG',
+                score: '40-69 pontos',
+                color: '#C0C0C0'
+              },
+              {
+                level: 'Ouro',
+                title: 'Liderança ESG',
+                score: '70-100 pontos',
+                color: '#FFD700'
+              }
+            ].map((cert, i) => (
+              <div
+                key={i}
+                className="relative p-8 rounded-3xl border-4 hover-lift shadow-xl bg-white"
+                style={{ borderColor: cert.color }}
+              >
+                <div className="text-center">
+                  <h3 className="text-4xl font-black mb-2" style={{ color: cert.color }}>
+                    {cert.level}
+                  </h3>
+                  <p className="text-xl font-bold text-gray-700 mb-4">{cert.title}</p>
+                  <p className="text-sm font-semibold text-gray-500 px-4 py-2 rounded-full inline-block" style={{ backgroundColor: cert.color + '20' }}>
+                    {cert.score}
+                  </p>
                 </div>
               </div>
             ))}
@@ -680,122 +671,6 @@ export default function LandingPage() {
           <p className="text-center text-gray-500 mt-8 text-sm">
             Sem compromisso • Cancelamento fácil • Dados protegidos
           </p>
-        </div>
-      </section>
-
-      {/* Certification Levels Section */}
-      <section className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #f8fafb 0%, white 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-6xl font-black mb-6" style={{ color: '#152F27' }}>
-              Níveis de <span className="text-gradient">Certificação ESG</span>
-            </h2>
-            <p className="text-2xl text-gray-600 mb-4">
-              Sua conquista reconhecida globalmente
-            </p>
-            <p className="text-lg text-gray-500 max-w-3xl mx-auto">
-              <strong>Certificação requer assinatura:</strong> Apenas planos pagos podem emitir certificados oficiais GREENA
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {[
-              {
-                level: 'Bronze',
-                title: 'Compromisso ESG',
-                score: '0-39 pontos',
-                color: '#CD7F32',
-                benefits: [
-                  'Selo digital de Compromisso ESG',
-                  '1 hora de consultoria gratuita',
-                  'Relatório básico de maturidade',
-                  'Acesso à comunidade GREENA'
-                ]
-              },
-              {
-                level: 'Prata',
-                title: 'Integração ESG',
-                score: '40-69 pontos',
-                color: '#C0C0C0',
-                benefits: [
-                  'Selo premium de Integração ESG',
-                  '3 horas de consultoria gratuita',
-                  'Relatório avançado + Plano de ação',
-                  '20% desconto em auditorias',
-                  'Eventos exclusivos GREENA',
-                  'Prioridade no suporte técnico'
-                ]
-              },
-              {
-                level: 'Ouro',
-                title: 'Liderança ESG',
-                score: '70-100 pontos',
-                color: '#FFD700',
-                benefits: [
-                  'Selo de excelência Liderança ESG',
-                  '6 horas de consultoria gratuita',
-                  'Relatório executivo completo',
-                  '30% desconto em auditorias',
-                  'Certificado físico emoldurado',
-                  'Destaque em cases GREENA',
-                  'Assessoria GRI/SASB',
-                  'Convite para conselho consultivo'
-                ]
-              }
-            ].map((cert, i) => (
-              <div
-                key={i}
-                className="relative p-8 rounded-3xl border-4 hover-lift shadow-xl bg-white"
-                style={{ borderColor: cert.color }}
-              >
-                <div className="text-center mb-6">
-                  <h3 className="text-4xl font-black mb-2" style={{ color: cert.color }}>
-                    {cert.level}
-                  </h3>
-                  <p className="text-xl font-bold text-gray-700 mb-2">{cert.title}</p>
-                  <p className="text-sm font-semibold text-gray-500 px-4 py-2 rounded-full inline-block" style={{ backgroundColor: cert.color + '20' }}>
-                    {cert.score}
-                  </p>
-                </div>
-
-                <ul className="space-y-3">
-                  {cert.benefits.map((benefit, j) => (
-                    <li key={j} className="flex items-start gap-3 text-sm">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={cert.color} strokeWidth="2" className="flex-shrink-0 mt-0.5">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                      <span className="font-semibold text-gray-700">{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-10 rounded-3xl border-2" style={{ borderColor: '#7B9965' }}>
-            <div className="flex items-start gap-6">
-              <div className="flex-1">
-                <h3 className="text-3xl font-black mb-4" style={{ color: '#152F27' }}>
-                  Como obter sua certificação?
-                </h3>
-                <div className="grid md:grid-cols-4 gap-4">
-                  {[
-                    { num: '1', text: 'Complete o diagnóstico ESG com 215 questões' },
-                    { num: '2', text: 'Atinja a pontuação desejada (0-100)' },
-                    { num: '3', text: 'Tenha assinatura ativa (Básico+)' },
-                    { num: '4', text: 'Emita seu certificado digital oficial' }
-                  ].map((step, i) => (
-                    <div key={i} className="flex gap-3">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-black text-white" style={{ backgroundColor: '#7B9965' }}>
-                        {step.num}
-                      </div>
-                      <p className="text-sm font-semibold text-gray-700 mt-2">{step.text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -1050,8 +925,8 @@ export default function LandingPage() {
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                     <polyline points="22,6 12,13 2,6"/>
                   </svg>
-                  <a href="mailto:contato@greena.com.br" className="text-sm font-semibold hover:text-green-400 transition-colors" style={{ color: '#EFD4A8' }}>
-                    contato@greena.com.br
+                  <a href="mailto:contato@greenasolucoes.com.br" className="text-sm font-semibold hover:text-green-400 transition-colors" style={{ color: '#EFD4A8' }}>
+                    contato@greenasolucoes.com.br
                   </a>
                 </li>
               </ul>
