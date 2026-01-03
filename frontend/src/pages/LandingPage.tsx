@@ -718,7 +718,7 @@ export default function LandingPage() {
                 </ul>
 
                 <Link
-                  to={plan.name === 'Teste Grátis' ? '/register' : '/login'}
+                  to={plan.name === 'Empresarial' ? '/contact' : '/register'}
                   className={`block w-full py-4 text-center font-black rounded-xl transition-all hover:scale-105 ${
                     plan.highlight ? 'text-white shadow-lg' : 'border-2 hover:text-white'
                   }`}
