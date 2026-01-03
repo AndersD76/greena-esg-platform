@@ -718,7 +718,7 @@ export default function LandingPage() {
                 </ul>
 
                 <Link
-                  to={plan.name === 'Empresarial' ? '/contact' : '/register'}
+                  to={plan.name === 'Empresarial' ? '/contact' : plan.name === 'Teste Grátis' ? '/register' : `/checkout?plan=${plan.name === 'Básico' ? 'basic' : 'professional'}`}
                   className={`block w-full py-4 text-center font-black rounded-xl transition-all hover:scale-105 ${
                     plan.highlight ? 'text-white shadow-lg' : 'border-2 hover:text-white'
                   }`}
@@ -1009,15 +1009,21 @@ export default function LandingPage() {
           <div className="pt-10 border-t" style={{ borderColor: '#7B996530' }}>
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="flex flex-wrap gap-6 text-sm">
-                {['Privacidade', 'Termos de Uso', 'LGPD', 'Cookies', 'Compliance'].map(item => (
-                  <a
-                    key={item}
-                    href="#"
+                {[
+                  { label: 'Privacidade', href: '/privacy' },
+                  { label: 'Termos de Uso', href: '/terms' },
+                  { label: 'LGPD', href: '/lgpd' },
+                  { label: 'Cookies', href: '/cookies' },
+                  { label: 'Compliance', href: '/compliance' }
+                ].map(item => (
+                  <Link
+                    key={item.label}
+                    to={item.href}
                     className="font-semibold hover:text-green-400 transition-colors"
                     style={{ color: '#EFD4A8' }}
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 ))}
               </div>
               <div className="text-sm font-semibold" style={{ color: '#7B9965' }}>

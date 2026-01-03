@@ -14,6 +14,12 @@ import Reports from './pages/Reports';
 import Insights from './pages/Insights';
 import Certificate from './pages/Certificate';
 import Contact from './pages/Contact';
+import Checkout from './pages/Checkout';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import LGPD from './pages/LGPD';
+import Cookies from './pages/Cookies';
+import Compliance from './pages/Compliance';
 import { diagnosisService } from './services/diagnosis.service';
 import { useEffect } from 'react';
 
@@ -81,6 +87,12 @@ function AppRoutes() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/lgpd" element={<LGPD />} />
+          <Route path="/cookies" element={<Cookies />} />
+          <Route path="/compliance" element={<Compliance />} />
           <Route
             path="/login"
             element={
