@@ -903,13 +903,15 @@ export default function LandingPage() {
               </h4>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2" className="mt-0.5">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2" className="mt-0.5 flex-shrink-0">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                     <circle cx="12" cy="10" r="3"/>
                   </svg>
                   <div>
-                    <p className="text-sm font-bold" style={{ color: '#EFD4A8' }}>Passo Fundo, RS</p>
-                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>Brasil</p>
+                    <p className="text-sm font-bold" style={{ color: '#EFD4A8' }}>UPF Parque Científico e Tecnológico</p>
+                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>Módulo II - Universidade de Passo Fundo</p>
+                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>BR 285, Bairro São José, 99052-900</p>
+                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>Passo Fundo / RS</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
