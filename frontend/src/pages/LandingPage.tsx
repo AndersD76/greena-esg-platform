@@ -3,6 +3,81 @@ import { useEffect, useState } from 'react';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
+  const [demoStep, setDemoStep] = useState(0);
+  const [demoAnswers, setDemoAnswers] = useState<number[]>([]);
+  const [showDemoResult, setShowDemoResult] = useState(false);
+
+  // Perguntas de demonstração ESG
+  const demoQuestions = [
+    {
+      category: 'Ambiental',
+      categoryColor: '#7B9965',
+      question: 'Sua empresa possui política de gestão de resíduos sólidos?',
+      options: ['Não possui', 'Em desenvolvimento', 'Parcialmente implementada', 'Totalmente implementada']
+    },
+    {
+      category: 'Ambiental',
+      categoryColor: '#7B9965',
+      question: 'A empresa monitora e busca reduzir seu consumo de energia?',
+      options: ['Não monitora', 'Monitora mas não atua', 'Monitora e tem metas', 'Monitora, tem metas e as atinge']
+    },
+    {
+      category: 'Social',
+      categoryColor: '#924131',
+      question: 'A empresa possui programa de diversidade e inclusão?',
+      options: ['Não possui', 'Em planejamento', 'Possui programa básico', 'Programa estruturado com metas']
+    },
+    {
+      category: 'Social',
+      categoryColor: '#924131',
+      question: 'Como a empresa avalia a satisfação dos colaboradores?',
+      options: ['Não avalia', 'Avaliação informal', 'Pesquisa anual', 'Pesquisas frequentes com planos de ação']
+    },
+    {
+      category: 'Governança',
+      categoryColor: '#152F27',
+      question: 'A empresa possui código de ética e conduta documentado?',
+      options: ['Não possui', 'Em elaboração', 'Possui mas não divulga', 'Possui e todos conhecem']
+    },
+    {
+      category: 'Governança',
+      categoryColor: '#152F27',
+      question: 'Existe canal de denúncias para questões éticas?',
+      options: ['Não existe', 'Existe informalmente', 'Canal formal interno', 'Canal independente e anônimo']
+    }
+  ];
+
+  const handleDemoAnswer = (answerIndex: number) => {
+    const newAnswers = [...demoAnswers, answerIndex];
+    setDemoAnswers(newAnswers);
+
+    if (demoStep < demoQuestions.length - 1) {
+      setDemoStep(demoStep + 1);
+    } else {
+      setShowDemoResult(true);
+    }
+  };
+
+  const getDemoScore = () => {
+    const totalPoints = demoAnswers.reduce((sum, answer) => sum + answer, 0);
+    const maxPoints = demoQuestions.length * 3;
+    return Math.round((totalPoints / maxPoints) * 100);
+  };
+
+  const getDemoLevel = () => {
+    const score = getDemoScore();
+    if (score >= 70) return { level: 'Ouro', color: '#FFD700', title: 'Liderança ESG' };
+    if (score >= 40) return { level: 'Prata', color: '#C0C0C0', title: 'Integração ESG' };
+    return { level: 'Bronze', color: '#CD7F32', title: 'Compromisso ESG' };
+  };
+
+  const resetDemo = () => {
+    setShowDemo(false);
+    setDemoStep(0);
+    setDemoAnswers([]);
+    setShowDemoResult(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -261,7 +336,10 @@ export default function LandingPage() {
                   Começar Diagnóstico Gratuito
                   <TrendingIcon size={20} color="#152F27" />
                 </Link>
-                <button className="px-10 py-5 border-3 border-white font-bold rounded-2xl transition-all hover:bg-white/10 text-xl text-white">
+                <button
+                  onClick={() => setShowDemo(true)}
+                  className="px-10 py-5 border-3 border-white font-bold rounded-2xl transition-all hover:bg-white/10 text-xl text-white"
+                >
                   Ver Demo
                 </button>
               </div>
@@ -909,6 +987,133 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Demo Modal */}
+      {showDemo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-scale-in">
+            {/* Header */}
+            <div className="p-6 border-b" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-black text-white">Demonstração ESG</h2>
+                  <p className="text-white/80 text-sm mt-1">
+                    {showDemoResult ? 'Resultado do seu diagnóstico' : `Pergunta ${demoStep + 1} de ${demoQuestions.length}`}
+                  </p>
+                </div>
+                <button
+                  onClick={resetDemo}
+                  className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+              {/* Progress Bar */}
+              {!showDemoResult && (
+                <div className="mt-4 h-2 bg-white/20 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-white transition-all duration-500"
+                    style={{ width: `${((demoStep + 1) / demoQuestions.length) * 100}%` }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="p-8">
+              {!showDemoResult ? (
+                <>
+                  {/* Category Badge */}
+                  <div
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white mb-6"
+                    style={{ backgroundColor: demoQuestions[demoStep].categoryColor }}
+                  >
+                    {demoQuestions[demoStep].category === 'Ambiental' && <GlobeIcon size={18} color="white" />}
+                    {demoQuestions[demoStep].category === 'Social' && <UsersIcon size={18} color="white" />}
+                    {demoQuestions[demoStep].category === 'Governança' && <ShieldIcon size={18} color="white" />}
+                    {demoQuestions[demoStep].category}
+                  </div>
+
+                  {/* Question */}
+                  <h3 className="text-2xl font-black mb-8" style={{ color: '#152F27' }}>
+                    {demoQuestions[demoStep].question}
+                  </h3>
+
+                  {/* Options */}
+                  <div className="space-y-3">
+                    {demoQuestions[demoStep].options.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleDemoAnswer(index)}
+                        className="w-full p-4 rounded-xl border-2 text-left font-semibold transition-all hover:border-green-600 hover:bg-green-50"
+                        style={{ borderColor: '#e0e0e0', color: '#152F27' }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                            style={{ backgroundColor: '#f0f0f0', color: '#152F27' }}
+                          >
+                            {index + 1}
+                          </div>
+                          {option}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                /* Result */
+                <div className="text-center">
+                  <div
+                    className="w-32 h-32 rounded-full mx-auto mb-6 flex items-center justify-center"
+                    style={{ backgroundColor: getDemoLevel().color + '30', border: `4px solid ${getDemoLevel().color}` }}
+                  >
+                    <span className="text-5xl font-black" style={{ color: getDemoLevel().color }}>
+                      {getDemoScore()}%
+                    </span>
+                  </div>
+
+                  <h3 className="text-3xl font-black mb-2" style={{ color: getDemoLevel().color }}>
+                    Nível {getDemoLevel().level}
+                  </h3>
+                  <p className="text-xl font-semibold text-gray-600 mb-6">
+                    {getDemoLevel().title}
+                  </p>
+
+                  <div className="bg-gray-50 rounded-2xl p-6 mb-8">
+                    <p className="text-gray-700 leading-relaxed">
+                      Este foi apenas um diagnóstico demonstrativo com 6 perguntas.
+                      O diagnóstico completo possui <strong className="text-green-700">215 questões</strong> que
+                      avaliam detalhadamente todos os aspectos ESG da sua empresa.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button
+                      onClick={resetDemo}
+                      className="flex-1 py-4 rounded-xl border-2 font-bold transition-all hover:bg-gray-50"
+                      style={{ borderColor: '#152F27', color: '#152F27' }}
+                    >
+                      Fechar
+                    </button>
+                    <Link
+                      to="/register"
+                      onClick={resetDemo}
+                      className="flex-1 py-4 rounded-xl font-bold text-white text-center transition-all hover:opacity-90"
+                      style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                    >
+                      Fazer Diagnóstico Completo
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
