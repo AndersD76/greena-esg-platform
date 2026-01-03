@@ -823,13 +823,15 @@ export default function LandingPage() {
               {/* Social Icons */}
               <div className="flex gap-4">
                 {[
-                  { icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', label: 'LinkedIn' },
-                  { icon: 'M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z', label: 'Twitter' },
-                  { icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', label: 'Instagram' }
+                  { icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', label: 'LinkedIn', url: 'https://br.linkedin.com/company/greena-solu%C3%A7%C3%B5es-em-sustentabilidade' },
+                  { icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', label: 'Instagram', url: 'https://www.instagram.com/greena.solucoes/' },
+                  { icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61550708137780' }
                 ].map((social, i) => (
                   <a
                     key={i}
-                    href="#"
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg"
                     style={{ backgroundColor: '#7B996530', color: '#7B9965' }}
                     aria-label={social.label}
@@ -853,31 +855,6 @@ export default function LandingPage() {
               </h4>
               <ul className="space-y-4">
                 {['Avaliação ESG', 'Relatórios', 'Certificação', 'Dashboard', 'Indicadores'].map(item => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="text-sm font-semibold hover:text-green-400 transition-all hover:translate-x-2 flex items-center gap-2 group"
-                      style={{ color: '#EFD4A8' }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-600 group-hover:w-3 transition-all"></span>
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Empresa */}
-            <div>
-              <h4 className="font-black text-xl mb-6 flex items-center gap-2" style={{ color: '#7B9965' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
-                Empresa
-              </h4>
-              <ul className="space-y-4">
-                {['Sobre Nós', 'Nossa Equipe', 'Blog', 'Carreiras', 'Parceiros'].map(item => (
                   <li key={item}>
                     <a
                       href="#"
