@@ -922,6 +922,37 @@ export default function LandingPage() {
               </div>
             </div>
 
+            {/* Plataforma */}
+            <div>
+              <h4 className="font-black text-xl mb-6 flex items-center gap-2" style={{ color: '#7B9965' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <line x1="9" y1="3" x2="9" y2="21"/>
+                </svg>
+                Plataforma
+              </h4>
+              <ul className="space-y-4">
+                {[
+                  { label: 'Avaliação ESG', href: '/login' },
+                  { label: 'Relatórios', href: '/login' },
+                  { label: 'Certificação', href: '/login' },
+                  { label: 'Dashboard', href: '/login' },
+                  { label: 'Indicadores', href: '/login' }
+                ].map(item => (
+                  <li key={item.label}>
+                    <Link
+                      to={item.href}
+                      className="text-sm font-semibold hover:text-green-400 transition-all hover:translate-x-2 flex items-center gap-2 group"
+                      style={{ color: '#EFD4A8' }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-600 group-hover:w-3 transition-all"></span>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             {/* Contato */}
             <div>
               <h4 className="font-black text-xl mb-6 flex items-center gap-2" style={{ color: '#7B9965' }}>
@@ -960,6 +991,15 @@ export default function LandingPage() {
                   <a href="mailto:contato@greenasolucoes.com.br" className="text-sm font-semibold hover:text-green-400 transition-colors" style={{ color: '#EFD4A8' }}>
                     contato@greenasolucoes.com.br
                   </a>
+                </li>
+                <li className="flex items-center gap-3">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span className="text-sm font-semibold" style={{ color: '#EFD4A8' }}>
+                    Segunda a Sexta: 9h às 18h
+                  </span>
                 </li>
               </ul>
             </div>
