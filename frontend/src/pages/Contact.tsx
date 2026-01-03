@@ -76,8 +76,7 @@ export default function Contact() {
 
       {/* Contact Content */}
       <section className="py-24 px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12">
+        <div className="max-w-3xl mx-auto">
             {/* Contact Form */}
             <div className="bg-white p-10 rounded-3xl shadow-lg">
               <h2 className="text-3xl font-black mb-6" style={{ color: '#152F27' }}>
@@ -201,127 +200,6 @@ export default function Contact() {
                 </button>
               </form>
             </div>
-
-            {/* Contact Information */}
-            <div className="space-y-8">
-              {/* Info Cards */}
-              <div className="bg-white p-8 rounded-3xl shadow-lg">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#7B9965' }}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                      <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Endereço</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                      UPF Parque Científico e Tecnológico,<br/>
-                      Módulo II - Universidade de Passo Fundo,<br/>
-                      BR 285, Bairro São José, 99052-900,<br/>
-                      Passo Fundo / RS
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-8 rounded-3xl shadow-lg">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#924131' }}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Telefone</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                      <a href="tel:+5554991897645" className="hover:underline">(54) 99189-7645</a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-8 rounded-3xl shadow-lg">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#152F27' }}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                      <polyline points="22,6 12,13 2,6"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Email</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                      <a href="mailto:contato@greenasolucoes.com.br" className="hover:underline">contato@greenasolucoes.com.br</a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white p-8 rounded-3xl shadow-lg">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#EFD4A8' }}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#152F27" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"/>
-                      <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Horário de Atendimento</h3>
-                    <p className="text-gray-700 leading-relaxed">
-                      Segunda a Sexta: 9h às 18h
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Social Media */}
-              <div className="bg-white p-8 rounded-3xl shadow-lg">
-                <h3 className="text-xl font-black mb-4" style={{ color: '#152F27' }}>Redes Sociais</h3>
-                <div className="flex gap-4">
-                  {[
-                    { name: 'LinkedIn', icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', color: '#0077B5', url: 'https://br.linkedin.com/company/greena-solu%C3%A7%C3%B5es-em-sustentabilidade' },
-                    { name: 'Instagram', icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', color: '#E4405F', url: 'https://www.instagram.com/greena.solucoes/' },
-                    { name: 'Facebook', icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', color: '#1877F2', url: 'https://www.facebook.com/profile.php?id=61550708137780' }
-                  ].map((social, i) => (
-                    <a
-                      key={i}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-full flex items-center justify-center hover:opacity-80 transition"
-                      style={{ backgroundColor: social.color }}
-                      title={social.name}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                        <path d={social.icon}/>
-                      </svg>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Map Section */}
-      <section className="py-16 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-black mb-8 text-center" style={{ color: '#152F27' }}>
-            Nossa Localização
-          </h2>
-          <div className="bg-gray-200 rounded-3xl overflow-hidden shadow-lg" style={{ height: '450px' }}>
-            <div className="w-full h-full flex items-center justify-center text-gray-500">
-              <div className="text-center">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mx-auto mb-4">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                <p className="text-lg font-semibold">Mapa interativo será carregado aqui</p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
