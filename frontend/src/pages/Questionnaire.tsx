@@ -13,15 +13,47 @@ interface Response {
   };
 }
 
-// Opções de avaliação com valores
+// Opcoes de avaliacao com valores
 const evaluationOptions = [
-  { value: 'Não se aplica', label: 'Não se aplica', score: 0, counted: false },
-  { value: 'Não é feito', label: 'Não é feito', score: 1, counted: true },
-  { value: 'É mal feito', label: 'É mal feito', score: 2, counted: true },
-  { value: 'É feito', label: 'É feito', score: 3, counted: true },
-  { value: 'É bem feito', label: 'É bem feito', score: 4, counted: true },
-  { value: 'É muito bem feito', label: 'É muito bem feito', score: 5, counted: true },
+  { value: 'Não se aplica', label: 'N/A', fullLabel: 'Não se aplica', score: 0, counted: false },
+  { value: 'Não é feito', label: '1', fullLabel: 'Não é feito', score: 1, counted: true },
+  { value: 'É mal feito', label: '2', fullLabel: 'É mal feito', score: 2, counted: true },
+  { value: 'É feito', label: '3', fullLabel: 'É feito', score: 3, counted: true },
+  { value: 'É bem feito', label: '4', fullLabel: 'É bem feito', score: 4, counted: true },
+  { value: 'É muito bem feito', label: '5', fullLabel: 'É muito bem feito', score: 5, counted: true },
 ];
+
+// Componente de progresso circular
+function CircularProgress({ value, size = 60, strokeWidth = 6, color = '#7B9965' }: { value: number; size?: number; strokeWidth?: number; color?: string }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (value / 100) * circumference;
+
+  return (
+    <svg width={size} height={size} className="transform -rotate-90">
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke="#e5e7eb"
+        strokeWidth={strokeWidth}
+        fill="none"
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke={color}
+        strokeWidth={strokeWidth}
+        fill="none"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        className="transition-all duration-500"
+      />
+    </svg>
+  );
+}
 
 export default function Questionnaire() {
   const { diagnosisId } = useParams<{ diagnosisId: string }>();
@@ -32,6 +64,7 @@ export default function Questionnaire() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showObservations, setShowObservations] = useState(false);
 
   useEffect(() => {
     loadQuestionnaire();
@@ -56,7 +89,7 @@ export default function Questionnaire() {
         setResponses(responsesMap);
       }
     } catch (error) {
-      console.error('Erro ao carregar questionário:', error);
+      console.error('Erro ao carregar questionario:', error);
     } finally {
       setLoading(false);
     }
@@ -67,7 +100,7 @@ export default function Questionnaire() {
 
     const response = responses[currentQuestion.id];
     if (!response?.evaluation) {
-      alert('Por favor, selecione uma avaliação');
+      alert('Por favor, selecione uma avaliacao');
       return;
     }
 
@@ -75,16 +108,16 @@ export default function Questionnaire() {
       setSaving(true);
       await responseService.upsert(diagnosisId, {
         assessmentItemId: currentQuestion.id,
-        importance: 'Importante', // Valor fixo já que removemos o campo
+        importance: 'Importante',
         evaluation: response.evaluation,
         observations: response.observations,
       });
 
-      // Move to next question
+      setShowObservations(false);
+
       if (currentIndex < questions.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        // All questions answered, finalize diagnosis
         await handleFinalizeDiagnosis();
       }
     } catch (error) {
@@ -103,8 +136,8 @@ export default function Questionnaire() {
       await diagnosisService.finalize(diagnosisId);
       navigate(`/diagnosis/${diagnosisId}/results`);
     } catch (error) {
-      console.error('Erro ao finalizar diagnóstico:', error);
-      alert('Erro ao finalizar diagnóstico. Tente novamente.');
+      console.error('Erro ao finalizar diagnostico:', error);
+      alert('Erro ao finalizar diagnostico. Tente novamente.');
       setSaving(false);
     }
   }
@@ -112,12 +145,14 @@ export default function Questionnaire() {
   function handlePrevious() {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
+      setShowObservations(false);
     }
   }
 
   function handleSkip() {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
+      setShowObservations(false);
     }
   }
 
@@ -133,34 +168,30 @@ export default function Questionnaire() {
     });
   }
 
-  // Navegar para a primeira questão de um pilar específico
   function navigateToPillar(pillarCode: string) {
     const firstQuestionIndex = questions.findIndex(
       (q) => q.criteria.theme.pillar.code === pillarCode
     );
     if (firstQuestionIndex !== -1) {
       setCurrentIndex(firstQuestionIndex);
+      setShowObservations(false);
     }
   }
 
   const currentQuestion = questions[currentIndex];
 
-  // Informações do pilar atual
-  const pillarName = currentQuestion?.criteria.theme.pillar.name || '';
   const pillarCode = currentQuestion?.criteria.theme.pillar.code || '';
   const themeName = currentQuestion?.criteria.theme.name || '';
   const criteriaName = currentQuestion?.criteria.name || '';
 
-  // Cores por pilar
-  const pillarColors: Record<string, { bg: string; text: string; border: string; bgLight: string }> = {
-    'E': { bg: '#4CAF50', text: '#1b5e20', border: '#4CAF50', bgLight: '#e8f5e9' },
-    'S': { bg: '#2196F3', text: '#0d47a1', border: '#2196F3', bgLight: '#e3f2fd' },
-    'G': { bg: '#FF9800', text: '#e65100', border: '#FF9800', bgLight: '#fff3e0' }
+  const pillarColors: Record<string, { bg: string; text: string; border: string; bgLight: string; gradient: string }> = {
+    'E': { bg: '#22c55e', text: '#166534', border: '#22c55e', bgLight: '#f0fdf4', gradient: 'from-green-500 to-emerald-600' },
+    'S': { bg: '#3b82f6', text: '#1e40af', border: '#3b82f6', bgLight: '#eff6ff', gradient: 'from-blue-500 to-indigo-600' },
+    'G': { bg: '#f59e0b', text: '#b45309', border: '#f59e0b', bgLight: '#fffbeb', gradient: 'from-amber-500 to-orange-600' }
   };
 
   const currentPillarColor = pillarColors[pillarCode] || pillarColors['E'];
 
-  // Calcular progresso por pilar
   const pillarProgress: Record<string, { answered: number; total: number }> = {
     E: { answered: 0, total: 0 },
     S: { answered: 0, total: 0 },
@@ -177,7 +208,10 @@ export default function Questionnaire() {
     }
   });
 
-  // Calcular índice da questão dentro do pilar atual
+  const totalAnswered = pillarProgress.E.answered + pillarProgress.S.answered + pillarProgress.G.answered;
+  const totalQuestions = pillarProgress.E.total + pillarProgress.S.total + pillarProgress.G.total;
+  const overallProgress = totalQuestions > 0 ? Math.round((totalAnswered / totalQuestions) * 100) : 0;
+
   const questionsOfCurrentPillar = questions.filter(
     (q) => q.criteria.theme.pillar.code === pillarCode
   );
@@ -187,10 +221,10 @@ export default function Questionnaire() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600">Carregando questionário...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#22c55e', borderTopColor: 'transparent' }}></div>
+          <p className="mt-4 text-gray-600 font-medium">Carregando questionario...</p>
         </div>
       </div>
     );
@@ -208,7 +242,7 @@ export default function Questionnaire() {
               Nenhuma questao encontrada
             </h2>
             <p className="text-gray-600 mb-6">
-              Não foi possível carregar as questões do diagnóstico.
+              Nao foi possivel carregar as questoes do diagnostico.
             </p>
             <Button onClick={() => navigate('/dashboard')}>
               Voltar ao Dashboard
@@ -222,305 +256,328 @@ export default function Questionnaire() {
   const currentResponse = responses[currentQuestion.id] || {};
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex">
-        {/* Sidebar com progresso por eixo */}
-        <div className="w-72 min-h-screen bg-white border-r border-gray-200 p-6 flex flex-col">
-          <div className="mb-8">
-            <h2 className="text-xl font-black mb-1" style={{ color: '#152F27' }}>Diagnóstico ESG</h2>
-            <p className="text-sm text-gray-500">Progresso por eixo</p>
-          </div>
+    <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
+      {/* Header fixo */}
+      <div className="sticky top-0 z-20 bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </button>
+              <div>
+                <h1 className="text-lg font-bold" style={{ color: '#152F27' }}>Diagnostico ESG</h1>
+                <p className="text-xs text-gray-500">Questao {currentIndex + 1} de {totalQuestions}</p>
+              </div>
+            </div>
 
-          {/* Cards de Progresso Clicáveis */}
-          <div className="space-y-4 flex-1">
-            {/* Ambiental */}
-            <button
-              onClick={() => navigateToPillar('E')}
-              className={`w-full text-left p-4 rounded-xl border-2 transition-all hover:shadow-md ${
-                pillarCode === 'E' ? 'ring-2 ring-offset-2' : ''
-              }`}
-              style={{
-                borderColor: '#4CAF50',
-                backgroundColor: pillarCode === 'E' ? '#e8f5e9' : 'white',
-                ['--tw-ring-color' as any]: '#4CAF50'
-              }}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                  style={{ backgroundColor: '#4CAF50' }}
-                >
-                  E
+            {/* Progress bar geral no header */}
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">{overallProgress}% concluido</span>
+                <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-300"
+                    style={{ width: `${overallProgress}%` }}
+                  />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold" style={{ color: '#152F27' }}>Ambiental</p>
-                  <p className="text-xs text-gray-500">Environmental</p>
-                </div>
-                <span className="text-xl font-black" style={{ color: '#1b5e20' }}>
-                  {pillarProgress.E.answered}/{pillarProgress.E.total}
-                </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="h-full rounded-full transition-all duration-300"
-                  style={{
-                    width: `${pillarProgress.E.total > 0 ? (pillarProgress.E.answered / pillarProgress.E.total) * 100 : 0}%`,
-                    backgroundColor: '#4CAF50'
-                  }}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                {pillarProgress.E.total > 0 ? Math.round((pillarProgress.E.answered / pillarProgress.E.total) * 100) : 0}% completo
-              </p>
-            </button>
-
-            {/* Social */}
-            <button
-              onClick={() => navigateToPillar('S')}
-              className={`w-full text-left p-4 rounded-xl border-2 transition-all hover:shadow-md ${
-                pillarCode === 'S' ? 'ring-2 ring-offset-2' : ''
-              }`}
-              style={{
-                borderColor: '#2196F3',
-                backgroundColor: pillarCode === 'S' ? '#e3f2fd' : 'white',
-                ['--tw-ring-color' as any]: '#2196F3'
-              }}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                  style={{ backgroundColor: '#2196F3' }}
-                >
-                  S
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold" style={{ color: '#152F27' }}>Social</p>
-                  <p className="text-xs text-gray-500">Social</p>
-                </div>
-                <span className="text-xl font-black" style={{ color: '#0d47a1' }}>
-                  {pillarProgress.S.answered}/{pillarProgress.S.total}
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="h-full rounded-full transition-all duration-300"
-                  style={{
-                    width: `${pillarProgress.S.total > 0 ? (pillarProgress.S.answered / pillarProgress.S.total) * 100 : 0}%`,
-                    backgroundColor: '#2196F3'
-                  }}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                {pillarProgress.S.total > 0 ? Math.round((pillarProgress.S.answered / pillarProgress.S.total) * 100) : 0}% completo
-              </p>
-            </button>
-
-            {/* Governança */}
-            <button
-              onClick={() => navigateToPillar('G')}
-              className={`w-full text-left p-4 rounded-xl border-2 transition-all hover:shadow-md ${
-                pillarCode === 'G' ? 'ring-2 ring-offset-2' : ''
-              }`}
-              style={{
-                borderColor: '#FF9800',
-                backgroundColor: pillarCode === 'G' ? '#fff3e0' : 'white',
-                ['--tw-ring-color' as any]: '#FF9800'
-              }}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                  style={{ backgroundColor: '#FF9800' }}
-                >
-                  G
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold" style={{ color: '#152F27' }}>Governança</p>
-                  <p className="text-xs text-gray-500">Governance</p>
-                </div>
-                <span className="text-xl font-black" style={{ color: '#e65100' }}>
-                  {pillarProgress.G.answered}/{pillarProgress.G.total}
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="h-full rounded-full transition-all duration-300"
-                  style={{
-                    width: `${pillarProgress.G.total > 0 ? (pillarProgress.G.answered / pillarProgress.G.total) * 100 : 0}%`,
-                    backgroundColor: '#FF9800'
-                  }}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                {pillarProgress.G.total > 0 ? Math.round((pillarProgress.G.answered / pillarProgress.G.total) * 100) : 0}% completo
-              </p>
-            </button>
-          </div>
-
-          {/* Botão Salvar e Sair */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => navigate('/dashboard')}
-            >
-              Salvar e Sair
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/dashboard')}
+                className="text-sm"
+              >
+                Salvar e Sair
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Área principal */}
-        <div className="flex-1 p-8">
-          <div className="max-w-3xl mx-auto">
-            {/* Question Card */}
-            <div
-              className="bg-white rounded-2xl shadow-lg p-8 mb-6"
-              style={{
-                borderLeft: `6px solid ${currentPillarColor.border}`,
-                backgroundColor: currentPillarColor.bgLight
-              }}
-            >
-              {/* Breadcrumb */}
-              <div className="flex items-center gap-2 mb-4 flex-wrap">
-                <span
-                  className="px-4 py-1.5 rounded-full text-sm font-bold"
-                  style={{
-                    backgroundColor: currentPillarColor.bg,
-                    color: 'white'
-                  }}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex gap-6">
+          {/* Sidebar - Pilares */}
+          <div className="hidden lg:block w-64 flex-shrink-0">
+            <div className="bg-white rounded-2xl shadow-sm p-4 sticky top-24">
+              <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-4">Progresso</h3>
+
+              <div className="space-y-3">
+                {/* Ambiental */}
+                <button
+                  onClick={() => navigateToPillar('E')}
+                  className={`w-full p-3 rounded-xl transition-all ${
+                    pillarCode === 'E'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
+                      : 'bg-gray-50 hover:bg-gray-100'
+                  }`}
                 >
-                  {pillarCode} - {pillarName}
-                </span>
-                <span className="text-gray-400">•</span>
-                <span className="text-sm text-gray-700 font-medium">{themeName}</span>
-                <span className="text-gray-400">•</span>
-                <span className="text-sm text-gray-700 font-medium">{criteriaName}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <CircularProgress
+                        value={pillarProgress.E.total > 0 ? (pillarProgress.E.answered / pillarProgress.E.total) * 100 : 0}
+                        size={44}
+                        strokeWidth={4}
+                        color={pillarCode === 'E' ? '#fff' : '#22c55e'}
+                      />
+                      <span className={`absolute inset-0 flex items-center justify-center text-xs font-bold ${pillarCode === 'E' ? 'text-white' : 'text-green-600'}`}>
+                        {pillarProgress.E.answered}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className={`text-sm font-bold ${pillarCode === 'E' ? 'text-white' : 'text-gray-800'}`}>Ambiental</p>
+                      <p className={`text-xs ${pillarCode === 'E' ? 'text-green-100' : 'text-gray-500'}`}>
+                        {pillarProgress.E.answered}/{pillarProgress.E.total} respostas
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Social */}
+                <button
+                  onClick={() => navigateToPillar('S')}
+                  className={`w-full p-3 rounded-xl transition-all ${
+                    pillarCode === 'S'
+                      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg'
+                      : 'bg-gray-50 hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <CircularProgress
+                        value={pillarProgress.S.total > 0 ? (pillarProgress.S.answered / pillarProgress.S.total) * 100 : 0}
+                        size={44}
+                        strokeWidth={4}
+                        color={pillarCode === 'S' ? '#fff' : '#3b82f6'}
+                      />
+                      <span className={`absolute inset-0 flex items-center justify-center text-xs font-bold ${pillarCode === 'S' ? 'text-white' : 'text-blue-600'}`}>
+                        {pillarProgress.S.answered}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className={`text-sm font-bold ${pillarCode === 'S' ? 'text-white' : 'text-gray-800'}`}>Social</p>
+                      <p className={`text-xs ${pillarCode === 'S' ? 'text-blue-100' : 'text-gray-500'}`}>
+                        {pillarProgress.S.answered}/{pillarProgress.S.total} respostas
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Governanca */}
+                <button
+                  onClick={() => navigateToPillar('G')}
+                  className={`w-full p-3 rounded-xl transition-all ${
+                    pillarCode === 'G'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg'
+                      : 'bg-gray-50 hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <CircularProgress
+                        value={pillarProgress.G.total > 0 ? (pillarProgress.G.answered / pillarProgress.G.total) * 100 : 0}
+                        size={44}
+                        strokeWidth={4}
+                        color={pillarCode === 'G' ? '#fff' : '#f59e0b'}
+                      />
+                      <span className={`absolute inset-0 flex items-center justify-center text-xs font-bold ${pillarCode === 'G' ? 'text-white' : 'text-amber-600'}`}>
+                        {pillarProgress.G.answered}
+                      </span>
+                    </div>
+                    <div className="flex-1 text-left">
+                      <p className={`text-sm font-bold ${pillarCode === 'G' ? 'text-white' : 'text-gray-800'}`}>Governanca</p>
+                      <p className={`text-xs ${pillarCode === 'G' ? 'text-amber-100' : 'text-gray-500'}`}>
+                        {pillarProgress.G.answered}/{pillarProgress.G.total} respostas
+                      </p>
+                    </div>
+                  </div>
+                </button>
               </div>
 
-              {/* Indicador de questão no pilar */}
-              <p className="text-sm font-semibold mb-6" style={{ color: currentPillarColor.text }}>
-                Questão {currentQuestionIndexInPillar + 1} de {questionsOfCurrentPillar.length} ({pillarName})
-              </p>
+              {/* Legenda de avaliacao */}
+              <div className="mt-6 pt-4 border-t">
+                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Escala</h4>
+                <div className="space-y-1.5 text-xs text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-gray-200 flex items-center justify-center text-xs font-bold">N/A</span>
+                    <span>Nao se aplica</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">1</span>
+                    <span>Nao e feito</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-bold">2</span>
+                    <span>E mal feito</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs font-bold">3</span>
+                    <span>E feito</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-lime-100 text-lime-700 flex items-center justify-center text-xs font-bold">4</span>
+                    <span>E bem feito</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold">5</span>
+                    <span>E muito bem feito</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-              {/* Pergunta */}
-              <h2 className="text-xl font-semibold leading-relaxed mb-8" style={{ color: '#152F27' }}>
-                {currentQuestion.question}
-              </h2>
+          {/* Area principal */}
+          <div className="flex-1 max-w-3xl">
+            {/* Card da questao */}
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              {/* Header do card com cor do pilar */}
+              <div className={`bg-gradient-to-r ${currentPillarColor.gradient} px-6 py-4`}>
+                <div className="flex items-center gap-2 text-white/80 text-sm mb-1">
+                  <span>{themeName}</span>
+                  <span>•</span>
+                  <span>{criteriaName}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-white font-bold text-lg">
+                    {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governanca'}
+                  </h2>
+                  <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-white text-sm font-medium">
+                    {currentQuestionIndexInPillar + 1} / {questionsOfCurrentPillar.length}
+                  </span>
+                </div>
+              </div>
 
-              {/* Formulário */}
-              <div className="space-y-6">
-                {/* Evaluation - Caixas Seletoras */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-4">
-                    Avaliação <span className="text-red-500">*</span>
+              {/* Corpo do card */}
+              <div className="p-6">
+                {/* Pergunta */}
+                <h3 className="text-xl font-semibold text-gray-800 leading-relaxed mb-8">
+                  {currentQuestion.question}
+                </h3>
+
+                {/* Opcoes de avaliacao - Layout horizontal tipo escala */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-600 mb-4">
+                    Como voce avalia esta pratica na sua empresa?
                   </label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {evaluationOptions.map((option) => {
+
+                  <div className="flex gap-2">
+                    {evaluationOptions.map((option, index) => {
                       const isSelected = currentResponse.evaluation === option.value;
                       const isNaoSeAplica = option.value === 'Não se aplica';
+
+                      const bgColors = ['bg-gray-100', 'bg-red-50', 'bg-orange-50', 'bg-yellow-50', 'bg-lime-50', 'bg-green-50'];
+                      const selectedBgColors = ['bg-gray-500', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500'];
+                      const textColors = ['text-gray-600', 'text-red-600', 'text-orange-600', 'text-yellow-600', 'text-lime-600', 'text-green-600'];
 
                       return (
                         <button
                           key={option.value}
                           type="button"
                           onClick={() => updateResponse('evaluation', option.value)}
-                          className={`p-4 rounded-xl border-2 transition-all text-left ${
+                          className={`flex-1 py-4 px-2 rounded-xl transition-all transform hover:scale-105 ${
                             isSelected
-                              ? 'ring-2 ring-offset-2'
-                              : 'hover:shadow-md'
+                              ? `${selectedBgColors[index]} text-white shadow-lg scale-105`
+                              : `${bgColors[index]} ${textColors[index]} hover:shadow-md`
                           }`}
-                          style={{
-                            borderColor: isSelected ? currentPillarColor.border : '#e5e7eb',
-                            backgroundColor: isSelected ? currentPillarColor.bgLight : 'white',
-                            ...(isSelected && { ringColor: currentPillarColor.border })
-                          }}
                         >
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                                isSelected ? 'text-white' : 'text-gray-500'
-                              }`}
-                              style={{
-                                backgroundColor: isSelected
-                                  ? currentPillarColor.bg
-                                  : isNaoSeAplica
-                                  ? '#9ca3af'
-                                  : '#e5e7eb'
-                              }}
-                            >
+                          <div className="text-center">
+                            <span className={`text-2xl font-bold block ${isSelected ? 'text-white' : ''}`}>
                               {isNaoSeAplica ? 'N/A' : option.score}
-                            </div>
-                            <span
-                              className={`text-sm font-medium ${
-                                isSelected ? 'font-bold' : ''
-                              }`}
-                              style={{
-                                color: isSelected ? currentPillarColor.text : '#374151'
-                              }}
-                            >
-                              {option.label}
+                            </span>
+                            <span className={`text-xs mt-1 block ${isSelected ? 'text-white/80' : 'opacity-80'}`}>
+                              {option.fullLabel}
                             </span>
                           </div>
                         </button>
                       );
                     })}
                   </div>
+
                   {currentResponse.evaluation === 'Não se aplica' && (
-                    <p className="mt-3 text-xs text-gray-500 italic">
-                      * Esta resposta não será contabilizada no cálculo do score
+                    <p className="mt-3 text-xs text-gray-500 italic text-center">
+                      Esta resposta nao sera contabilizada no calculo do score
                     </p>
                   )}
                 </div>
 
-                {/* Observations */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Observações (opcional)
-                  </label>
-                  <textarea
-                    value={currentResponse.observations || ''}
-                    onChange={(e) => updateResponse('observations', e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                    placeholder="Adicione observações relevantes sobre esta questão..."
-                  />
+                {/* Observacoes - colapsavel */}
+                <div className="border-t pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowObservations(!showObservations)}
+                    className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    <svg className={`w-4 h-4 transition-transform ${showObservations ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                    Adicionar observacao (opcional)
+                  </button>
+
+                  {showObservations && (
+                    <textarea
+                      value={currentResponse.observations || ''}
+                      onChange={(e) => updateResponse('observations', e.target.value)}
+                      rows={3}
+                      className="w-full mt-3 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm"
+                      placeholder="Adicione observacoes relevantes sobre esta questao..."
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Footer com navegacao */}
+              <div className="bg-gray-50 px-6 py-4 flex items-center justify-between">
+                <button
+                  onClick={handlePrevious}
+                  disabled={currentIndex === 0}
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Anterior
+                </button>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleSkip}
+                    disabled={currentIndex === questions.length - 1}
+                    className="px-4 py-2 text-gray-500 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm"
+                  >
+                    Pular
+                  </button>
+                  <button
+                    onClick={handleSaveResponse}
+                    disabled={!currentResponse.evaluation || saving}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r ${currentPillarColor.gradient} hover:shadow-lg`}
+                  >
+                    {saving ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Salvando...
+                      </>
+                    ) : (
+                      <>
+                        {currentIndex === questions.length - 1 ? 'Finalizar' : 'Proxima'}
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentIndex === 0}
-              >
-                ← Anterior
-              </Button>
-
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  onClick={handleSkip}
-                  disabled={currentIndex === questions.length - 1}
-                >
-                  Pular
-                </Button>
-                <Button
-                  onClick={handleSaveResponse}
-                  loading={saving}
-                  disabled={!currentResponse.evaluation}
-                >
-                  {currentIndex === questions.length - 1 ? 'Finalizar' : 'Próxima →'}
-                </Button>
-              </div>
-            </div>
-
             {/* Info */}
-            <div className="mt-8 text-center text-sm text-gray-500">
-              <p>Suas respostas são salvas automaticamente</p>
-              <p className="mt-1">Você pode pausar e continuar depois a qualquer momento</p>
-            </div>
+            <p className="text-center text-xs text-gray-400 mt-4">
+              Suas respostas sao salvas automaticamente
+            </p>
           </div>
         </div>
       </div>
