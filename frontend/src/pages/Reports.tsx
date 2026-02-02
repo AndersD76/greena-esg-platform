@@ -69,7 +69,6 @@ export default function Reports() {
               <h1 className="text-4xl font-black mb-2" style={{ color: '#152F27' }}>Relatórios ESG</h1>
               <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>Histórico completo de diagnósticos</p>
             </div>
-            <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-20" />
           </div>
         </div>
 

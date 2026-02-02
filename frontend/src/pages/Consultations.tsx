@@ -184,25 +184,25 @@ export default function Consultations() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e3f2fd' }}>
-              <svg className="w-6 h-6" fill="none" stroke="#2196F3" viewBox="0 0 24 24">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#EFD4A8', opacity: 0.3 }}>
+              <svg className="w-6 h-6" fill="none" stroke="#152F27" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
             <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Consultorias Agendadas</div>
-            <div className="text-4xl font-black" style={{ color: '#2196F3' }}>
+            <div className="text-4xl font-black" style={{ color: '#152F27' }}>
               {consultations.filter((c) => c.status === 'scheduled').length}
             </div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e8f5e9' }}>
-              <svg className="w-6 h-6" fill="none" stroke="#4CAF50" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Consultorias Concluidas</div>
-            <div className="text-4xl font-black" style={{ color: '#4CAF50' }}>
+            <div className="text-4xl font-black" style={{ color: '#7B9965' }}>
               {consultations.filter((c) => c.status === 'completed').length}
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function Consultations() {
                         <button
                           onClick={() => navigate(`/consultations/${consultation.id}`)}
                           className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 shadow-lg"
-                          style={{ backgroundColor: '#FF9800' }}
+                          style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
                         >
                           Continuar
                         </button>

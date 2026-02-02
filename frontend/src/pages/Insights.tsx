@@ -374,7 +374,6 @@ export default function Insights() {
                 {isPartial ? 'Análise preliminar baseada nas respostas atuais' : 'Análise detalhada e recomendações estratégicas'}
               </p>
             </div>
-            <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-20" />
           </div>
         </div>
 
