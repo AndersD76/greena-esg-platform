@@ -78,7 +78,9 @@ export default function Results() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="max-w-md">
           <div className="text-center">
-            <span className="text-6xl mb-4 block">⚠️</span>
+            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#F59E0B" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Diagnóstico não encontrado
             </h2>
@@ -149,7 +151,7 @@ export default function Results() {
         {/* Pillar Scores */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">🌍 Ambiental</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Ambiental</h3>
             <div className={`text-4xl font-bold mb-2 ${getScoreColor(environmentalScore)}`}>
               {environmentalScore.toFixed(0)}
             </div>
@@ -160,7 +162,7 @@ export default function Results() {
           </Card>
 
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">👥 Social</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Social</h3>
             <div className={`text-4xl font-bold mb-2 ${getScoreColor(socialScore)}`}>
               {socialScore.toFixed(0)}
             </div>
@@ -171,7 +173,7 @@ export default function Results() {
           </Card>
 
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">🏢 Governança</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Governança</h3>
             <div className={`text-4xl font-bold mb-2 ${getScoreColor(governanceScore)}`}>
               {governanceScore.toFixed(0)}
             </div>
@@ -185,7 +187,12 @@ export default function Results() {
         {/* Strategic Insights */}
         {insights.length > 0 && (
           <Card className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">💡 Insights Estratégicos</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <svg className="w-6 h-6" fill="none" stroke="#F59E0B" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Insights Estrategicos
+            </h2>
             <div className="space-y-4">
               {insights.map((insight) => (
                 <div
@@ -199,9 +206,9 @@ export default function Results() {
                           categoryColors[insight.category as keyof typeof categoryColors]
                         }`}
                       >
-                        {insight.category === 'critical' && '🔴 Crítico'}
-                        {insight.category === 'attention' && '⚠️ Atenção'}
-                        {insight.category === 'excellent' && '✅ Excelente'}
+                        {insight.category === 'critical' && 'Critico'}
+                        {insight.category === 'attention' && 'Atencao'}
+                        {insight.category === 'excellent' && 'Excelente'}
                       </span>
                       <span className="text-sm text-gray-600">{insight.pillar}</span>
                     </div>
@@ -220,7 +227,12 @@ export default function Results() {
         {/* Action Plan */}
         {actionPlans.length > 0 && (
           <Card>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">📋 Plano de Ação</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <svg className="w-6 h-6" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+              Plano de Acao
+            </h2>
             <p className="text-gray-600 mb-6">
               Ações priorizadas para melhorar seu desempenho ESG, ordenadas por impacto e urgência.
             </p>

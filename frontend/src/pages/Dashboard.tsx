@@ -335,18 +335,18 @@ export default function Dashboard() {
               const scoringService = { getCertificationLevel: (score: number) => {
                 if (score < 40) return {
                   level: 'bronze', name: 'Compromisso ESG', title: 'Fundamentos ESG',
-                  message: 'Quem dá o primeiro passo na transformação sustentável.',
-                  color: '#CD7F32', icon: '🥉', scoreRange: '0-39'
+                  message: 'Quem da o primeiro passo na transformacao sustentavel.',
+                  color: '#CD7F32', levelLabel: 'BRONZE', scoreRange: '0-39'
                 };
                 if (score < 70) return {
-                  level: 'silver', name: 'Integração ESG', title: 'Gestão ESG',
-                  message: 'Quem transforma intenções em práticas consistentes.',
-                  color: '#C0C0C0', icon: '🥈', scoreRange: '40-69'
+                  level: 'silver', name: 'Integracao ESG', title: 'Gestao ESG',
+                  message: 'Quem transforma intencoes em praticas consistentes.',
+                  color: '#C0C0C0', levelLabel: 'PRATA', scoreRange: '40-69'
                 };
                 return {
-                  level: 'gold', name: 'Liderança ESG', title: 'Excelência ESG',
+                  level: 'gold', name: 'Lideranca ESG', title: 'Excelencia ESG',
                   message: 'Quem inspira o mercado e multiplica o impacto positivo.',
-                  color: '#FFD700', icon: '🥇', scoreRange: '70-100'
+                  color: '#FFD700', levelLabel: 'OURO', scoreRange: '70-100'
                 };
               }};
               const cert = scoringService.getCertificationLevel(Number(lastCompleted.overallScore));
@@ -354,7 +354,7 @@ export default function Dashboard() {
                 <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-8 mb-6 border-4"
                      style={{ borderColor: cert.color }}>
                   <div className="flex items-center gap-6">
-                    <div className="text-8xl">{cert.icon}</div>
+                    <div className="text-4xl font-black" style={{ color: cert.color }}>{cert.levelLabel}</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h2 className="text-3xl font-black" style={{ color: '#152F27' }}>
@@ -585,10 +585,12 @@ export default function Dashboard() {
                     {partialScores.certification && (
                       <div className="flex items-center gap-2 px-4 py-2 rounded-xl border-2"
                            style={{ borderColor: partialScores.certification.color, backgroundColor: partialScores.certification.color + '15' }}>
-                        <span className="text-2xl">{partialScores.certification.icon}</span>
+                        <span className="text-lg font-black" style={{ color: partialScores.certification.color }}>
+                          {partialScores.certification.level === 'bronze' ? 'BRONZE' : partialScores.certification.level === 'silver' ? 'PRATA' : 'OURO'}
+                        </span>
                         <div>
                           <p className="text-xs font-bold" style={{ color: '#152F27' }}>
-                            Nível {partialScores.certification.level === 'bronze' ? 'Bronze' : partialScores.certification.level === 'silver' ? 'Prata' : 'Ouro'}
+                            Nivel {partialScores.certification.level === 'bronze' ? 'Bronze' : partialScores.certification.level === 'silver' ? 'Prata' : 'Ouro'}
                           </p>
                           <p className="text-xs font-semibold" style={{ color: partialScores.certification.color }}>
                             {partialScores.certification.name}

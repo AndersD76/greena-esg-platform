@@ -34,17 +34,27 @@ export default function Compliance() {
         <div className="max-w-4xl mx-auto">
           <div className="prose prose-lg max-w-none">
             <div className="grid md:grid-cols-3 gap-6 mb-12">
-              {[
-                { icon: '⚖️', title: 'Ética', desc: 'Conduzimos nossos negócios com integridade e transparência' },
-                { icon: '🛡️', title: 'Segurança', desc: 'Protegemos dados e informações de nossos clientes' },
-                { icon: '🌱', title: 'Sustentabilidade', desc: 'Praticamos o que pregamos em ESG' }
-              ].map((item, i) => (
-                <div key={i} className="bg-gray-50 p-6 rounded-2xl text-center">
-                  <div className="text-4xl mb-4">{item.icon}</div>
-                  <h3 className="font-black text-xl mb-2" style={{ color: '#152F27' }}>{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
-                </div>
-              ))}
+              <div className="bg-gray-50 p-6 rounded-2xl text-center">
+                <svg className="w-10 h-10 mx-auto mb-4" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                </svg>
+                <h3 className="font-black text-xl mb-2" style={{ color: '#152F27' }}>Etica</h3>
+                <p className="text-gray-600">Conduzimos nossos negocios com integridade e transparencia</p>
+              </div>
+              <div className="bg-gray-50 p-6 rounded-2xl text-center">
+                <svg className="w-10 h-10 mx-auto mb-4" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <h3 className="font-black text-xl mb-2" style={{ color: '#152F27' }}>Seguranca</h3>
+                <p className="text-gray-600">Protegemos dados e informacoes de nossos clientes</p>
+              </div>
+              <div className="bg-gray-50 p-6 rounded-2xl text-center">
+                <svg className="w-10 h-10 mx-auto mb-4" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <h3 className="font-black text-xl mb-2" style={{ color: '#152F27' }}>Sustentabilidade</h3>
+                <p className="text-gray-600">Praticamos o que pregamos em ESG</p>
+              </div>
             </div>
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Programa de Compliance</h2>

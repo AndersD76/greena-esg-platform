@@ -143,7 +143,10 @@ export default function AdminReports() {
         {/* Users Section */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2" style={{ color: '#152F27' }}>
-            <span className="text-2xl">👥</span> Usuários
+            <svg className="w-6 h-6" fill="none" stroke="#3B82F6" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+            </svg>
+            Usuários
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>
@@ -170,7 +173,10 @@ export default function AdminReports() {
         {/* Diagnoses Section */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2" style={{ color: '#152F27' }}>
-            <span className="text-2xl">📊</span> Diagnósticos ESG
+            <svg className="w-6 h-6" fill="none" stroke="#10B981" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Diagnósticos ESG
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>
@@ -205,7 +211,7 @@ export default function AdminReports() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-xl border-l-4" style={{ backgroundColor: '#f5f5f5', borderColor: '#7B9965' }}>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg">🌍 Ambiental</span>
+                  <span className="text-lg font-semibold">Ambiental</span>
                   <span className="text-2xl font-black" style={{ color: getScoreColor(report.diagnoses.byPillar.environmental) }}>
                     {report.diagnoses.byPillar.environmental.toFixed(0)}
                   </span>
@@ -213,7 +219,7 @@ export default function AdminReports() {
               </div>
               <div className="p-4 rounded-xl border-l-4" style={{ backgroundColor: '#f5f5f5', borderColor: '#4A90D9' }}>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg">👥 Social</span>
+                  <span className="text-lg font-semibold">Social</span>
                   <span className="text-2xl font-black" style={{ color: getScoreColor(report.diagnoses.byPillar.social) }}>
                     {report.diagnoses.byPillar.social.toFixed(0)}
                   </span>
@@ -221,7 +227,7 @@ export default function AdminReports() {
               </div>
               <div className="p-4 rounded-xl border-l-4" style={{ backgroundColor: '#f5f5f5', borderColor: '#9B59B6' }}>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg">🏢 Governança</span>
+                  <span className="text-lg font-semibold">Governança</span>
                   <span className="text-2xl font-black" style={{ color: getScoreColor(report.diagnoses.byPillar.governance) }}>
                     {report.diagnoses.byPillar.governance.toFixed(0)}
                   </span>
@@ -234,7 +240,10 @@ export default function AdminReports() {
         {/* Consultations Section */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2" style={{ color: '#152F27' }}>
-            <span className="text-2xl">📅</span> Consultorias
+            <svg className="w-6 h-6" fill="none" stroke="#8B5CF6" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Consultorias
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>
@@ -259,7 +268,10 @@ export default function AdminReports() {
         {/* Subscriptions Section */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2" style={{ color: '#152F27' }}>
-            <span className="text-2xl">💳</span> Assinaturas
+            <svg className="w-6 h-6" fill="none" stroke="#F59E0B" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+            Assinaturas
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>

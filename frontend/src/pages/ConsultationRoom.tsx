@@ -137,8 +137,10 @@ export default function ConsultationRoom() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Consultoria não encontrada</h2>
+          <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#DC2626" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Consultoria nao encontrada</h2>
           <button
             onClick={() => navigate('/consultations')}
             className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
@@ -224,8 +226,10 @@ export default function ConsultationRoom() {
                 <div className="text-center p-8">
                   {isCompleted ? (
                     <>
-                      <div className="text-6xl mb-4">✅</div>
-                      <h2 className="text-xl font-bold mb-2">Consultoria Concluída</h2>
+                      <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#10B981" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <h2 className="text-xl font-bold mb-2">Consultoria Concluida</h2>
                       <p className="text-gray-400">
                         Esta consultoria foi finalizada em{' '}
                         {formatDate(consultation.updatedAt)}
@@ -239,14 +243,18 @@ export default function ConsultationRoom() {
                     </>
                   ) : isCancelled ? (
                     <>
-                      <div className="text-6xl mb-4">❌</div>
+                      <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#DC2626" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                       <h2 className="text-xl font-bold mb-2">Consultoria Cancelada</h2>
                       <p className="text-gray-400">Esta consultoria foi cancelada</p>
                     </>
                   ) : consultation.status === 'scheduled' ? (
                     <>
-                      <div className="text-6xl mb-4">📹</div>
-                      <h2 className="text-xl font-bold mb-2">Aguardando Início</h2>
+                      <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <h2 className="text-xl font-bold mb-2">Aguardando Inicio</h2>
                       <p className="text-gray-400 mb-4">
                         Clique em "Iniciar Consultoria" para entrar na sala de vídeo
                       </p>
@@ -256,8 +264,10 @@ export default function ConsultationRoom() {
                     </>
                   ) : (
                     <>
-                      <div className="text-6xl mb-4">📹</div>
-                      <h2 className="text-xl font-bold mb-2">Sala de Vídeo</h2>
+                      <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <h2 className="text-xl font-bold mb-2">Sala de Video</h2>
                       <p className="text-gray-400">
                         A videochamada será exibida aqui
                       </p>
@@ -283,7 +293,9 @@ export default function ConsultationRoom() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ maxHeight: '400px' }}>
               {messages.length === 0 ? (
                 <div className="text-center text-gray-500 py-8">
-                  <div className="text-4xl mb-2">💬</div>
+                  <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
                   <p>Nenhuma mensagem ainda</p>
                   <p className="text-sm">Comece a conversa!</p>
                 </div>

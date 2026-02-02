@@ -219,8 +219,8 @@ function CertificationBadge({ level, score }: { level: string; score: number }) 
       className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2"
       style={{ backgroundColor: c.bg, borderColor: c.border }}
     >
-      <span className="text-2xl">
-        {level === 'gold' ? '🥇' : level === 'silver' ? '🥈' : '🥉'}
+      <span className="text-2xl font-bold" style={{ color: c.border }}>
+        {level === 'gold' ? 'OURO' : level === 'silver' ? 'PRATA' : 'BRONZE'}
       </span>
       <span className="font-bold" style={{ color: c.text }}>
         {level.toUpperCase()} - {score.toFixed(1)} pontos
@@ -279,9 +279,11 @@ export default function Report() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">📋</div>
+          <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#6B7280" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
           <h2 className="text-xl font-bold text-gray-800 mb-2">
-            {error || 'Relatório não encontrado'}
+            {error || 'Relatorio nao encontrado'}
           </h2>
           <button
             onClick={() => navigate('/dashboard')}
@@ -312,7 +314,10 @@ export default function Report() {
               onClick={handlePrint}
               className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
             >
-              <span>🖨️</span> Imprimir / PDF
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              Imprimir / PDF
             </button>
           </div>
         </div>
@@ -435,8 +440,8 @@ export default function Report() {
             style={{ borderColor: certification.color, backgroundColor: `${certification.color}10` }}
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="text-4xl">
-                {certification.level === 'gold' ? '🥇' : certification.level === 'silver' ? '🥈' : '🥉'}
+              <div className="text-2xl font-black" style={{ color: certification.color }}>
+                {certification.level === 'gold' ? 'OURO' : certification.level === 'silver' ? 'PRATA' : 'BRONZE'}
               </div>
               <div>
                 <h3 className="text-xl font-bold" style={{ color: certification.color }}>
@@ -450,7 +455,9 @@ export default function Report() {
             <ul className="space-y-1">
               {certification.characteristics.map((c, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                  <span style={{ color: certification.color }}>✓</span>
+                  <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke={certification.color} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
                   {c}
                 </li>
               ))}
