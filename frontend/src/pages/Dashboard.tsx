@@ -308,8 +308,8 @@ export default function Dashboard() {
           <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>Acompanhe suas práticas de sustentabilidade</p>
         </div>
 
-        {/* Welcome / First Diagnosis */}
-        {!lastCompleted && (
+        {/* Welcome / First Diagnosis - only show when no diagnosis exists */}
+        {!lastCompleted && !currentDiagnosis && (
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center mb-8">
             <h2 className="text-4xl font-black mb-4" style={{ color: '#152F27' }}>
               Bem-vindo ao GREENA!
