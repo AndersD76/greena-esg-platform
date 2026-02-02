@@ -5,6 +5,7 @@ export interface AuthRequest extends Request {
   user?: {
     userId: string;
     email: string;
+    role: string;
   };
 }
 
@@ -29,4 +30,28 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   } catch (error) {
     return res.status(401).json({ error: 'Token inválido ou expirado' });
   }
+};
+
+export const adminMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
+
+  if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
+    return res.status(403).json({ error: 'Acesso negado. Permissão de administrador necessária.' });
+  }
+
+  next();
+};
+
+export const superadminMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
+
+  if (req.user.role !== 'superadmin') {
+    return res.status(403).json({ error: 'Acesso negado. Permissão de superadmin necessária.' });
+  }
+
+  next();
 };

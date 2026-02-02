@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { AdminGuard } from './components/AdminGuard';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,6 +14,9 @@ import Profile from './pages/Profile';
 import Reports from './pages/Reports';
 import Insights from './pages/Insights';
 import Certificate from './pages/Certificate';
+import Report from './pages/Report';
+import Consultations from './pages/Consultations';
+import ConsultationRoom from './pages/ConsultationRoom';
 import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 import Privacy from './pages/Privacy';
@@ -20,6 +24,14 @@ import Terms from './pages/Terms';
 import LGPD from './pages/LGPD';
 import Cookies from './pages/Cookies';
 import Compliance from './pages/Compliance';
+import {
+  AdminDashboard,
+  AdminUsers,
+  AdminConsultations,
+  AdminSubscriptions,
+  AdminDiagnoses,
+  AdminReports
+} from './pages/admin';
 import { diagnosisService } from './services/diagnosis.service';
 import { useEffect } from 'react';
 
@@ -179,6 +191,79 @@ function AppRoutes() {
               <PrivateRoute>
                 <Certificate />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/diagnosis/:diagnosisId/report"
+            element={
+              <PrivateRoute>
+                <Report />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/consultations"
+            element={
+              <PrivateRoute>
+                <Consultations />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/consultations/:id"
+            element={
+              <PrivateRoute>
+                <ConsultationRoom />
+              </PrivateRoute>
+            }
+          />
+          {/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              <AdminGuard>
+                <AdminDashboard />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminGuard>
+                <AdminUsers />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/consultations"
+            element={
+              <AdminGuard>
+                <AdminConsultations />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/subscriptions"
+            element={
+              <AdminGuard>
+                <AdminSubscriptions />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/diagnoses"
+            element={
+              <AdminGuard>
+                <AdminDiagnoses />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/reports"
+            element={
+              <AdminGuard>
+                <AdminReports />
+              </AdminGuard>
             }
           />
         </Routes>

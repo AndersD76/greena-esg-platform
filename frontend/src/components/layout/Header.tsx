@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export function Header() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -70,6 +70,32 @@ export function Header() {
               >
                 Relatórios
               </Link>
+              <Link
+                to="/consultations"
+                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                  location.pathname.startsWith('/consultations') ? 'border-b-2' : ''
+                }`}
+                style={{
+                  color: location.pathname.startsWith('/consultations') ? '#7B9965' : '#152F27',
+                  borderColor: '#7B9965'
+                }}
+              >
+                Consultorias
+              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                    location.pathname.startsWith('/admin') ? 'border-b-2' : ''
+                  }`}
+                  style={{
+                    color: location.pathname.startsWith('/admin') ? '#7B9965' : '#152F27',
+                    borderColor: '#7B9965'
+                  }}
+                >
+                  Admin
+                </Link>
+              )}
               <Link
                 to="/profile"
                 className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${

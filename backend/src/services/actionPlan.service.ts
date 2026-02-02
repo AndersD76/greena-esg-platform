@@ -6,12 +6,13 @@ export class ActionPlanService {
    * Gera plano de ação automático baseado nas respostas
    */
   async generateActionPlan(diagnosisId: string) {
-    // Buscar todas as respostas com baixo score e alta importância
+    // Buscar todas as respostas com baixo score (1, 2 ou 3 de 5)
     const responses = await prisma.response.findMany({
       where: {
         diagnosisId,
-        importance: { in: ['Muito Importante', 'Crítico'] },
-        evaluation: { in: ['Não é feito', 'É mal feito'] },
+        evaluation: { in: ['Não é feito', 'É mal feito', 'É feito'] },
+        // Excluir "Não se aplica"
+        NOT: { evaluation: 'Não se aplica' },
       },
       include: {
         assessmentItem: {
@@ -29,8 +30,7 @@ export class ActionPlanService {
         },
       },
       orderBy: [
-        { importanceValue: 'desc' },
-        { evaluationValue: 'asc' },
+        { evaluationValue: 'asc' }, // Menores valores primeiro (maior necessidade de melhoria)
       ],
       take: 10, // Top 10 ações
     });
@@ -51,18 +51,18 @@ export class ActionPlanService {
       const themeName = response.assessmentItem.criteria.theme.name;
       const question = response.assessmentItem.question;
 
-      // Calcular impacto potencial
-      const currentScore = response.importanceValue * response.evaluationValue;
-      const potentialScore = response.importanceValue * 9; // Máximo (É bem feito)
+      // Calcular impacto potencial (quanto pode melhorar se atingir nota 5)
+      const currentScore = response.evaluationValue;
+      const potentialScore = 5; // Máximo (É muito bem feito)
       const impact = potentialScore - currentScore;
 
-      // Determinar prioridade
+      // Determinar prioridade baseado no evaluationValue
       let priority = 'medium';
       let priorityLabel = 'MÉDIA PRIORIDADE';
-      if (response.importance === 'Crítico' && response.evaluation === 'Não é feito') {
+      if (response.evaluationValue === 1) { // Não é feito
         priority = 'critical';
         priorityLabel = 'PRIORIDADE CRÍTICA';
-      } else if (response.importance === 'Crítico' || response.evaluation === 'Não é feito') {
+      } else if (response.evaluationValue === 2) { // É mal feito
         priority = 'high';
         priorityLabel = 'ALTA PRIORIDADE';
       }
@@ -96,7 +96,7 @@ export class ActionPlanService {
         investment,
         investmentLabel,
         deadlineDays,
-        impactScore: Math.round((impact / 81) * 100) / 10, // Impacto em escala 0-10
+        impactScore: Math.round((impact / 5) * 10), // Impacto em escala 0-10
       });
     });
 

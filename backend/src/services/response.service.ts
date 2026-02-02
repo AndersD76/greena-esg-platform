@@ -28,9 +28,11 @@ export class ResponseService {
     }
 
     // Calcular valores numéricos
-    const importanceValue = importanceValues[data.importance];
-    const evaluationValue = evaluationValues[data.evaluation];
-    const score = importanceValue * evaluationValue;
+    // Importância fixada em 1 (não é mais usada no cálculo)
+    const importanceValue = importanceValues[data.importance] || 1;
+    const evaluationValue = evaluationValues[data.evaluation] || 0;
+    // Score agora é apenas o evaluationValue (1-5, ou 0 para "Não se aplica")
+    const score = evaluationValue;
 
     // Criar ou atualizar resposta
     const response = await prisma.response.upsert({

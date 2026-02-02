@@ -224,16 +224,26 @@ export default function Reports() {
                       )}
                     </div>
 
-                    <div className="ml-6">
+                    <div className="ml-6 flex gap-2">
                       {diagnosis.status === 'completed' ? (
-                        <Link to={`/diagnosis/${diagnosis.id}/results`}>
-                          <button
-                            className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90"
-                            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-                          >
-                            Ver Resultados
-                          </button>
-                        </Link>
+                        <>
+                          <Link to={`/diagnosis/${diagnosis.id}/results`}>
+                            <button
+                              className="px-6 py-2.5 text-sm font-bold border-2 rounded-lg transition-all hover:bg-green-50"
+                              style={{ borderColor: '#152F27', color: '#152F27' }}
+                            >
+                              Resultados
+                            </button>
+                          </Link>
+                          <Link to={`/diagnosis/${diagnosis.id}/report`}>
+                            <button
+                              className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90"
+                              style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                            >
+                              Relatório Completo
+                            </button>
+                          </Link>
+                        </>
                       ) : (
                         <Link to={`/diagnosis/${diagnosis.id}/questionnaire`}>
                           <button

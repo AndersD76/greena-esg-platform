@@ -23,6 +23,7 @@ export interface User {
   cnpj?: string;
   sector?: string;
   employees?: number;
+  role?: string;
 }
 
 export const authService = {

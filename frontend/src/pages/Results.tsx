@@ -276,7 +276,10 @@ export default function Results() {
           <Button variant="outline" onClick={() => navigate('/dashboard')}>
             Voltar ao Dashboard
           </Button>
-          <Button onClick={() => navigate('/dashboard')}>
+          <Button variant="outline" onClick={() => navigate(`/diagnosis/${diagnosisId}/report`)}>
+            Ver Relatório Completo
+          </Button>
+          <Button onClick={() => navigate('/diagnosis/new')}>
             Fazer Novo Diagnóstico
           </Button>
         </div>

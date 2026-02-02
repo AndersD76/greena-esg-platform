@@ -5,6 +5,9 @@ import responseRoutes from './response.routes';
 import pillarRoutes from './pillar.routes';
 import certificateRoutes from './certificate.routes';
 import subscriptionRoutes from './subscription.routes';
+import reportRoutes from './report.routes';
+import consultationRoutes from './consultation.routes';
+import adminRoutes from './admin.routes';
 
 const router = Router();
 
@@ -14,5 +17,8 @@ router.use('/responses', responseRoutes);
 router.use('/pillars', pillarRoutes);
 router.use('/certificates', certificateRoutes);
 router.use('/subscriptions', subscriptionRoutes);
+router.use('/reports', reportRoutes);
+router.use('/consultations', consultationRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;

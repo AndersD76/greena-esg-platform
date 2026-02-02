@@ -311,9 +311,6 @@ export default function Dashboard() {
         {/* Welcome / First Diagnosis */}
         {!lastCompleted && (
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center mb-8">
-            <div className="mb-6">
-              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-24 mx-auto" />
-            </div>
             <h2 className="text-4xl font-black mb-4" style={{ color: '#152F27' }}>
               Bem-vindo ao GREENA!
             </h2>

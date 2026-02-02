@@ -4,6 +4,9 @@ import { authService, User, LoginData, RegisterData } from '../services/auth.ser
 interface AuthContextData {
   user: User | null;
   loading: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
   signIn: (data: LoginData) => Promise<void>;
   signUp: (data: RegisterData) => Promise<void>;
   signOut: () => void;
@@ -15,6 +18,10 @@ export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const isAuthenticated = !!user;
+  const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
+  const isSuperAdmin = user?.role === 'superadmin';
 
   useEffect(() => {
     const token = localStorage.getItem('@greena:token');
@@ -58,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, isAuthenticated, isAdmin, isSuperAdmin, signIn, signUp, signOut, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -48,17 +48,17 @@ export class ScoringService {
       return 0;
     }
 
-    // Calcular score
+    // Calcular score usando apenas evaluationValue (1-5)
     let totalScore = 0;
     let validQuestions = 0;
 
     responses.forEach((response) => {
-      // Ignorar "Não se aplica"
-      if (response.evaluation === 'Não se aplica') {
+      // Ignorar "Não se aplica" (evaluationValue = 0)
+      if (response.evaluation === 'Não se aplica' || response.evaluationValue === 0) {
         return;
       }
 
-      totalScore += response.importanceValue * response.evaluationValue;
+      totalScore += response.evaluationValue;
       validQuestions++;
     });
 
@@ -66,7 +66,8 @@ export class ScoringService {
       return 0;
     }
 
-    const maxPossible = validQuestions * 81; // 9 × 9
+    // Score máximo possível = validQuestions * 5 (nota máxima)
+    const maxPossible = validQuestions * 5;
     const score = (totalScore / maxPossible) * 100;
 
     return Math.round(score * 100) / 100; // 2 casas decimais

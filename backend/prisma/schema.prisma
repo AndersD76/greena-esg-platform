@@ -15,6 +15,7 @@ model User {
   email             String   @unique
   passwordHash      String   @map("password_hash")
   name              String
+  role              String   @default("user") // user, admin, superadmin
   companyName       String?  @map("company_name")
   cnpj              String?
   city              String?
@@ -24,6 +25,7 @@ model User {
   companySize       String?  @map("company_size") // Microempresa, Pequena I/II/III, Média, Grande I/II
   sector            String?  // Agronegócio, Indústria, Construção Civil, etc.
   employeesRange    String?  @map("employees_range") // 1-9, 10-49, 50-99, 100-499, 500+
+  isActive          Boolean  @default(true) @map("is_active")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
@@ -31,6 +33,7 @@ model User {
   activityLogs    ActivityLog[]
   subscriptions   UserSubscription[]
   certificates    Certificate[]
+  consultations   Consultation[]
 
   @@map("users")
 }
@@ -241,4 +244,38 @@ model CertificationBenefit {
   createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("certification_benefits")
+}
+
+model Consultation {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  scheduledAt     DateTime @map("scheduled_at")
+  duration        Int      @default(60) // minutos
+  status          String   @default("scheduled") // scheduled, in_progress, completed, cancelled
+  meetingUrl      String?  @map("meeting_url")
+  meetingId       String?  @map("meeting_id") // ID único para a sala Jitsi
+  topic           String?
+  notes           String?
+  consultantName  String?  @map("consultant_name")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user            User     @relation(fields: [userId], references: [id])
+  messages        ConsultationMessage[]
+
+  @@map("consultations")
+}
+
+model ConsultationMessage {
+  id              String   @id @default(uuid())
+  consultationId  String   @map("consultation_id")
+  senderId        String   @map("sender_id")
+  senderName      String   @map("sender_name")
+  senderType      String   @map("sender_type") // user, consultant
+  content         String
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  consultation    Consultation @relation(fields: [consultationId], references: [id])
+
+  @@map("consultation_messages")
 }

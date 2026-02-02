@@ -58,8 +58,8 @@ export class AuthService {
       },
     });
 
-    const accessToken = generateAccessToken({ userId: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+    const accessToken = generateAccessToken({ userId: user.id, email: user.email, role: 'user' });
+    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email, role: 'user' });
 
     return {
       user,
@@ -77,14 +77,18 @@ export class AuthService {
       throw new Error('Credenciais inválidas');
     }
 
+    if (!user.isActive) {
+      throw new Error('Conta desativada. Entre em contato com o suporte.');
+    }
+
     const isValidPassword = await comparePassword(data.password, user.passwordHash);
 
     if (!isValidPassword) {
       throw new Error('Credenciais inválidas');
     }
 
-    const accessToken = generateAccessToken({ userId: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+    const accessToken = generateAccessToken({ userId: user.id, email: user.email, role: user.role });
+    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email, role: user.role });
 
     return {
       user: {
@@ -92,6 +96,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         companyName: user.companyName,
+        role: user.role,
       },
       accessToken,
       refreshToken,
@@ -105,6 +110,7 @@ export class AuthService {
         id: true,
         email: true,
         name: true,
+        role: true,
         companyName: true,
         cnpj: true,
         city: true,
