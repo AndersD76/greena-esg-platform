@@ -146,192 +146,207 @@ export default function Consultations() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Cabeçalho */}
-        <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Cabecalho */}
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold" style={{ color: '#152F27' }}>
+            <h1 className="text-4xl font-black mb-2" style={{ color: '#152F27' }}>
               Consultorias ESG
             </h1>
-            <p className="text-gray-600">Agende e gerencie suas consultorias com especialistas</p>
+            <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>Agende e gerencie suas consultorias com especialistas</p>
           </div>
           <button
             onClick={() => setShowModal(true)}
             disabled={!remainingHours || remainingHours.remaining <= 0}
-            className="px-4 py-2 rounded-lg font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#7B9965' }}
+            className="px-6 py-3 rounded-xl font-black text-white transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
           >
             + Agendar Consultoria
           </button>
         </div>
 
-        {/* Cards de Informação */}
-        <div className="grid md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <svg className="w-8 h-8 mb-2" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="text-sm text-gray-500">Horas Disponíveis</div>
-            <div className="text-2xl font-bold" style={{ color: '#7B9965' }}>
+        {/* Cards de Informacao */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e8f5e9' }}>
+              <svg className="w-6 h-6" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Horas Disponiveis</div>
+            <div className="text-4xl font-black" style={{ color: '#7B9965' }}>
               {remainingHours?.remaining || 0}h
             </div>
-            <div className="text-xs text-gray-400">
+            <div className="text-sm font-semibold" style={{ color: '#999' }}>
               de {remainingHours?.total || 0}h no plano
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <svg className="w-8 h-8 mb-2" fill="none" stroke="#2196F3" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <div className="text-sm text-gray-500">Consultorias Agendadas</div>
-            <div className="text-2xl font-bold" style={{ color: '#2196F3' }}>
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e3f2fd' }}>
+              <svg className="w-6 h-6" fill="none" stroke="#2196F3" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Consultorias Agendadas</div>
+            <div className="text-4xl font-black" style={{ color: '#2196F3' }}>
               {consultations.filter((c) => c.status === 'scheduled').length}
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <svg className="w-8 h-8 mb-2" fill="none" stroke="#4CAF50" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="text-sm text-gray-500">Consultorias Concluídas</div>
-            <div className="text-2xl font-bold" style={{ color: '#4CAF50' }}>
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e8f5e9' }}>
+              <svg className="w-6 h-6" fill="none" stroke="#4CAF50" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Consultorias Concluidas</div>
+            <div className="text-4xl font-black" style={{ color: '#4CAF50' }}>
               {consultations.filter((c) => c.status === 'completed').length}
             </div>
           </div>
         </div>
 
         {/* Filtros */}
-        <div className="flex gap-2 mb-6">
-          {['', 'scheduled', 'in_progress', 'completed', 'cancelled'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                filter === status
-                  ? 'text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-              style={filter === status ? { backgroundColor: '#7B9965' } : {}}
-            >
-              {status === '' ? 'Todas' : statusLabels[status]}
-            </button>
-          ))}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="flex flex-wrap gap-3">
+            {['', 'scheduled', 'in_progress', 'completed', 'cancelled'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                  filter === status
+                    ? 'text-white shadow-lg'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                style={filter === status ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' } : { backgroundColor: '#f5f5f5' }}
+              >
+                {status === '' ? 'Todas' : statusLabels[status]}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Lista de Consultorias */}
         {consultations.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#9CA3AF" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
+          <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
+              <svg className="w-10 h-10" fill="none" stroke="#9CA3AF" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-black mb-3" style={{ color: '#152F27' }}>
               Nenhuma consultoria encontrada
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-lg font-semibold mb-6" style={{ color: '#666' }}>
               Agende sua primeira consultoria com nossos especialistas ESG
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="px-4 py-2 rounded-lg font-semibold text-white"
-              style={{ backgroundColor: '#7B9965' }}
+              className="px-8 py-3 rounded-xl font-black text-white transition-all hover:scale-105 shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
             >
               Agendar Agora
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            {consultations.map((consultation) => (
-              <div
-                key={consultation.id}
-                className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span
-                        className="px-2 py-1 rounded text-xs font-semibold"
-                        style={{
-                          backgroundColor: statusColors[consultation.status].bg,
-                          color: statusColors[consultation.status].text,
-                        }}
-                      >
-                        {statusLabels[consultation.status]}
-                      </span>
-                      {consultation.topic && (
-                        <span className="text-sm text-gray-600">
-                          {consultation.topic}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="space-y-4">
+              {consultations.map((consultation) => (
+                <div
+                  key={consultation.id}
+                  className="p-6 rounded-xl transition-all hover:shadow-md"
+                  style={{ backgroundColor: '#f5f5f5' }}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="flex items-center gap-3 mb-3">
+                        <span
+                          className="px-4 py-1.5 rounded-full text-xs font-bold"
+                          style={{
+                            backgroundColor: statusColors[consultation.status].bg,
+                            color: statusColors[consultation.status].text,
+                          }}
+                        >
+                          {statusLabels[consultation.status]}
                         </span>
+                        {consultation.topic && (
+                          <span className="text-sm font-semibold" style={{ color: '#666' }}>
+                            {consultation.topic}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xl font-black mb-1" style={{ color: '#152F27' }}>
+                        {formatDate(consultation.scheduledAt)}
+                      </div>
+                      <div className="text-sm font-semibold" style={{ color: '#7B9965' }}>
+                        {formatTime(consultation.scheduledAt)} - {consultation.duration} minutos
+                      </div>
+                      {consultation.consultantName && (
+                        <div className="text-sm font-semibold mt-2" style={{ color: '#666' }}>
+                          Consultor: {consultation.consultantName}
+                        </div>
                       )}
                     </div>
-                    <div className="text-lg font-semibold text-gray-800">
-                      {formatDate(consultation.scheduledAt)}
-                    </div>
-                    <div className="text-gray-600">
-                      {formatTime(consultation.scheduledAt)} - {consultation.duration} minutos
-                    </div>
-                    {consultation.consultantName && (
-                      <div className="text-sm text-gray-500 mt-1">
-                        Consultor: {consultation.consultantName}
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="flex gap-2">
-                    {consultation.status === 'scheduled' && (
-                      <>
+                    <div className="flex gap-3">
+                      {consultation.status === 'scheduled' && (
+                        <>
+                          <button
+                            onClick={() => navigate(`/consultations/${consultation.id}`)}
+                            className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 shadow-lg"
+                            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                          >
+                            Entrar
+                          </button>
+                          <button
+                            onClick={() => handleCancel(consultation.id)}
+                            className="px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all hover:bg-red-50"
+                            style={{ borderColor: '#991B1B', color: '#991B1B' }}
+                          >
+                            Cancelar
+                          </button>
+                        </>
+                      )}
+                      {consultation.status === 'in_progress' && (
                         <button
                           onClick={() => navigate(`/consultations/${consultation.id}`)}
-                          className="px-3 py-1 rounded text-sm font-semibold text-white"
-                          style={{ backgroundColor: '#7B9965' }}
+                          className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 shadow-lg"
+                          style={{ backgroundColor: '#FF9800' }}
                         >
-                          Entrar
+                          Continuar
                         </button>
+                      )}
+                      {consultation.status === 'completed' && (
                         <button
-                          onClick={() => handleCancel(consultation.id)}
-                          className="px-3 py-1 rounded text-sm font-semibold bg-red-100 text-red-700 hover:bg-red-200"
+                          onClick={() => navigate(`/consultations/${consultation.id}`)}
+                          className="px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all hover:bg-gray-100"
+                          style={{ borderColor: '#152F27', color: '#152F27' }}
                         >
-                          Cancelar
+                          Ver Detalhes
                         </button>
-                      </>
-                    )}
-                    {consultation.status === 'in_progress' && (
-                      <button
-                        onClick={() => navigate(`/consultations/${consultation.id}`)}
-                        className="px-3 py-1 rounded text-sm font-semibold text-white"
-                        style={{ backgroundColor: '#FF9800' }}
-                      >
-                        Continuar
-                      </button>
-                    )}
-                    {consultation.status === 'completed' && (
-                      <button
-                        onClick={() => navigate(`/consultations/${consultation.id}`)}
-                        className="px-3 py-1 rounded text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      >
-                        Ver Detalhes
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
         {/* Modal de Agendamento */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
-              <h2 className="text-xl font-bold mb-4" style={{ color: '#152F27' }}>
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+              <h2 className="text-2xl font-black mb-6" style={{ color: '#152F27' }}>
                 Agendar Consultoria
               </h2>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {/* Data */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
                     Data
                   </label>
                   <input
@@ -339,18 +354,18 @@ export default function Consultations() {
                     min={minDate}
                     value={selectedDate}
                     onChange={(e) => handleDateChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-semibold"
                   />
                 </div>
 
-                {/* Horário */}
+                {/* Horario */}
                 {selectedDate && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Horário
+                    <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                      Horario
                     </label>
                     {loadingSlots ? (
-                      <div className="text-center py-4">Carregando horários...</div>
+                      <div className="text-center py-4 font-semibold" style={{ color: '#666' }}>Carregando horarios...</div>
                     ) : (
                       <div className="grid grid-cols-4 gap-2">
                         {slots.map((slot) => (
@@ -358,14 +373,18 @@ export default function Consultations() {
                             key={slot.time}
                             onClick={() => setSelectedTime(slot.time)}
                             disabled={!slot.available}
-                            className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                            className={`px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
                               selectedTime === slot.time
-                                ? 'text-white'
+                                ? 'text-white shadow-lg'
                                 : slot.available
-                                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                                ? 'text-gray-700 hover:bg-gray-100'
+                                : 'text-gray-400 cursor-not-allowed'
                             }`}
-                            style={selectedTime === slot.time ? { backgroundColor: '#7B9965' } : {}}
+                            style={
+                              selectedTime === slot.time
+                                ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }
+                                : { backgroundColor: slot.available ? '#f5f5f5' : '#fafafa' }
+                            }
                           >
                             {slot.time}
                           </button>
@@ -375,53 +394,54 @@ export default function Consultations() {
                   </div>
                 )}
 
-                {/* Duração */}
+                {/* Duracao */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Duração
+                  <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                    Duracao
                   </label>
                   <select
                     value={selectedDuration}
                     onChange={(e) => setSelectedDuration(parseInt(e.target.value))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-semibold"
                   >
                     <option value={30}>30 minutos</option>
                     <option value={60}>1 hora</option>
                     <option value={90}>1 hora e 30 minutos</option>
                     <option value={120}>2 horas</option>
                   </select>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Isso consumirá {selectedDuration / 60}h das suas horas disponíveis
+                  <p className="text-xs font-semibold mt-2" style={{ color: '#7B9965' }}>
+                    Isso consumira {selectedDuration / 60}h das suas horas disponiveis
                   </p>
                 </div>
 
-                {/* Tópico */}
+                {/* Topico */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tópico (opcional)
+                  <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                    Topico (opcional)
                   </label>
                   <input
                     type="text"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder="Ex: Dúvidas sobre relatório ESG"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Ex: Duvidas sobre relatorio ESG"
+                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-semibold"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-2 mt-6">
+              <div className="flex gap-3 mt-8">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 rounded-lg font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  className="flex-1 px-6 py-3 rounded-xl font-bold border-2 transition-all hover:bg-gray-50"
+                  style={{ borderColor: '#152F27', color: '#152F27' }}
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleSchedule}
                   disabled={!selectedDate || !selectedTime || scheduling}
-                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-white disabled:opacity-50"
-                  style={{ backgroundColor: '#7B9965' }}
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:hover:scale-100"
+                  style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
                 >
                   {scheduling ? 'Agendando...' : 'Confirmar'}
                 </button>

@@ -221,10 +221,10 @@ export default function Questionnaire() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#22c55e', borderTopColor: 'transparent' }}></div>
-          <p className="mt-4 text-gray-600 font-medium">Carregando questionario...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
+          <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando questionario...</p>
         </div>
       </div>
     );
@@ -256,7 +256,7 @@ export default function Questionnaire() {
   const currentResponse = responses[currentQuestion.id] || {};
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
       {/* Header fixo */}
       <div className="sticky top-0 z-20 bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3">
