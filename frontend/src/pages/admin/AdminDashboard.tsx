@@ -50,7 +50,7 @@ export default function AdminDashboard() {
               <h1 className="text-3xl font-black">Painel Administrativo</h1>
               <p className="text-green-200 mt-1">Gestão completa da plataforma Greena ESG</p>
             </div>
-            <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-16 filter brightness-0 invert" />
+            <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-16 filter brightness-0 invert" />
           </div>
         </div>
       </div>

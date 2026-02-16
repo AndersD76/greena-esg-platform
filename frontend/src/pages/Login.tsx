@@ -35,7 +35,7 @@ export default function Login() {
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
             </Link>
             <Link
               to="/register"
@@ -54,7 +54,7 @@ export default function Login() {
           {/* Logo e Título */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-6">
-              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-32" />
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-32" />
             </div>
             <h2 className="text-4xl font-black text-white mb-3">Bem-vindo de volta</h2>
             <p className="text-xl text-white opacity-90">Faça login para acessar sua plataforma ESG</p>

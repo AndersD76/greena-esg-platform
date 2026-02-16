@@ -32,8 +32,10 @@ import {
   AdminDiagnoses,
   AdminReports
 } from './pages/admin';
+import SimplifiedQuestionnaire from './pages/SimplifiedQuestionnaire';
 import { diagnosisService } from './services/diagnosis.service';
-import { useEffect } from 'react';
+import { subscriptionService } from './services/subscription.service';
+import { useEffect, useState } from 'react';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -51,12 +53,23 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 function NewDiagnosisRedirect() {
   const navigate = useNavigate();
+  const [status, setStatus] = useState('Verificando plano...');
 
   useEffect(() => {
     async function createDiagnosis() {
       try {
+        // Verificar plano do usuário
+        const activePlan = await subscriptionService.getActivePlan();
+        const isFreePlan = activePlan.isFreePlan;
+
+        setStatus('Criando diagnóstico...');
         const diagnosis = await diagnosisService.create();
-        navigate(`/diagnosis/${diagnosis.id}/questionnaire`);
+
+        if (isFreePlan) {
+          navigate(`/diagnosis/${diagnosis.id}/simplified-questionnaire`);
+        } else {
+          navigate(`/diagnosis/${diagnosis.id}/questionnaire`);
+        }
       } catch (error) {
         console.error('Erro ao criar diagnóstico:', error);
         navigate('/dashboard');
@@ -69,7 +82,7 @@ function NewDiagnosisRedirect() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-        <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Criando diagnóstico...</p>
+        <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>{status}</p>
       </div>
     </div>
   );
@@ -142,6 +155,14 @@ function AppRoutes() {
             element={
               <PrivateRoute>
                 <Questionnaire />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/diagnosis/:diagnosisId/simplified-questionnaire"
+            element={
+              <PrivateRoute>
+                <SimplifiedQuestionnaire />
               </PrivateRoute>
             }
           />

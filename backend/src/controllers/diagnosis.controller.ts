@@ -111,6 +111,23 @@ export class DiagnosisController {
     }
   }
 
+  async completeSimplified(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { id } = req.params;
+      const { scores } = req.body;
+
+      if (!scores || typeof scores.environmental !== 'number' || typeof scores.social !== 'number' || typeof scores.governance !== 'number') {
+        return res.status(400).json({ error: 'Scores inválidos' });
+      }
+
+      const result = await diagnosisService.completeSimplified(id, userId, scores);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async getPartialScores(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;

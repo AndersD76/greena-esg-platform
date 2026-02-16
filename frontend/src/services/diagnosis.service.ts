@@ -88,4 +88,14 @@ export const diagnosisService = {
     const response = await api.get(`/diagnoses/${id}/action-plans`);
     return response.data;
   },
+
+  async getPartialScores(id: string) {
+    const response = await api.get(`/diagnoses/${id}/partial-scores`);
+    return response.data;
+  },
+
+  async completeSimplified(id: string, scores: { environmental: number; social: number; governance: number }) {
+    const response = await api.post(`/diagnoses/${id}/complete-simplified`, { scores });
+    return response.data;
+  },
 };

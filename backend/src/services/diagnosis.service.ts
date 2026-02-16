@@ -1,4 +1,5 @@
 import prisma from '../config/database';
+import { Decimal } from '@prisma/client/runtime/library';
 import { ScoringService } from './scoring.service';
 import { InsightsService } from './insights.service';
 import { ActionPlanService } from './actionPlan.service';
@@ -215,6 +216,54 @@ export class DiagnosisService {
     }
 
     return this.actionPlanService.getActionPlan(id);
+  }
+
+  /**
+   * Completa diagnóstico simplificado (plano free) com scores diretos
+   */
+  async completeSimplified(id: string, userId: string, scores: {
+    environmental: number;
+    social: number;
+    governance: number;
+  }) {
+    const diagnosis = await prisma.diagnosis.findFirst({
+      where: { id, userId },
+    });
+
+    if (!diagnosis) {
+      throw new Error('Diagnóstico não encontrado');
+    }
+
+    if (diagnosis.status === 'completed') {
+      throw new Error('Diagnóstico já foi concluído');
+    }
+
+    const overall = Math.round(((scores.environmental + scores.social + scores.governance) / 3) * 100) / 100;
+
+    const updatedDiagnosis = await prisma.diagnosis.update({
+      where: { id },
+      data: {
+        status: 'completed',
+        completedAt: new Date(),
+        overallScore: new Decimal(overall),
+        environmentalScore: new Decimal(scores.environmental),
+        socialScore: new Decimal(scores.social),
+        governanceScore: new Decimal(scores.governance),
+      },
+    });
+
+    await prisma.activityLog.create({
+      data: {
+        userId,
+        actionType: 'diagnosis_completed',
+        description: `Diagnóstico ESG simplificado concluído com score ${overall}`,
+      },
+    });
+
+    return {
+      diagnosis: updatedDiagnosis,
+      scores: { ...scores, overall },
+    };
   }
 
   /**

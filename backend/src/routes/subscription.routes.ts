@@ -26,6 +26,12 @@ router.get('/plans', (req, res) => subscriptionController.getAvailablePlans(req,
 // Obter plano por código
 router.get('/plans/:code', (req, res) => subscriptionController.getPlanByCode(req, res));
 
+// Obter QR Code PIX de um pagamento
+router.get('/pix-qrcode/:paymentId', (req, res) => subscriptionController.getPixQrCode(req, res));
+
+// Verificar status de um pagamento (polling)
+router.get('/payment-status/:paymentId', (req, res) => subscriptionController.getPaymentStatus(req, res));
+
 // Criar nova assinatura
 router.post('/', (req, res) => subscriptionController.createSubscription(req, res));
 

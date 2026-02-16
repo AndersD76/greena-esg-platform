@@ -79,27 +79,57 @@ export class SubscriptionController {
   }
 
   /**
-   * Cria uma nova assinatura
+   * Cria uma nova assinatura com pagamento via Asaas
    * POST /api/subscriptions
    */
   async createSubscription(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const { planCode, trialDays } = req.body;
+      const { planCode, paymentMethod, creditCard, creditCardHolderInfo, billingData } = req.body;
 
       if (!planCode) {
         return res.status(400).json({ error: 'Código do plano é obrigatório' });
       }
 
-      const subscription = await subscriptionService.createSubscription(
-        userId,
-        planCode,
-        trialDays
-      );
+      if (!paymentMethod || !['CREDIT_CARD', 'PIX'].includes(paymentMethod)) {
+        return res.status(400).json({ error: 'Método de pagamento inválido. Use CREDIT_CARD ou PIX' });
+      }
 
-      res.status(201).json(subscription);
+      if (!billingData?.cpfCnpj) {
+        return res.status(400).json({ error: 'CPF/CNPJ é obrigatório' });
+      }
+
+      if (paymentMethod === 'CREDIT_CARD') {
+        if (!creditCard || !creditCard.number || !creditCard.holderName || !creditCard.expiryMonth || !creditCard.expiryYear || !creditCard.ccv) {
+          return res.status(400).json({ error: 'Dados do cartão de crédito são obrigatórios' });
+        }
+        if (!creditCardHolderInfo || !creditCardHolderInfo.name || !creditCardHolderInfo.email || !creditCardHolderInfo.cpfCnpj || !creditCardHolderInfo.postalCode || !creditCardHolderInfo.addressNumber) {
+          return res.status(400).json({ error: 'Dados do titular do cartão são obrigatórios' });
+        }
+      }
+
+      const result = await subscriptionService.createSubscription(userId, {
+        planCode,
+        paymentMethod,
+        creditCard,
+        creditCardHolderInfo,
+        billingData,
+      });
+
+      res.status(201).json(result);
     } catch (error: any) {
       console.error('Erro ao criar assinatura:', error);
+
+      // Tratar erros da API Asaas
+      if (error.response?.data) {
+        const asaasErrors = error.response.data.errors;
+        if (asaasErrors && asaasErrors.length > 0) {
+          return res.status(400).json({
+            error: asaasErrors.map((e: any) => e.description).join('. '),
+          });
+        }
+      }
+
       res.status(400).json({ error: error.message });
     }
   }
@@ -188,6 +218,40 @@ export class SubscriptionController {
       res.json(stats);
     } catch (error: any) {
       console.error('Erro ao buscar estatísticas:', error);
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  /**
+   * Obtém QR Code PIX de um pagamento
+   * GET /api/subscriptions/pix-qrcode/:paymentId
+   */
+  async getPixQrCode(req: AuthRequest, res: Response) {
+    try {
+      const { paymentId } = req.params;
+
+      const pixData = await subscriptionService.getPixQrCode(paymentId);
+
+      res.json(pixData);
+    } catch (error: any) {
+      console.error('Erro ao buscar QR Code PIX:', error);
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  /**
+   * Verifica status de um pagamento (para polling do frontend)
+   * GET /api/subscriptions/payment-status/:paymentId
+   */
+  async getPaymentStatus(req: AuthRequest, res: Response) {
+    try {
+      const { paymentId } = req.params;
+
+      const status = await subscriptionService.checkPaymentStatus(paymentId);
+
+      res.json({ status });
+    } catch (error: any) {
+      console.error('Erro ao verificar status do pagamento:', error);
       res.status(400).json({ error: error.message });
     }
   }

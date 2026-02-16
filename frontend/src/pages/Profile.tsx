@@ -353,11 +353,11 @@ export default function Profile() {
             {/* Current Plan */}
             <div className="mb-8 p-6 rounded-2xl border-4" style={{
               borderColor: usageStats.plan.code === 'free' ? '#7B9965' :
-                           usageStats.plan.code === 'basic' ? '#152F27' :
-                           usageStats.plan.code === 'professional' ? '#924131' : '#EFD4A8',
+                           usageStats.plan.code === 'start' ? '#152F27' :
+                           usageStats.plan.code === 'grow' ? '#924131' : '#EFD4A8',
               backgroundColor: `${usageStats.plan.code === 'free' ? '#7B9965' :
-                               usageStats.plan.code === 'basic' ? '#152F27' :
-                               usageStats.plan.code === 'professional' ? '#924131' : '#EFD4A8'}10`
+                               usageStats.plan.code === 'start' ? '#152F27' :
+                               usageStats.plan.code === 'grow' ? '#924131' : '#EFD4A8'}10`
             }}>
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -369,8 +369,8 @@ export default function Profile() {
                 </div>
                 <div className="text-right">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: usageStats.plan.code === 'free' ? '#7B9965' :
-                           usageStats.plan.code === 'basic' ? '#152F27' :
-                           usageStats.plan.code === 'professional' ? '#924131' : '#EFD4A8' }}>
+                           usageStats.plan.code === 'start' ? '#152F27' :
+                           usageStats.plan.code === 'grow' ? '#924131' : '#EFD4A8' }}>
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                       <circle cx="12" cy="8" r="7"/>
                       <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
@@ -436,7 +436,7 @@ export default function Profile() {
             </div>
 
             {/* Available Plans */}
-            {usageStats.plan.code !== 'enterprise' && (
+            {usageStats.plan.code !== 'impact' && (
               <>
                 <div className="mb-4">
                   <h3 className="text-xl font-black" style={{ color: '#152F27' }}>Fazer Upgrade</h3>
@@ -494,7 +494,7 @@ export default function Profile() {
               </>
             )}
 
-            {usageStats.plan.code === 'enterprise' && (
+            {usageStats.plan.code === 'impact' && (
               <div className="text-center p-8 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl">
                 <h3 className="text-2xl font-black mb-2" style={{ color: '#152F27' }}>
                   Você está no plano mais alto!

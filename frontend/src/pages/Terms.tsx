@@ -8,7 +8,7 @@ export default function Terms() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
             </Link>
             <Link
               to="/login"
@@ -67,10 +67,10 @@ export default function Terms() {
               Oferecemos diferentes planos de assinatura:
             </p>
             <ul className="list-disc pl-6 mb-6 text-gray-700 space-y-2">
-              <li><strong>Teste Grátis:</strong> Acesso limitado para conhecer a plataforma</li>
-              <li><strong>Básico:</strong> R$ 99,90/mês</li>
-              <li><strong>Profissional:</strong> R$ 299,90/mês</li>
-              <li><strong>Empresarial:</strong> R$ 999,90/mês</li>
+              <li><strong>Teste Grátis (Demo):</strong> Acesso limitado para conhecer a plataforma</li>
+              <li><strong>Start:</strong> R$ 49,00/mês</li>
+              <li><strong>Grow:</strong> R$ 99,00/mês</li>
+              <li><strong>Impact:</strong> R$ 159,00/mês</li>
             </ul>
             <p className="text-gray-700 mb-6">
               Os pagamentos são processados mensalmente. Você pode cancelar sua assinatura a qualquer momento,

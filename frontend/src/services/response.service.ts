@@ -2,8 +2,7 @@ import api from './api';
 
 export interface ResponseData {
   assessmentItemId: number;
-  importance: 'Sem Importância' | 'Importante' | 'Muito Importante' | 'Crítico';
-  evaluation: 'Não se aplica' | 'Não é feito' | 'É mal feito' | 'É feito' | 'É bem feito';
+  evaluation: 'Não se aplica' | 'Não iniciado' | 'Planejado' | 'Em andamento' | 'Implementado parcialmente' | 'Totalmente implementado';
   observations?: string;
 }
 

@@ -8,7 +8,7 @@ export default function Privacy() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
             </Link>
             <Link
               to="/login"

@@ -4,6 +4,7 @@ export interface RegisterData {
   email: string;
   password: string;
   name: string;
+  esgPainPoint?: string;
   companyName?: string;
   cnpj?: string;
   sector?: string;

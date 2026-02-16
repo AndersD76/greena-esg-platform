@@ -1,19 +1,14 @@
-export type ImportanceLevel = 'Sem Importância' | 'Importante' | 'Muito Importante' | 'Crítico';
-export type EvaluationLevel = 'Não se aplica' | 'Não é feito' | 'É mal feito' | 'É feito' | 'É bem feito';
+export type EvaluationLevel = 'Não se aplica' | 'Não iniciado' | 'Planejado' | 'Em andamento' | 'Implementado parcialmente' | 'Totalmente implementado';
 
-export const IMPORTANCE_OPTIONS: ImportanceLevel[] = [
-  'Sem Importância',
-  'Importante',
-  'Muito Importante',
-  'Crítico',
-];
+export type MaturityStage = 'N/A' | 'ELEMENTAR' | 'NÃO INTEGRADO' | 'GERENCIAL' | 'ESTRATÉGICO' | 'TRANSFORMADOR';
 
-export const EVALUATION_OPTIONS: EvaluationLevel[] = [
-  'Não se aplica',
-  'Não é feito',
-  'É mal feito',
-  'É feito',
-  'É bem feito',
+export const EVALUATION_OPTIONS: { value: EvaluationLevel; score: number; maturity: MaturityStage }[] = [
+  { value: 'Não se aplica', score: 0, maturity: 'N/A' },
+  { value: 'Não iniciado', score: 1, maturity: 'ELEMENTAR' },
+  { value: 'Planejado', score: 2, maturity: 'NÃO INTEGRADO' },
+  { value: 'Em andamento', score: 3, maturity: 'GERENCIAL' },
+  { value: 'Implementado parcialmente', score: 4, maturity: 'ESTRATÉGICO' },
+  { value: 'Totalmente implementado', score: 5, maturity: 'TRANSFORMADOR' },
 ];
 
 export function getScoreColor(score: number): string {

@@ -12,11 +12,16 @@
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate"
   },
-  "keywords": ["esg", "sustainability", "greena"],
+  "keywords": [
+    "esg",
+    "sustainability",
+    "greena"
+  ],
   "author": "GREENA",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^5.7.0",
+    "axios": "^1.13.5",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

@@ -152,7 +152,7 @@ export default function Certificate() {
             </svg>
             Voltar
           </button>
-          <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-12" />
+          <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-12" />
           <div className="w-20"></div>
         </div>
       </div>
@@ -175,6 +175,11 @@ export default function Certificate() {
               )}
             </div>
 
+            <img
+              src={`/images/assets/selo-${certificate.level === 'gold' ? 'ouro' : certificate.level === 'silver' ? 'prata' : 'bronze'}.png`}
+              alt={`Selo ${certificate.level === 'gold' ? 'Ouro' : certificate.level === 'silver' ? 'Prata' : 'Bronze'}`}
+              className="w-40 h-40 object-contain mx-auto mb-6"
+            />
             <h1 className="text-5xl font-black mb-6" style={{ color: medalColors[certificate.level] }}>
               Certificado {certificationLevel.name}
             </h1>
@@ -299,7 +304,7 @@ export default function Certificate() {
                 </p>
               </div>
               <div className="text-right">
-                <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-16 ml-auto mb-2" />
+                <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-16 ml-auto mb-2" />
                 <p className="text-xs text-gray-500 font-semibold">GREENA ESG Platform</p>
               </div>
             </div>

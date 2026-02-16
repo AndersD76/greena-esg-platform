@@ -8,6 +8,7 @@ import subscriptionRoutes from './subscription.routes';
 import reportRoutes from './report.routes';
 import consultationRoutes from './consultation.routes';
 import adminRoutes from './admin.routes';
+import asaasWebhookRoutes from './asaas-webhook.routes';
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.use('/subscriptions', subscriptionRoutes);
 router.use('/reports', reportRoutes);
 router.use('/consultations', consultationRoutes);
 router.use('/admin', adminRoutes);
+router.use('/webhooks/asaas', asaasWebhookRoutes);
 
 export default router;

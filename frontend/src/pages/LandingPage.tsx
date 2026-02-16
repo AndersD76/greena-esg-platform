@@ -256,7 +256,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
-              <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
             </Link>
 
             {/* Menu */}
@@ -601,75 +601,62 @@ export default function LandingPage() {
             {[
               {
                 name: 'Teste Grátis',
+                code: 'free',
                 price: 'R$ 0',
-                period: '/mês',
+                period: '',
                 highlight: false,
                 features: [
-                  '1 diagnóstico completo',
-                  '0 horas de consultoria',
-                  'Dashboard básico',
-                  'Relatórios simples',
-                  'Suporte por email',
-                  'Sem certificação'
+                  'Questões para identificar dor da empresa no tema ESG',
+                  'Acesso limitado para conhecer a plataforma'
                 ],
                 cta: 'Experimente Grátis',
                 color: '#7B9965',
-                badge: 'Comece Agora',
-                limitation: 'Acesso limitado para conhecer a plataforma'
+                badge: 'Demo',
+                limitation: 'Para captar leads'
               },
               {
-                name: 'Básico',
-                price: 'R$ 99,90',
+                name: 'Start',
+                code: 'start',
+                price: 'R$ 49',
                 period: '/mês',
                 highlight: false,
                 features: [
-                  '5 diagnósticos/mês',
-                  '2 horas de consultoria',
-                  'Dashboard avançado',
-                  'Relatórios detalhados',
-                  'Suporte prioritário',
-                  'Certificação inclusa',
-                  'Até 3 usuários'
+                  'Diagnóstico Maturidade ESG',
+                  'Acesso ao dashboard'
                 ],
-                cta: 'Assinar Básico',
+                cta: 'Assinar Start',
                 color: '#152F27'
               },
               {
-                name: 'Profissional',
-                price: 'R$ 299,90',
+                name: 'Grow',
+                code: 'grow',
+                price: 'R$ 99',
                 period: '/mês',
                 highlight: true,
                 features: [
-                  '20 diagnósticos/mês',
-                  '8 horas de consultoria',
-                  'Dashboard completo',
-                  'Relatórios customizados',
-                  'Suporte dedicado',
-                  'Certificação premium',
-                  'Até 10 usuários',
-                  'Acesso à API'
+                  'Diagnóstico Maturidade ESG',
+                  'Acesso ao dashboard',
+                  '2h mensais de consultoria',
+                  'Certificação'
                 ],
-                cta: 'Assinar Profissional',
+                cta: 'Assinar Grow',
                 color: '#924131',
                 badge: 'Mais Popular'
               },
               {
-                name: 'Empresarial',
-                price: 'R$ 999,90',
+                name: 'Impact',
+                code: 'impact',
+                price: 'R$ 159',
                 period: '/mês',
                 highlight: false,
                 features: [
-                  'Diagnósticos ilimitados',
-                  '24 horas de consultoria',
-                  'White label',
-                  'Relatórios personalizados',
-                  'Suporte 24/7',
-                  'Certificação enterprise',
-                  'Usuários ilimitados',
-                  'API completa',
-                  'Gerente dedicado'
+                  'Diagnóstico Maturidade ESG',
+                  'Acesso ao dashboard',
+                  '4h mensais de consultoria',
+                  'Certificação',
+                  'Planos de Ação'
                 ],
-                cta: 'Falar com Vendas',
+                cta: 'Assinar Impact',
                 color: '#152F27'
               }
             ].map((plan, i) => (
@@ -718,7 +705,7 @@ export default function LandingPage() {
                 </ul>
 
                 <Link
-                  to={plan.name === 'Empresarial' ? '/contact' : plan.name === 'Teste Grátis' ? '/register' : `/checkout?plan=${plan.name === 'Básico' ? 'basic' : 'professional'}`}
+                  to={plan.code === 'free' ? '/register' : `/checkout?plan=${plan.code}`}
                   className={`block w-full py-4 text-center font-black rounded-xl transition-all hover:scale-105 ${
                     plan.highlight ? 'text-white shadow-lg' : 'border-2 hover:text-white'
                   }`}
@@ -816,9 +803,9 @@ export default function LandingPage() {
               <div className="space-y-4">
                 {[
                   { plan: 'Teste Grátis', hours: '0 horas', color: '#7B9965' },
-                  { plan: 'Básico', hours: '2 horas/mês', color: '#152F27' },
-                  { plan: 'Profissional', hours: '8 horas/mês', color: '#924131' },
-                  { plan: 'Empresarial', hours: '24 horas/mês', color: '#EFD4A8' }
+                  { plan: 'Start', hours: '0 horas', color: '#152F27' },
+                  { plan: 'Grow', hours: '2 horas/mês', color: '#924131' },
+                  { plan: 'Impact', hours: '4 horas/mês', color: '#EFD4A8' }
                 ].map((item, i) => (
                   <div
                     key={i}
@@ -892,7 +879,7 @@ export default function LandingPage() {
             {/* Brand Column */}
             <div className="md:col-span-2">
               <div className="flex items-center gap-4 mb-6">
-                <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-24" />
+                <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-24" />
               </div>
               <p className="text-base leading-relaxed mb-8" style={{ color: '#EFD4A8' }}>
                 Transformando negócios através de práticas ESG sustentáveis e responsáveis. Liderando a mudança para um futuro mais verde.

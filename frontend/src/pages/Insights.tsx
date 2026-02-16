@@ -90,14 +90,9 @@ export default function Insights() {
     }
   }
 
-  async function loadPartialScores(diagnosisId: string) {
+  async function loadPartialScores(id: string) {
     try {
-      const response = await fetch(`/api/diagnosis/${diagnosisId}/partial-scores`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
+      const data = await diagnosisService.getPartialScores(id);
       setPartialScores(data);
     } catch (error) {
       console.error('Erro ao carregar scores parciais:', error);
@@ -452,7 +447,11 @@ export default function Insights() {
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-8 mb-6 border-4"
                style={{ borderColor: partialScores.certification.color }}>
             <div className="flex items-start gap-6">
-              <div className="text-8xl">{partialScores.certification.icon}</div>
+              <img
+                src={`/images/assets/selo-${partialScores.certification.level === 'gold' ? 'ouro' : partialScores.certification.level === 'silver' ? 'prata' : 'bronze'}.png`}
+                alt={`Selo ${partialScores.certification.level === 'gold' ? 'Ouro' : partialScores.certification.level === 'silver' ? 'Prata' : 'Bronze'}`}
+                className="w-32 h-32 object-contain flex-shrink-0"
+              />
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h2 className="text-3xl font-black" style={{ color: '#152F27' }}>

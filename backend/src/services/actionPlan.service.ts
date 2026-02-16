@@ -6,12 +6,11 @@ export class ActionPlanService {
    * Gera plano de ação automático baseado nas respostas
    */
   async generateActionPlan(diagnosisId: string) {
-    // Buscar todas as respostas com baixo score (1, 2 ou 3 de 5)
+    // Buscar respostas com baixa maturidade (1-3 de 5)
     const responses = await prisma.response.findMany({
       where: {
         diagnosisId,
-        evaluation: { in: ['Não é feito', 'É mal feito', 'É feito'] },
-        // Excluir "Não se aplica"
+        evaluation: { in: ['Não iniciado', 'Planejado', 'Em andamento'] },
         NOT: { evaluation: 'Não se aplica' },
       },
       include: {
@@ -53,16 +52,16 @@ export class ActionPlanService {
 
       // Calcular impacto potencial (quanto pode melhorar se atingir nota 5)
       const currentScore = response.evaluationValue;
-      const potentialScore = 5; // Máximo (É muito bem feito)
+      const potentialScore = 5; // Máximo (Totalmente implementado)
       const impact = potentialScore - currentScore;
 
       // Determinar prioridade baseado no evaluationValue
       let priority = 'medium';
       let priorityLabel = 'MÉDIA PRIORIDADE';
-      if (response.evaluationValue === 1) { // Não é feito
+      if (response.evaluationValue === 1) { // Não iniciado (ELEMENTAR)
         priority = 'critical';
         priorityLabel = 'PRIORIDADE CRÍTICA';
-      } else if (response.evaluationValue === 2) { // É mal feito
+      } else if (response.evaluationValue === 2) { // Planejado (NÃO INTEGRADO)
         priority = 'high';
         priorityLabel = 'ALTA PRIORIDADE';
       }

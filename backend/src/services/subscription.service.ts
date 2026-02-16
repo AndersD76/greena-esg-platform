@@ -1,6 +1,41 @@
 import { PrismaClient } from '@prisma/client';
+import { AsaasService } from './asaas.service';
 
 const prisma = new PrismaClient();
+const asaasService = new AsaasService();
+
+interface CreditCardInput {
+  holderName: string;
+  number: string;
+  expiryMonth: string;
+  expiryYear: string;
+  ccv: string;
+}
+
+interface CreditCardHolderInput {
+  name: string;
+  email: string;
+  cpfCnpj: string;
+  postalCode: string;
+  addressNumber: string;
+  mobilePhone?: string;
+}
+
+interface CreateSubscriptionInput {
+  planCode: string;
+  paymentMethod: 'CREDIT_CARD' | 'PIX';
+  creditCard?: CreditCardInput;
+  creditCardHolderInfo?: CreditCardHolderInput;
+  billingData: {
+    cpfCnpj: string;
+    address?: string;
+    addressNumber?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    mobilePhone?: string;
+  };
+}
 
 export class SubscriptionService {
   /**
@@ -136,9 +171,53 @@ export class SubscriptionService {
   }
 
   /**
-   * Cria uma nova assinatura para o usuário
+   * Busca ou cria um customer no Asaas para o usuário
    */
-  async createSubscription(userId: string, planCode: string, trialDays?: number) {
+  private async ensureAsaasCustomer(userId: string, billingData: CreateSubscriptionInput['billingData']) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
+    // Se já tem customer no Asaas, retorna o ID
+    if (user.asaasCustomerId) {
+      return user.asaasCustomerId;
+    }
+
+    const cpfCnpj = billingData.cpfCnpj.replace(/[.\-\/]/g, '');
+
+    // Tenta encontrar customer existente no Asaas pelo CPF/CNPJ
+    const existingCustomer = await asaasService.findCustomerByCpfCnpj(cpfCnpj);
+    if (existingCustomer) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { asaasCustomerId: existingCustomer.id }
+      });
+      return existingCustomer.id;
+    }
+
+    // Cria novo customer no Asaas
+    const customer = await asaasService.createCustomer({
+      name: user.name,
+      cpfCnpj: cpfCnpj,
+      email: user.email,
+      mobilePhone: billingData.mobilePhone || user.responsibleContact || undefined,
+      externalReference: userId,
+    });
+
+    // Salva o ID do customer no banco local
+    await prisma.user.update({
+      where: { id: userId },
+      data: { asaasCustomerId: customer.id }
+    });
+
+    return customer.id;
+  }
+
+  /**
+   * Cria uma nova assinatura com pagamento via Asaas
+   */
+  async createSubscription(userId: string, input: CreateSubscriptionInput) {
+    const { planCode, paymentMethod, creditCard, creditCardHolderInfo, billingData } = input;
+
     // Verificar se o plano existe
     const plan = await prisma.subscriptionPlan.findUnique({
       where: { code: planCode }
@@ -168,15 +247,51 @@ export class SubscriptionService {
       throw new Error('Usuário já possui uma assinatura ativa');
     }
 
-    // Calcular datas
+    // Buscar ou criar customer no Asaas
+    const asaasCustomerId = await this.ensureAsaasCustomer(userId, billingData);
+
+    // Calcular próximo vencimento (hoje)
+    const today = new Date();
+    const nextDueDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+
+    // Mapear ciclo de cobrança
+    const cycle = plan.billingCycle === 'yearly' ? 'YEARLY' as const : 'MONTHLY' as const;
+
+    // Montar dados para criação da assinatura no Asaas
+    const asaasSubscriptionData: any = {
+      customerId: asaasCustomerId,
+      billingType: paymentMethod,
+      value: Number(plan.price),
+      nextDueDate,
+      cycle,
+      description: `GREENA ESG - Plano ${plan.name}`,
+    };
+
+    // Se for cartão, adicionar dados do cartão
+    if (paymentMethod === 'CREDIT_CARD' && creditCard && creditCardHolderInfo) {
+      asaasSubscriptionData.creditCard = {
+        holderName: creditCard.holderName,
+        number: creditCard.number.replace(/\s/g, ''),
+        expiryMonth: creditCard.expiryMonth,
+        expiryYear: creditCard.expiryYear,
+        ccv: creditCard.ccv,
+      };
+      asaasSubscriptionData.creditCardHolderInfo = {
+        name: creditCardHolderInfo.name,
+        email: creditCardHolderInfo.email,
+        cpfCnpj: creditCardHolderInfo.cpfCnpj.replace(/[.\-\/]/g, ''),
+        postalCode: creditCardHolderInfo.postalCode.replace(/\D/g, ''),
+        addressNumber: creditCardHolderInfo.addressNumber,
+        mobilePhone: creditCardHolderInfo.mobilePhone?.replace(/\D/g, '') || undefined,
+      };
+    }
+
+    // Criar assinatura no Asaas
+    const asaasSubscription = await asaasService.createSubscription(asaasSubscriptionData);
+
+    // Calcular data de expiração
     const now = new Date();
     let expiresAt: Date | null = null;
-    let trialEndsAt: Date | null = null;
-
-    if (trialDays && trialDays > 0) {
-      trialEndsAt = new Date(now);
-      trialEndsAt.setDate(trialEndsAt.getDate() + trialDays);
-    }
 
     if (plan.billingCycle === 'monthly') {
       expiresAt = new Date(now);
@@ -186,23 +301,44 @@ export class SubscriptionService {
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     }
 
-    // Criar assinatura
+    // Status inicial: pending_payment para PIX, active para cartão (cobrado imediatamente)
+    const initialStatus = paymentMethod === 'CREDIT_CARD' ? 'active' : 'pending_payment';
+
+    // Criar assinatura no banco local
     const subscription = await prisma.userSubscription.create({
       data: {
-        userId: userId,
+        userId,
         planId: plan.id,
-        status: trialDays ? 'trial' : 'active',
+        status: initialStatus,
         startedAt: now,
-        expiresAt: expiresAt,
-        trialEndsAt: trialEndsAt,
-        consultationHoursUsed: 0
+        expiresAt,
+        asaasSubscriptionId: asaasSubscription.id,
+        paymentMethod,
+        consultationHoursUsed: 0,
       },
-      include: {
-        plan: true
-      }
+      include: { plan: true }
     });
 
-    return subscription;
+    // Se for PIX, buscar o QR code do primeiro pagamento
+    let pixData = null;
+    if (paymentMethod === 'PIX') {
+      const payments = await asaasService.getSubscriptionPayments(asaasSubscription.id);
+      if (payments.data && payments.data.length > 0) {
+        const firstPayment = payments.data[0];
+        const pixQrCode = await asaasService.getPaymentPixQrCode(firstPayment.id);
+        pixData = {
+          paymentId: firstPayment.id,
+          encodedImage: pixQrCode.encodedImage,
+          payload: pixQrCode.payload,
+          expirationDate: pixQrCode.expirationDate,
+        };
+      }
+    }
+
+    return {
+      subscription,
+      pixData,
+    };
   }
 
   /**
@@ -212,12 +348,21 @@ export class SubscriptionService {
     const subscription = await prisma.userSubscription.findFirst({
       where: {
         userId: userId,
-        status: { in: ['active', 'trial'] }
+        status: { in: ['active', 'trial', 'pending_payment'] }
       }
     });
 
     if (!subscription) {
       throw new Error('Assinatura ativa não encontrada');
+    }
+
+    // Cancelar no Asaas se tiver ID
+    if (subscription.asaasSubscriptionId) {
+      try {
+        await asaasService.cancelSubscription(subscription.asaasSubscriptionId);
+      } catch (error) {
+        console.error('Erro ao cancelar assinatura no Asaas:', error);
+      }
     }
 
     await prisma.userSubscription.update({
@@ -330,5 +475,19 @@ export class SubscriptionService {
         certificates: certificatesCount
       }
     };
+  }
+
+  /**
+   * Busca QR Code PIX de um pagamento
+   */
+  async getPixQrCode(paymentId: string) {
+    return asaasService.getPaymentPixQrCode(paymentId);
+  }
+
+  /**
+   * Verifica status de um pagamento
+   */
+  async checkPaymentStatus(paymentId: string) {
+    return asaasService.getPaymentStatus(paymentId);
   }
 }

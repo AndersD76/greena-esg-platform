@@ -12,6 +12,7 @@ router.get('/', (req, res) => diagnosisController.list(req, res));
 router.get('/:id', (req, res) => diagnosisController.getById(req, res));
 router.post('/:id/complete', (req, res) => diagnosisController.complete(req, res));
 router.post('/:id/finalize', (req, res) => diagnosisController.finalize(req, res));
+router.post('/:id/complete-simplified', (req, res) => diagnosisController.completeSimplified(req, res));
 router.get('/:id/results', (req, res) => diagnosisController.getResults(req, res));
 router.get('/:id/progress', (req, res) => diagnosisController.getProgress(req, res));
 router.get('/:id/insights', (req, res) => diagnosisController.getInsights(req, res));

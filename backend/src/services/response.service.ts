@@ -1,10 +1,9 @@
 import prisma from '../config/database';
-import { importanceValues, evaluationValues } from '../utils/validators';
+import { evaluationValues } from '../utils/validators';
 import { Decimal } from '@prisma/client/runtime/library';
 
 interface ResponseData {
   assessmentItemId: number;
-  importance: string;
   evaluation: string;
   observations?: string | null;
 }
@@ -27,11 +26,8 @@ export class ResponseService {
       throw new Error('Não é possível modificar diagnóstico concluído');
     }
 
-    // Calcular valores numéricos
-    // Importância fixada em 1 (não é mais usada no cálculo)
-    const importanceValue = importanceValues[data.importance] || 1;
+    // Calcular valor numérico da avaliação (escala de maturidade 0-5)
     const evaluationValue = evaluationValues[data.evaluation] || 0;
-    // Score agora é apenas o evaluationValue (1-5, ou 0 para "Não se aplica")
     const score = evaluationValue;
 
     // Criar ou atualizar resposta
@@ -43,8 +39,6 @@ export class ResponseService {
         },
       },
       update: {
-        importance: data.importance,
-        importanceValue,
         evaluation: data.evaluation,
         evaluationValue,
         score: new Decimal(score),
@@ -53,8 +47,6 @@ export class ResponseService {
       create: {
         diagnosisId,
         assessmentItemId: data.assessmentItemId,
-        importance: data.importance,
-        importanceValue,
         evaluation: data.evaluation,
         evaluationValue,
         score: new Decimal(score),

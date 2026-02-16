@@ -13,14 +13,14 @@ interface Response {
   };
 }
 
-// Opcoes de avaliacao com valores
+// Escala de maturidade ESG (0-5)
 const evaluationOptions = [
-  { value: 'Não se aplica', label: 'N/A', fullLabel: 'Não se aplica', score: 0, counted: false },
-  { value: 'Não é feito', label: '1', fullLabel: 'Não é feito', score: 1, counted: true },
-  { value: 'É mal feito', label: '2', fullLabel: 'É mal feito', score: 2, counted: true },
-  { value: 'É feito', label: '3', fullLabel: 'É feito', score: 3, counted: true },
-  { value: 'É bem feito', label: '4', fullLabel: 'É bem feito', score: 4, counted: true },
-  { value: 'É muito bem feito', label: '5', fullLabel: 'É muito bem feito', score: 5, counted: true },
+  { value: 'Não se aplica', label: 'N/A', fullLabel: 'Não se aplica', maturity: 'N/A', score: 0, counted: false },
+  { value: 'Não iniciado', label: '1', fullLabel: 'Não iniciado', maturity: 'ELEMENTAR', score: 1, counted: true },
+  { value: 'Planejado', label: '2', fullLabel: 'Planejado', maturity: 'NÃO INTEGRADO', score: 2, counted: true },
+  { value: 'Em andamento', label: '3', fullLabel: 'Em andamento', maturity: 'GERENCIAL', score: 3, counted: true },
+  { value: 'Implementado parcialmente', label: '4', fullLabel: 'Implementado parcialmente', maturity: 'ESTRATÉGICO', score: 4, counted: true },
+  { value: 'Totalmente implementado', label: '5', fullLabel: 'Totalmente implementado', maturity: 'TRANSFORMADOR', score: 5, counted: true },
 ];
 
 // Componente de progresso circular
@@ -108,7 +108,6 @@ export default function Questionnaire() {
       setSaving(true);
       await responseService.upsert(diagnosisId, {
         assessmentItemId: currentQuestion.id,
-        importance: 'Importante',
         evaluation: response.evaluation,
         observations: response.observations,
       });
@@ -394,33 +393,33 @@ export default function Questionnaire() {
                 </button>
               </div>
 
-              {/* Legenda de avaliacao */}
+              {/* Legenda de maturidade */}
               <div className="mt-6 pt-4 border-t">
-                <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: '#666' }}>Escala</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: '#666' }}>Escala de Maturidade</h4>
                 <div className="space-y-1.5 text-xs" style={{ color: '#666' }}>
                   <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#E5E7EB', color: '#666' }}>N/A</span>
+                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#E5E7EB', color: '#666' }}>0</span>
                     <span>Nao se aplica</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: '#924131' }}>1</span>
-                    <span>Nao e feito</span>
+                    <span>Nao iniciado</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>2</span>
-                    <span>E mal feito</span>
+                    <span>Planejado</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#EFD4A8', color: '#B8965A' }}>3</span>
-                    <span>E feito</span>
+                    <span>Em andamento</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#D4E8C7', color: '#7B9965' }}>4</span>
-                    <span>E bem feito</span>
+                    <span>Impl. parcialmente</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#C5E1B5', color: '#152F27' }}>5</span>
-                    <span>E muito bem feito</span>
+                    <span>Totalmente impl.</span>
                   </div>
                 </div>
               </div>
@@ -433,17 +432,20 @@ export default function Questionnaire() {
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               {/* Header do card com cor do pilar */}
               <div className="px-6 py-4" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
-                <div className="flex items-center gap-2 text-white/80 text-sm mb-1">
-                  <span>{themeName}</span>
-                  <span>•</span>
-                  <span>{criteriaName}</span>
-                </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <h2 className="text-white font-bold text-lg">
                     {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governanca'}
                   </h2>
                   <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-white text-sm font-medium">
                     {currentQuestionIndexInPillar + 1} / {questionsOfCurrentPillar.length}
+                  </span>
+                </div>
+                <div className="text-white/90 text-sm">
+                  <span className="font-semibold">{themeName}</span>
+                </div>
+                <div className="mt-1 px-3 py-1.5 rounded-lg bg-white/15 inline-block">
+                  <span className="text-white text-xs font-bold uppercase tracking-wide">
+                    Criterio: {criteriaName}
                   </span>
                 </div>
               </div>
@@ -455,49 +457,60 @@ export default function Questionnaire() {
                   {currentQuestion.question}
                 </h3>
 
-                {/* Opcoes de avaliacao - Layout horizontal tipo escala */}
+                {/* Opcoes de avaliacao - Dropdown */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-600 mb-4">
-                    Como voce avalia esta pratica na sua empresa?
+                  <label className="block text-sm font-medium text-gray-600 mb-3">
+                    Qual o nivel de maturidade desta pratica na sua empresa?
                   </label>
 
-                  <div className="flex gap-2">
-                    {evaluationOptions.map((option, index) => {
-                      const isSelected = currentResponse.evaluation === option.value;
-                      const isNaoSeAplica = option.value === 'Não se aplica';
+                  <select
+                    value={currentResponse.evaluation || ''}
+                    onChange={(e) => updateResponse('evaluation', e.target.value)}
+                    className="w-full px-4 py-3.5 rounded-xl border-2 font-semibold text-base transition-all focus:outline-none appearance-none cursor-pointer"
+                    style={{
+                      borderColor: currentResponse.evaluation ? '#7B9965' : '#e0e0e0',
+                      color: currentResponse.evaluation ? '#152F27' : '#999',
+                      backgroundColor: '#fff',
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 12px center',
+                      backgroundSize: '20px',
+                      paddingRight: '44px',
+                    }}
+                  >
+                    <option value="" disabled>Selecione o nivel de maturidade...</option>
+                    {evaluationOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.score === 0 ? 'N/A' : option.score} - {option.fullLabel} ({option.maturity})
+                      </option>
+                    ))}
+                  </select>
 
-                      const bgColors = ['bg-gray-100', 'bg-red-50', 'bg-orange-50', 'bg-yellow-50', 'bg-lime-50', 'bg-green-50'];
-                      const selectedBgColors = ['bg-gray-500', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500'];
-                      const textColors = ['text-gray-600', 'text-red-600', 'text-orange-600', 'text-yellow-600', 'text-lime-600', 'text-green-600'];
-
-                      return (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => updateResponse('evaluation', option.value)}
-                          className={`flex-1 py-4 px-2 rounded-xl transition-all transform hover:scale-105 ${
-                            isSelected
-                              ? `${selectedBgColors[index]} text-white shadow-lg scale-105`
-                              : `${bgColors[index]} ${textColors[index]} hover:shadow-md`
-                          }`}
-                        >
-                          <div className="text-center">
-                            <span className={`text-2xl font-bold block ${isSelected ? 'text-white' : ''}`}>
-                              {isNaoSeAplica ? 'N/A' : option.score}
-                            </span>
-                            <span className={`text-xs mt-1 block ${isSelected ? 'text-white/80' : 'opacity-80'}`}>
-                              {option.fullLabel}
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {currentResponse.evaluation === 'Não se aplica' && (
-                    <p className="mt-3 text-xs text-gray-500 italic text-center">
-                      Esta resposta nao sera contabilizada no calculo do score
-                    </p>
+                  {currentResponse.evaluation && (
+                    <div className="mt-3 px-4 py-2.5 rounded-lg" style={{
+                      backgroundColor: currentResponse.evaluation === 'Não se aplica' ? '#f5f5f5' :
+                        currentResponse.evaluation === 'Não iniciado' ? '#FEE2E2' :
+                        currentResponse.evaluation === 'Planejado' ? '#FEF3C7' :
+                        currentResponse.evaluation === 'Em andamento' ? '#FEF3C7' :
+                        currentResponse.evaluation === 'Implementado parcialmente' ? '#D4E8C7' : '#C5E1B5'
+                    }}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold" style={{
+                          color: currentResponse.evaluation === 'Não se aplica' ? '#666' :
+                            currentResponse.evaluation === 'Não iniciado' ? '#991B1B' :
+                            currentResponse.evaluation === 'Planejado' ? '#92400E' :
+                            currentResponse.evaluation === 'Em andamento' ? '#92400E' :
+                            currentResponse.evaluation === 'Implementado parcialmente' ? '#3D6B2E' : '#152F27'
+                        }}>
+                          {evaluationOptions.find(o => o.value === currentResponse.evaluation)?.maturity}
+                        </span>
+                        {currentResponse.evaluation === 'Não se aplica' && (
+                          <span className="text-xs text-gray-500 italic">
+                            - Nao sera contabilizada no calculo do score
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
 

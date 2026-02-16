@@ -5,21 +5,23 @@ import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 interface Insight {
   id: number;
   category: string;
-  pillar: string;
+  categoryLabel: string;
   title: string;
   description: string;
-  priority: number;
+  pillar?: { id: number; code: string; name: string } | null;
 }
 
 interface ActionPlan {
   id: number;
-  pillar: string;
-  action: string;
-  urgency: string;
-  estimatedInvestment: string;
-  deadline: string;
-  expectedImpact: number;
-  priority: number;
+  title: string;
+  description?: string;
+  priority: string;
+  priorityLabel: string;
+  investment: string;
+  investmentLabel: string;
+  deadlineDays: number;
+  status: string;
+  impactScore: number;
 }
 
 const getScoreColor = (score: number) => {
@@ -116,12 +118,6 @@ export default function Results() {
     critical: { bg: '#FEE2E2', text: '#991B1B' },
     attention: { bg: '#FEF3C7', text: '#92400E' },
     excellent: { bg: '#D1FAE5', text: '#065F46' },
-  };
-
-  const urgencyColors = {
-    Alta: { bg: '#FEE2E2', text: '#991B1B' },
-    Media: { bg: '#FEF3C7', text: '#92400E' },
-    Baixa: { bg: '#DBEAFE', text: '#1E40AF' },
   };
 
   return (
@@ -245,15 +241,12 @@ export default function Results() {
                           color: categoryColors[insight.category as keyof typeof categoryColors]?.text || '#374151'
                         }}
                       >
-                        {insight.category === 'critical' && 'Critico'}
-                        {insight.category === 'attention' && 'Atencao'}
-                        {insight.category === 'excellent' && 'Excelente'}
+                        {insight.categoryLabel || (insight.category === 'critical' ? 'Critico' : insight.category === 'attention' ? 'Atencao' : 'Excelente')}
                       </span>
-                      <span className="text-sm font-semibold" style={{ color: '#7B9965' }}>{insight.pillar}</span>
+                      {insight.pillar && (
+                        <span className="text-sm font-semibold" style={{ color: '#7B9965' }}>{insight.pillar.name}</span>
+                      )}
                     </div>
-                    <span className="text-sm font-bold" style={{ color: '#666' }}>
-                      Prioridade {insight.priority}
-                    </span>
                   </div>
                   <h3 className="font-black text-lg mb-2" style={{ color: '#152F27' }}>{insight.title}</h3>
                   <p className="font-semibold leading-relaxed" style={{ color: '#666' }}>{insight.description}</p>
@@ -278,54 +271,67 @@ export default function Results() {
               Acoes priorizadas para melhorar seu desempenho ESG, ordenadas por impacto e urgencia.
             </p>
             <div className="space-y-4">
-              {actionPlans.map((action, index) => (
-                <div
-                  key={action.id}
-                  className="p-6 rounded-xl border-l-4"
-                  style={{ backgroundColor: '#f5f5f5', borderLeftColor: '#7B9965' }}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-4">
+              {actionPlans.map((action, index) => {
+                const priorityColors: Record<string, { bg: string; text: string }> = {
+                  critical: { bg: '#FEE2E2', text: '#991B1B' },
+                  high: { bg: '#FEF3C7', text: '#92400E' },
+                  medium: { bg: '#DBEAFE', text: '#1E40AF' },
+                  low: { bg: '#E5E7EB', text: '#374151' },
+                };
+                const pColor = priorityColors[action.priority] || priorityColors.medium;
+
+                return (
+                  <div
+                    key={action.id}
+                    className="p-6 rounded-xl border-l-4"
+                    style={{ backgroundColor: '#f5f5f5', borderLeftColor: '#7B9965' }}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <span
+                          className="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black"
+                          style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                        >
+                          {index + 1}
+                        </span>
+                        <div>
+                          <h3 className="font-black text-lg" style={{ color: '#152F27' }}>
+                            {action.title.replace(/^\d+\.\s*/, '')}
+                          </h3>
+                          {action.description && (
+                            <p className="text-sm font-semibold mt-1" style={{ color: '#666' }}>
+                              {action.description.substring(0, 120)}{action.description.length > 120 ? '...' : ''}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                       <span
-                        className="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black"
-                        style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                        className="px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap"
+                        style={{ backgroundColor: pColor.bg, color: pColor.text }}
                       >
-                        {index + 1}
+                        {action.priorityLabel}
                       </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-6 mt-4">
                       <div>
-                        <span className="text-sm font-semibold" style={{ color: '#7B9965' }}>{action.pillar}</span>
-                        <h3 className="font-black text-lg" style={{ color: '#152F27' }}>{action.action}</h3>
+                        <span className="text-sm font-bold" style={{ color: '#666' }}>Investimento:</span>
+                        <p className="font-black" style={{ color: '#152F27' }}>{action.investmentLabel}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold" style={{ color: '#666' }}>Prazo:</span>
+                        <p className="font-black" style={{ color: '#152F27' }}>{action.deadlineDays} dias</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold" style={{ color: '#666' }}>Impacto Esperado:</span>
+                        <p className="font-black" style={{ color: getScoreColor(Number(action.impactScore) * 10) }}>
+                          {Number(action.impactScore)}/10
+                        </p>
                       </div>
                     </div>
-                    <span
-                      className="px-4 py-1.5 rounded-full text-sm font-bold"
-                      style={{
-                        backgroundColor: urgencyColors[action.urgency as keyof typeof urgencyColors]?.bg || '#E5E7EB',
-                        color: urgencyColors[action.urgency as keyof typeof urgencyColors]?.text || '#374151'
-                      }}
-                    >
-                      {action.urgency}
-                    </span>
                   </div>
-
-                  <div className="grid grid-cols-3 gap-6 mt-4">
-                    <div>
-                      <span className="text-sm font-bold" style={{ color: '#666' }}>Investimento:</span>
-                      <p className="font-black" style={{ color: '#152F27' }}>{action.estimatedInvestment}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold" style={{ color: '#666' }}>Prazo:</span>
-                      <p className="font-black" style={{ color: '#152F27' }}>{action.deadline}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold" style={{ color: '#666' }}>Impacto Esperado:</span>
-                      <p className="font-black" style={{ color: getScoreColor(action.expectedImpact) }}>
-                        +{action.expectedImpact} pontos
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

@@ -1,10 +1,21 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { subscriptionService } from '../../services/subscription.service';
 
 export function Header() {
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isFreePlan, setIsFreePlan] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      subscriptionService.getActivePlan()
+        .then((plan) => setIsFreePlan(plan.isFreePlan))
+        .catch(() => setIsFreePlan(true));
+    }
+  }, [user]);
 
   function handleSignOut() {
     signOut();
@@ -17,7 +28,7 @@ export function Header() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center gap-3">
-            <img src="/images/Logo_Vertical_Colorida.png" alt="GREENA" className="h-14" />
+            <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
           </Link>
 
           {user && (
@@ -46,42 +57,55 @@ export function Header() {
               >
                 Novo Diagnóstico
               </Link>
-              <Link
-                to="/insights"
-                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
-                  location.pathname === '/insights' ? 'border-b-2' : ''
-                }`}
-                style={{
-                  color: location.pathname === '/insights' ? '#7B9965' : '#152F27',
-                  borderColor: '#7B9965'
-                }}
-              >
-                Insights
-              </Link>
-              <Link
-                to="/reports"
-                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
-                  location.pathname === '/reports' ? 'border-b-2' : ''
-                }`}
-                style={{
-                  color: location.pathname === '/reports' ? '#7B9965' : '#152F27',
-                  borderColor: '#7B9965'
-                }}
-              >
-                Relatórios
-              </Link>
-              <Link
-                to="/consultations"
-                className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
-                  location.pathname.startsWith('/consultations') ? 'border-b-2' : ''
-                }`}
-                style={{
-                  color: location.pathname.startsWith('/consultations') ? '#7B9965' : '#152F27',
-                  borderColor: '#7B9965'
-                }}
-              >
-                Consultorias
-              </Link>
+              {!isFreePlan && (
+                <>
+                  <Link
+                    to="/insights"
+                    className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                      location.pathname === '/insights' ? 'border-b-2' : ''
+                    }`}
+                    style={{
+                      color: location.pathname === '/insights' ? '#7B9965' : '#152F27',
+                      borderColor: '#7B9965'
+                    }}
+                  >
+                    Insights
+                  </Link>
+                  <Link
+                    to="/reports"
+                    className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                      location.pathname === '/reports' ? 'border-b-2' : ''
+                    }`}
+                    style={{
+                      color: location.pathname === '/reports' ? '#7B9965' : '#152F27',
+                      borderColor: '#7B9965'
+                    }}
+                  >
+                    Relatórios
+                  </Link>
+                  <Link
+                    to="/consultations"
+                    className={`text-sm font-semibold transition-colors hover:text-green-700 pb-1 ${
+                      location.pathname.startsWith('/consultations') ? 'border-b-2' : ''
+                    }`}
+                    style={{
+                      color: location.pathname.startsWith('/consultations') ? '#7B9965' : '#152F27',
+                      borderColor: '#7B9965'
+                    }}
+                  >
+                    Consultorias
+                  </Link>
+                </>
+              )}
+              {isFreePlan && (
+                <Link
+                  to="/checkout"
+                  className="text-sm font-bold transition-colors hover:opacity-80 pb-1"
+                  style={{ color: '#7B9965' }}
+                >
+                  Fazer Upgrade
+                </Link>
+              )}
               {isAdmin && (
                 <Link
                   to="/admin"

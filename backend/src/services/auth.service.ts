@@ -6,6 +6,7 @@ interface RegisterData {
   email: string;
   password: string;
   name: string;
+  esgPainPoint?: string;
   companyName?: string;
   cnpj?: string;
   city?: string;
@@ -48,6 +49,7 @@ export class AuthService {
         companySize: data.companySize,
         sector: data.sector,
         employeesRange: data.employeesRange,
+        esgPainPoint: data.esgPainPoint,
       },
       select: {
         id: true,

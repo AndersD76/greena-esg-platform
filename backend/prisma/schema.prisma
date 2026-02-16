@@ -25,7 +25,9 @@ model User {
   companySize       String?  @map("company_size") // Microempresa, Pequena I/II/III, Média, Grande I/II
   sector            String?  // Agronegócio, Indústria, Construção Civil, etc.
   employeesRange    String?  @map("employees_range") // 1-9, 10-49, 50-99, 100-499, 500+
+  esgPainPoint      String?  @map("esg_pain_point") // Maior dor ESG da empresa
   isActive          Boolean  @default(true) @map("is_active")
+  asaasCustomerId   String?  @unique @map("asaas_customer_id")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
@@ -114,11 +116,11 @@ model Response {
   id               Int      @id @default(autoincrement())
   diagnosisId      String   @map("diagnosis_id")
   assessmentItemId Int      @map("assessment_item_id")
-  importance       String   // 'Sem Importância', 'Importante', 'Muito Importante', 'Crítico'
-  importanceValue  Int      @map("importance_value") // 0, 3, 6, 9
-  evaluation       String   // 'Não se aplica', 'Não é feito', 'É mal feito', 'É feito', 'É bem feito'
-  evaluationValue  Int      @map("evaluation_value") // 0, 0, 3, 6, 9
-  score            Decimal  @db.Decimal(5, 2) // importance_value * evaluation_value
+  importance       String?  // Depreciado - mantido para compatibilidade
+  importanceValue  Int?     @map("importance_value") // Depreciado
+  evaluation       String   // 'Não se aplica'(0), 'Não iniciado'(1), 'Planejado'(2), 'Em andamento'(3), 'Implementado parcialmente'(4), 'Totalmente implementado'(5)
+  evaluationValue  Int      @map("evaluation_value") // 0-5 (escala de maturidade)
+  score            Decimal  @db.Decimal(5, 2) // = evaluationValue (0-5)
   observations     String?
   createdAt        DateTime @default(now()) @map("created_at")
 
@@ -203,6 +205,8 @@ model UserSubscription {
   expiresAt              DateTime? @map("expires_at")
   trialEndsAt            DateTime? @map("trial_ends_at")
   consultationHoursUsed  Int       @default(0) @map("consultation_hours_used")
+  asaasSubscriptionId    String?   @unique @map("asaas_subscription_id")
+  paymentMethod          String?   @map("payment_method")
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
 

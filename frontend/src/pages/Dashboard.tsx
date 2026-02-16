@@ -312,7 +312,7 @@ export default function Dashboard() {
         {!lastCompleted && !currentDiagnosis && (
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center mb-8">
             <h2 className="text-4xl font-black mb-4" style={{ color: '#152F27' }}>
-              Bem-vindo ao GREENA!
+              Bem-vindo!
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: '#666' }}>
               Comece seu primeiro diagnóstico ESG e descubra como sua empresa pode ser mais sustentável.
@@ -583,19 +583,12 @@ export default function Dashboard() {
                       PRELIMINAR
                     </span>
                     {partialScores.certification && (
-                      <div className="flex items-center gap-2 px-4 py-2 rounded-xl border-2"
-                           style={{ borderColor: partialScores.certification.color, backgroundColor: partialScores.certification.color + '15' }}>
-                        <span className="text-lg font-black" style={{ color: partialScores.certification.color }}>
-                          {partialScores.certification.level === 'bronze' ? 'BRONZE' : partialScores.certification.level === 'silver' ? 'PRATA' : 'OURO'}
-                        </span>
-                        <div>
-                          <p className="text-xs font-bold" style={{ color: '#152F27' }}>
-                            Nivel {partialScores.certification.level === 'bronze' ? 'Bronze' : partialScores.certification.level === 'silver' ? 'Prata' : 'Ouro'}
-                          </p>
-                          <p className="text-xs font-semibold" style={{ color: partialScores.certification.color }}>
-                            {partialScores.certification.name}
-                          </p>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={`/images/assets/selo-${partialScores.certification.level === 'gold' ? 'ouro' : partialScores.certification.level === 'silver' ? 'prata' : 'bronze'}.png`}
+                          alt={`Selo ${partialScores.certification.level === 'gold' ? 'Ouro' : partialScores.certification.level === 'silver' ? 'Prata' : 'Bronze'}`}
+                          className="w-16 h-16 object-contain"
+                        />
                       </div>
                     )}
                   </div>
