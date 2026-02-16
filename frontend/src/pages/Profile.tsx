@@ -500,7 +500,7 @@ export default function Profile() {
                   Você está no plano mais alto!
                 </h3>
                 <p className="text-gray-600 font-semibold">
-                  Aproveite todos os recursos premium da plataforma GREENA.
+                  Aproveite todos os recursos premium da plataforma engreena.
                 </p>
               </div>
             )}

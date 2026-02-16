@@ -27,6 +27,7 @@ export class AuthService {
   async register(data: RegisterData) {
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
+      select: { id: true },
     });
 
     if (existingUser) {
@@ -73,6 +74,15 @@ export class AuthService {
   async login(data: LoginData) {
     const user = await prisma.user.findUnique({
       where: { email: data.email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        companyName: true,
+        role: true,
+        passwordHash: true,
+        isActive: true,
+      },
     });
 
     if (!user) {

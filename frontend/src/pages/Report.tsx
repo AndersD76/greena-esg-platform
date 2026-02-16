@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { reportService, FullReport, PillarBreakdown } from '../services/report.service';
 
-// Cores do GREENA
+// Cores do engreena
 const COLORS = {
   primary: '#152F27',
   accent: '#7B9965',
@@ -765,8 +765,8 @@ export default function Report() {
 
         {/* ========== FOOTER ========== */}
         <div className="text-center text-sm text-gray-400 py-6 border-t border-gray-200">
-          <p className="font-semibold">Relatorio gerado pela plataforma GREENA</p>
-          <p>&copy; {new Date().getFullYear()} Greena ESG - Todos os direitos reservados</p>
+          <p className="font-semibold">Relatório gerado pela plataforma engreena</p>
+          <p>&copy; {new Date().getFullYear()} engreena ESG - Todos os direitos reservados</p>
         </div>
       </div>
     </div>

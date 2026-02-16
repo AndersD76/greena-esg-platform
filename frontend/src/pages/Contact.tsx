@@ -222,7 +222,7 @@ export default function Contact() {
 
       {/* Footer */}
       <footer className="py-8 px-6 bg-gray-900 text-white text-center">
-        <p className="text-sm">© 2025 GREENA ESG Platform. Todos os direitos reservados.</p>
+        <p className="text-sm">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

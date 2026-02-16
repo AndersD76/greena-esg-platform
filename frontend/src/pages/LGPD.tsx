@@ -36,7 +36,7 @@ export default function LGPD() {
             <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-xl mb-8">
               <h3 className="text-lg font-bold text-green-800 mb-2">Nosso Compromisso</h3>
               <p className="text-green-700">
-                A GREENA está em total conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
+                A engreena está em total conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
                 Tratamos seus dados com transparência, segurança e respeito aos seus direitos.
               </p>
             </div>
@@ -78,7 +78,7 @@ export default function LGPD() {
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Encarregado de Dados (DPO)</h2>
             <p className="text-gray-700 mb-4">
-              A GREENA possui um Encarregado de Proteção de Dados responsável por:
+              A engreena possui um Encarregado de Proteção de Dados responsável por:
             </p>
             <ul className="list-disc pl-6 mb-6 text-gray-700 space-y-2">
               <li>Receber reclamações e comunicações dos titulares</li>
@@ -140,7 +140,7 @@ export default function LGPD() {
 
       {/* Footer */}
       <footer className="py-8 px-6 bg-gray-900 text-white text-center">
-        <p className="text-sm">© 2025 GREENA ESG Platform. Todos os direitos reservados.</p>
+        <p className="text-sm">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

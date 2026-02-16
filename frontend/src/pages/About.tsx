@@ -39,7 +39,7 @@ export default function About() {
       <section className="relative py-24 px-6 overflow-hidden" style={{ background: 'linear-gradient(135deg, #152F27 0%, #2d5a45 100%)' }}>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center text-white">
-            <h1 className="text-6xl font-black mb-6">Sobre a GREENA</h1>
+            <h1 className="text-6xl font-black mb-6">Sobre a engreena</h1>
             <p className="text-2xl opacity-90 max-w-3xl mx-auto">
               Transformando empresas através de práticas ESG sustentáveis e responsáveis
             </p>
@@ -110,7 +110,7 @@ export default function About() {
               <div>
                 <h3 className="text-2xl font-black mb-3" style={{ color: '#152F27' }}>Origem</h3>
                 <p className="text-gray-700 text-lg leading-relaxed">
-                  A GREENA nasceu da visão de especialistas em sustentabilidade com mais de 20 anos de experiência
+                  A engreena nasceu da visão de especialistas em sustentabilidade com mais de 20 anos de experiência
                   em consultoria ESG. Percebemos a necessidade de democratizar o acesso a avaliações de qualidade
                   e criar ferramentas que realmente impulsionem mudanças concretas.
                 </p>
@@ -191,7 +191,7 @@ export default function About() {
 
       {/* Footer */}
       <footer className="py-8 px-6 bg-gray-900 text-white text-center">
-        <p className="text-sm">© 2025 GREENA ESG Platform. Todos os direitos reservados.</p>
+        <p className="text-sm">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

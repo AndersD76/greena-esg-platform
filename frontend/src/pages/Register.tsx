@@ -37,18 +37,17 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #152F27 0%, #2d5a45 50%, #7B9965 100%)' }}>
+    <div className="min-h-screen bg-brand-100">
       {/* Header */}
-      <div className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-3">
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
+            <Link to="/" className="flex items-center">
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-10" />
             </Link>
             <Link
               to="/login"
-              className="text-sm font-semibold transition-colors"
-              style={{ color: '#152F27' }}
+              className="text-sm font-semibold text-brand-900 hover:text-brand-700 transition-colors"
             >
               Fazer Login
             </Link>
@@ -61,21 +60,21 @@ export default function Register() {
         <div className="max-w-lg w-full">
           {/* Título */}
           <div className="text-center mb-8">
-            <h2 className="text-4xl font-black text-white mb-3">Crie sua conta</h2>
-            <p className="text-xl text-white opacity-90">Comece a avaliar suas práticas ESG gratuitamente</p>
+            <h2 className="text-3xl font-bold text-brand-900 mb-2">Crie sua conta</h2>
+            <p className="text-gray-500">Comece a avaliar suas práticas ESG gratuitamente</p>
           </div>
 
           {/* Form Card */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             {error && (
-              <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: '#fee', border: '2px solid #fcc' }}>
-                <p className="text-sm font-semibold" style={{ color: '#c33' }}>{error}</p>
+              <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
+                <p className="text-sm font-medium text-red-600">{error}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                <label className="block text-sm font-semibold text-brand-900 mb-2">
                   Nome completo *
                 </label>
                 <input
@@ -84,13 +83,12 @@ export default function Register() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                <label className="block text-sm font-semibold text-brand-900 mb-2">
                   Email *
                 </label>
                 <input
@@ -99,13 +97,12 @@ export default function Register() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                <label className="block text-sm font-semibold text-brand-900 mb-2">
                   Senha *
                 </label>
                 <input
@@ -115,13 +112,12 @@ export default function Register() {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                   minLength={8}
-                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                <label className="block text-sm font-semibold text-brand-900 mb-2">
                   Qual a maior dor no aspecto ESG que a sua empresa enfrenta?
                 </label>
                 <textarea
@@ -129,8 +125,7 @@ export default function Register() {
                   value={formData.esgPainPoint}
                   onChange={(e) => setFormData({ ...formData, esgPainPoint: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600 resize-none"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700 resize-none"
                 />
               </div>
 
@@ -139,16 +134,16 @@ export default function Register() {
                   type="checkbox"
                   checked={acceptTerms}
                   onChange={(e) => setAcceptTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded"
+                  className="mt-1 w-4 h-4 rounded border-gray-300"
                   style={{ accentColor: '#7B9965' }}
                 />
-                <label className="ml-2 text-sm font-semibold" style={{ color: '#152F27' }}>
+                <label className="ml-2 text-sm text-gray-600">
                   Concordo com os{' '}
-                  <Link to="/terms" className="font-black hover:underline" style={{ color: '#7B9965' }}>
+                  <Link to="/terms" className="font-semibold text-brand-700 hover:underline">
                     termos de uso
                   </Link>{' '}
                   e{' '}
-                  <Link to="/privacy" className="font-black hover:underline" style={{ color: '#7B9965' }}>
+                  <Link to="/privacy" className="font-semibold text-brand-700 hover:underline">
                     política de privacidade
                   </Link>
                 </label>
@@ -157,23 +152,22 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl text-white font-black text-lg transition-all hover:opacity-90 disabled:opacity-50 shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                className="w-full py-3.5 rounded-full bg-brand-900 text-white font-semibold text-sm transition-all hover:bg-brand-900/90 disabled:opacity-50"
               >
                 {loading ? 'Criando conta...' : 'Criar Conta Grátis'}
               </button>
             </form>
 
-            <div className="mt-6 p-4 rounded-xl" style={{ backgroundColor: '#f0f7ed' }}>
-              <p className="text-xs font-semibold text-center" style={{ color: '#666' }}>
+            <div className="mt-6 p-4 rounded-xl bg-brand-100">
+              <p className="text-xs text-gray-500 text-center">
                 Após o cadastro, complete seu perfil com os dados da empresa dentro da plataforma.
               </p>
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-sm font-semibold" style={{ color: '#666' }}>
+              <p className="text-sm text-gray-500">
                 Já tem uma conta?{' '}
-                <Link to="/login" className="font-black hover:underline" style={{ color: '#7B9965' }}>
+                <Link to="/login" className="font-semibold text-brand-700 hover:underline">
                   Fazer login
                 </Link>
               </p>
@@ -182,7 +176,7 @@ export default function Register() {
 
           {/* Voltar para home */}
           <div className="mt-6 text-center">
-            <Link to="/" className="text-sm font-bold text-white hover:underline flex items-center justify-center gap-2">
+            <Link to="/" className="text-sm text-gray-500 hover:text-brand-900 transition-colors inline-flex items-center gap-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
               </svg>

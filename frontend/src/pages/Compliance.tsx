@@ -59,7 +59,7 @@ export default function Compliance() {
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Programa de Compliance</h2>
             <p className="text-gray-700 mb-6">
-              A GREENA mantém um robusto programa de compliance que abrange todas as áreas de nossa operação.
+              A engreena mantém um robusto programa de compliance que abrange todas as áreas de nossa operação.
               Nosso compromisso é garantir que todas as atividades estejam em conformidade com as leis,
               regulamentos e melhores práticas do mercado.
             </p>
@@ -146,7 +146,7 @@ export default function Compliance() {
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Treinamento e Conscientização</h2>
             <p className="text-gray-700 mb-6">
-              Todos os colaboradores da GREENA passam por treinamentos regulares sobre:
+              Todos os colaboradores da engreena passam por treinamentos regulares sobre:
             </p>
             <ul className="list-disc pl-6 mb-6 text-gray-700 space-y-2">
               <li>Código de Ética e Conduta</li>
@@ -158,7 +158,7 @@ export default function Compliance() {
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Contato do Compliance</h2>
             <div className="bg-gray-50 p-6 rounded-xl">
-              <p className="text-gray-700 mb-2"><strong>Responsável:</strong> Comitê de Compliance GREENA</p>
+              <p className="text-gray-700 mb-2"><strong>Responsável:</strong> Comitê de Compliance engreena</p>
               <p className="text-gray-700 mb-2"><strong>E-mail:</strong> compliance@greenasolucoes.com.br</p>
               <p className="text-gray-700"><strong>Telefone:</strong> (54) 99189-7645</p>
             </div>
@@ -168,7 +168,7 @@ export default function Compliance() {
 
       {/* Footer */}
       <footer className="py-8 px-6 bg-gray-900 text-white text-center">
-        <p className="text-sm">© 2025 GREENA ESG Platform. Todos os direitos reservados.</p>
+        <p className="text-sm">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

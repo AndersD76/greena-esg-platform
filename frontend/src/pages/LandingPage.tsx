@@ -8,7 +8,6 @@ export default function LandingPage() {
   const [demoAnswers, setDemoAnswers] = useState<number[]>([]);
   const [showDemoResult, setShowDemoResult] = useState(false);
 
-  // Perguntas de demonstração ESG
   const demoQuestions = [
     {
       category: 'Ambiental',
@@ -51,7 +50,6 @@ export default function LandingPage() {
   const handleDemoAnswer = (answerIndex: number) => {
     const newAnswers = [...demoAnswers, answerIndex];
     setDemoAnswers(newAnswers);
-
     if (demoStep < demoQuestions.length - 1) {
       setDemoStep(demoStep + 1);
     } else {
@@ -85,500 +83,154 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-  // Ícone Planeta/Global
-  const GlobeIcon = ({ size = 48, color = "#7B9965" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <line x1="2" y1="12" x2="22" y2="12"/>
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-    </svg>
-  );
-
-  // Ícone Pessoas/Comunidade
-  const UsersIcon = ({ size = 48, color = "#924131" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-      <circle cx="9" cy="7" r="4"/>
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-    </svg>
-  );
-
-  // Ícone Escudo/Governança
-  const ShieldIcon = ({ size = 48, color = "#152F27" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-      <path d="M12 8v4"/>
-      <path d="M12 16h.01"/>
-    </svg>
-  );
-
-  // Ícone Checklist/Avaliação
-  const ChecklistIcon = ({ size = 48, color = "#7B9965" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-      <path d="M9 14l2 2 4-4"/>
-    </svg>
-  );
-
-  // Ícone Gráfico/Analytics
-  const ChartIcon = ({ size = 48, color = "#152F27" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="20" x2="18" y2="10"/>
-      <line x1="12" y1="20" x2="12" y2="4"/>
-      <line x1="6" y1="20" x2="6" y2="14"/>
-    </svg>
-  );
-
-  // Ícone Certificado
-  const AwardIcon = ({ size = 48, color = "#924131" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="7"/>
-      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-    </svg>
-  );
-
-  // Ícone Folha/Sustentabilidade
-  const LeafIcon = ({ size = 48, color = "#7B9965" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
-      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
-    </svg>
-  );
-
-  // Ícone Rocket
-  const RocketIcon = ({ size = 48, color = "white" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
-      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
-      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
-      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
-    </svg>
-  );
-
-  // Ícone Trending Up
-  const TrendingIcon = ({ size = 24, color = "#7B9965" }: { size?: number; color?: string }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-      <polyline points="17 6 23 6 23 12"/>
-    </svg>
-  );
-
   return (
     <div className="min-h-screen bg-white">
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-15px); }
-        }
-
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.6; }
-        }
-
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        .animate-fade-up { animation: fadeInUp 1s ease-out forwards; }
-        .animate-slide-in { animation: slideIn 1s ease-out forwards; }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse 4s ease-in-out infinite; }
-        .animate-scale-in { animation: scaleIn 0.8s ease-out forwards; }
-
-        .delay-100 { animation-delay: 0.1s; opacity: 0; }
-        .delay-200 { animation-delay: 0.2s; opacity: 0; }
-        .delay-300 { animation-delay: 0.3s; opacity: 0; }
-        .delay-400 { animation-delay: 0.4s; opacity: 0; }
-        .delay-500 { animation-delay: 0.5s; opacity: 0; }
-        .delay-600 { animation-delay: 0.6s; opacity: 0; }
-
-        .hover-lift {
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hover-lift:hover {
-          transform: translateY(-12px);
-          box-shadow: 0 20px 40px rgba(21, 47, 39, 0.25);
-        }
-
-        .gradient-green {
-          background: linear-gradient(135deg, #152F27 0%, #2d5a45 50%, #7B9965 100%);
-        }
-
-        .gradient-overlay {
-          background: linear-gradient(180deg, rgba(21, 47, 39, 0.95) 0%, rgba(21, 47, 39, 0.7) 100%);
-        }
-
-        .text-gradient {
-          background: linear-gradient(135deg, #7B9965 0%, #152F27 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-      `}</style>
-
       {/* Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md' : 'bg-white'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
-              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
+            <Link to="/" className="flex items-center">
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-12" />
             </Link>
-
-            {/* Menu */}
-            <div className="flex items-center gap-6">
-              <a
-                href="#sobre"
-                className="text-sm font-semibold transition-colors"
-                style={{ color: '#152F27' }}
-              >
-                Sobre
-              </a>
-              <a
-                href="#pilares"
-                className="text-sm font-semibold transition-colors"
-                style={{ color: '#152F27' }}
-              >
-                Pilares ESG
-              </a>
-              <Link
-                to="/contact"
-                className="text-sm font-semibold transition-colors"
-                style={{ color: '#152F27' }}
-              >
-                Contato
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#sobre" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Sobre</a>
+              <a href="#pilares" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Pilares ESG</a>
+              <a href="#planos" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Planos</a>
+              <Link to="/contact" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Contato</Link>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link to="/login" className="px-5 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                Login
               </Link>
-              <Link
-                to="/login"
-                className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90 gradient-green"
-              >
-                Acessar Plataforma
+              <Link to="/register" className="px-5 py-2 text-sm font-semibold text-white rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
+                Cadastro
               </Link>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Banner - FULL SCREEN */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
-        {/* Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 gradient-green"></div>
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 10 Q30 30 50 50 Q70 30 50 10 Z' fill='white' opacity='0.5'/%3E%3Cpath d='M30 40 Q20 55 30 70 Q40 55 30 40 Z' fill='white' opacity='0.4'/%3E%3Cpath d='M70 40 Q60 55 70 70 Q80 55 70 40 Z' fill='white' opacity='0.4'/%3E%3Cpath d='M50 60 Q40 75 50 90 Q60 75 50 60 Z' fill='white' opacity='0.3'/%3E%3C/svg%3E")`,
-            backgroundSize: '200px 200px'
-          }}/>
-          <div className="absolute top-20 left-10 w-96 h-96 bg-green-300 rounded-full blur-3xl opacity-20 animate-pulse-slow"></div>
-          <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-emerald-400 rounded-full blur-3xl opacity-20 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="text-white">
-              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full mb-6 animate-fade-up bg-white/20 backdrop-blur-sm border border-white/30">
-                <LeafIcon size={20} color="white" />
-                <span className="text-sm font-bold">Plataforma ESG Completa</span>
-              </div>
-
-              <h1 className="text-7xl font-black mb-6 leading-tight animate-fade-up delay-100">
-                Transforme seu<br/>
-                Negócio com<br/>
-                <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(to right, #EFD4A8, #7B9965)' }}>
-                  Sustentabilidade
-                </span>
+      {/* Hero */}
+      <section className="relative pt-28 pb-20 overflow-hidden" style={{ backgroundColor: '#f5ffeb' }}>
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6" style={{ color: '#152F27' }}>
+                Diagnóstico<br/>ESG completo
               </h1>
-
-              <p className="text-2xl mb-8 leading-relaxed opacity-95 animate-fade-up delay-200">
-                Avalie, monitore e evolua sua performance ESG com <strong className="text-yellow-200">215 questões especializadas</strong> e relatórios completos.
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg">
+                Avalie práticas ambientais, sociais e de governança em minutos. Receba insights personalizados e um plano de ação para tornar sua empresa mais sustentável.
               </p>
-
-              <div className="flex flex-wrap gap-4 mb-12 animate-fade-up delay-300">
-                <Link
-                  to="/login"
-                  className="px-10 py-5 bg-white font-bold rounded-2xl transition-all hover:scale-105 shadow-2xl text-xl flex items-center gap-3"
-                  style={{ color: '#152F27' }}
-                >
-                  Começar Diagnóstico Gratuito
-                  <TrendingIcon size={20} color="#152F27" />
+              <div className="flex flex-wrap gap-3 mb-12">
+                <Link to="/register" className="px-8 py-3.5 text-sm font-semibold text-white rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
+                  Começar diagnóstico gratuito
                 </Link>
-                <button
-                  onClick={() => setShowDemo(true)}
-                  className="px-10 py-5 border-3 border-white font-bold rounded-2xl transition-all hover:bg-white/10 text-xl text-white"
-                >
-                  Ver Demo
+                <button onClick={() => setShowDemo(true)} className="px-8 py-3.5 text-sm font-semibold rounded-full border-2 transition-all hover:bg-white" style={{ borderColor: '#152F27', color: '#152F27' }}>
+                  Ver demo
                 </button>
               </div>
-
+              <div className="flex gap-4">
+                {[
+                  { value: '+500', label: 'Empresas avaliadas' },
+                  { value: '15 min', label: 'Tempo médio' },
+                  { value: '98%', label: 'Satisfação' }
+                ].map((stat, i) => (
+                  <div key={i} className="px-5 py-4 bg-white rounded-2xl border border-gray-100">
+                    <p className="text-2xl font-bold" style={{ color: '#152F27' }}>{stat.value}</p>
+                    <p className="text-xs text-gray-500 font-medium">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Right - Visual ESG Cards */}
-            <div className="relative animate-float">
-              <div className="grid gap-6">
-                {/* Environmental Card */}
-                <div className="p-8 bg-white/15 backdrop-blur-xl rounded-3xl border border-white/30 hover-lift">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#7B9965' }}>
-                      <GlobeIcon size={40} color="white" />
-                    </div>
-                    <div className="text-white">
-                      <div className="text-3xl font-black mb-1">Environmental</div>
-                      <div className="text-lg opacity-90">Gestão Ambiental e Climática</div>
-                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>15 critérios • 5 temas</div>
-                    </div>
+            <div className="space-y-4">
+              {[
+                { title: 'Environmental', subtitle: 'Gestão Ambiental e Climática', detail: '15 critérios  ·  5 temas  ·  75 questões', color: '#7B9965', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+                { title: 'Social', subtitle: 'Responsabilidade Social', detail: '15 critérios  ·  5 temas  ·  75 questões', color: '#924131', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
+                { title: 'Governance', subtitle: 'Governança Corporativa', detail: '13 critérios  ·  4 temas  ·  65 questões', color: '#152F27', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' }
+              ].map((card, i) => (
+                <div key={i} className="flex items-center gap-5 p-6 bg-white rounded-2xl border border-gray-100 transition-all hover:shadow-md">
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: card.color + '15' }}>
+                    <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke={card.color} strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d={card.icon} />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold" style={{ color: card.color }}>{card.title}</h3>
+                    <p className="text-sm text-gray-500">{card.subtitle}</p>
+                    <p className="text-xs font-medium mt-1" style={{ color: card.color }}>{card.detail}</p>
                   </div>
                 </div>
-
-                {/* Social Card */}
-                <div className="p-8 bg-white/15 backdrop-blur-xl rounded-3xl border border-white/30 hover-lift">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#924131' }}>
-                      <UsersIcon size={40} color="white" />
-                    </div>
-                    <div className="text-white">
-                      <div className="text-3xl font-black mb-1">Social</div>
-                      <div className="text-lg opacity-90">Responsabilidade Social</div>
-                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>15 critérios • 5 temas</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Governance Card */}
-                <div className="p-8 bg-white/15 backdrop-blur-xl rounded-3xl border border-white/30 hover-lift">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#EFD4A8' }}>
-                      <ShieldIcon size={40} color="#152F27" />
-                    </div>
-                    <div className="text-white">
-                      <div className="text-3xl font-black mb-1">Governance</div>
-                      <div className="text-lg opacity-90">Governança Corporativa</div>
-                      <div className="text-sm font-bold mt-2" style={{ color: '#EFD4A8' }}>13 critérios • 4 temas</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Banner Section - Por que GREENA */}
-      <section className="py-24 px-6 relative overflow-hidden" style={{ backgroundColor: '#f0f9f4' }}>
+      {/* Por que engreena */}
+      <section id="sobre" className="py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-6xl font-black mb-6 text-gradient">
-              Por que escolher a GREENA?
-            </h2>
-            <p className="text-2xl text-gray-700 max-w-3xl mx-auto">
-              A plataforma ESG mais completa e moderna do Brasil
-            </p>
+            <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Por que engreena</p>
+            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>A plataforma ESG mais completa do Brasil</h2>
+            <p className="text-lg text-gray-500 max-w-2xl mx-auto">Tudo que sua empresa precisa para iniciar e evoluir na jornada ESG</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                Icon: ChecklistIcon,
-                title: '215 Perguntas ESG',
-                description: 'Questionário completo cobrindo Environmental, Social e Governance com metodologia internacional',
-                color: '#7B9965'
-              },
-              {
-                Icon: ChartIcon,
-                title: 'Relatórios Inteligentes',
-                description: 'Dashboards interativos com análises profundas, gráficos e insights acionáveis em tempo real',
-                color: '#152F27'
-              },
-              {
-                Icon: AwardIcon,
-                title: 'Certificação ESG Greena',
-                description: 'Certificação que valida sua performance e compromisso ESG com metodologia própria',
-                color: '#924131'
-              }
+              { title: '215 Perguntas ESG', description: 'Questionário completo cobrindo Environmental, Social e Governance com metodologia internacional.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
+              { title: 'Relatórios Inteligentes', description: 'Dashboards interativos com análises profundas, gráficos e insights acionáveis em tempo real.', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+              { title: 'Certificação ESG engreena', description: 'Certificação que valida sua performance e compromisso ESG com metodologia própria reconhecida.', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' }
             ].map((feature, i) => (
-              <div key={i} className="hover-lift p-10 bg-white rounded-3xl shadow-lg border-2 animate-scale-in" style={{ borderColor: feature.color + '40', animationDelay: `${i * 0.1}s` }}>
-                <div className="mb-6 flex justify-center">
-                  <feature.Icon size={64} color={feature.color} />
+              <div key={i} className="p-8 rounded-2xl border border-gray-100 transition-all hover:shadow-md hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: '#e2f7d0' }}>
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#152F27" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={feature.icon} />
+                  </svg>
                 </div>
-                <h3 className="text-3xl font-black mb-4 text-center" style={{ color: feature.color }}>
-                  {feature.title}
-                </h3>
-                <p className="text-lg text-gray-700 leading-relaxed text-center">
-                  {feature.description}
-                </p>
+                <h3 className="text-xl font-semibold mb-3" style={{ color: '#152F27' }}>{feature.title}</h3>
+                <p className="text-gray-500 leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pilares ESG - Detalhado */}
-      <section id="pilares" className="py-24 px-6 bg-white">
+      {/* Pilares ESG */}
+      <section id="pilares" className="py-24 px-6" style={{ backgroundColor: '#f5ffeb' }}>
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-6xl font-black mb-6" style={{ color: '#152F27' }}>
-              Avaliação Completa dos<br/>
-              <span className="text-gradient">3 Pilares ESG</span>
-            </h2>
-            <p className="text-2xl text-gray-600">Metodologia estruturada e reconhecida globalmente</p>
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Metodologia</p>
+            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Avaliação completa dos 3 pilares ESG</h2>
+            <p className="text-lg text-gray-500">Metodologia estruturada e reconhecida globalmente</p>
           </div>
-
-          <div className="grid lg:grid-cols-3 gap-10">
+          <div className="grid lg:grid-cols-3 gap-8">
             {[
-              {
-                title: 'Ambiental',
-                subtitle: 'Environmental',
-                Icon: GlobeIcon,
-                temas: '5 temas estratégicos',
-                criterios: '15 critérios avaliados',
-                questoes: '75 questões detalhadas',
-                color: '#7B9965',
-                examples: ['Mudanças Climáticas', 'Recursos Hídricos', 'Biodiversidade', 'Economia Circular', 'Gestão Ambiental']
-              },
-              {
-                title: 'Social',
-                subtitle: 'Social',
-                Icon: UsersIcon,
-                temas: '5 temas estratégicos',
-                criterios: '15 critérios avaliados',
-                questoes: '75 questões detalhadas',
-                color: '#924131',
-                examples: ['Direitos Humanos', 'Diversidade & Inclusão', 'Saúde e Segurança', 'Comunidade', 'Relações com a cadeia de valor']
-              },
-              {
-                title: 'Governança',
-                subtitle: 'Governance',
-                Icon: ShieldIcon,
-                temas: '4 temas estratégicos',
-                criterios: '13 critérios avaliados',
-                questoes: '65 questões detalhadas',
-                color: '#152F27',
-                examples: ['Ética e Compliance', 'Transparência', 'Gestão de Riscos', 'Conselho']
-              }
+              { title: 'Ambiental', subtitle: 'Environmental', temas: '5 temas estratégicos', criterios: '15 critérios avaliados', questoes: '75 questões detalhadas', color: '#7B9965', examples: ['Mudanças Climáticas', 'Recursos Hídricos', 'Biodiversidade', 'Economia Circular', 'Gestão Ambiental'], icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+              { title: 'Social', subtitle: 'Social', temas: '5 temas estratégicos', criterios: '15 critérios avaliados', questoes: '75 questões detalhadas', color: '#924131', examples: ['Direitos Humanos', 'Diversidade & Inclusão', 'Saúde e Segurança', 'Comunidade', 'Cadeia de Valor'], icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
+              { title: 'Governança', subtitle: 'Governance', temas: '4 temas estratégicos', criterios: '13 critérios avaliados', questoes: '65 questões detalhadas', color: '#152F27', examples: ['Ética e Compliance', 'Transparência', 'Gestão de Riscos', 'Conselho'], icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' }
             ].map((pilar, i) => (
-              <div key={i} className="hover-lift p-10 rounded-3xl border-4 bg-white shadow-xl animate-scale-in" style={{ borderColor: pilar.color, animationDelay: `${i * 0.15}s` }}>
-                <div className="mb-6 flex justify-center">
-                  <pilar.Icon size={80} color={pilar.color} />
+              <div key={i} className="bg-white p-8 rounded-2xl border border-gray-100 transition-all hover:shadow-md">
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: pilar.color + '15' }}>
+                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke={pilar.color} strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={pilar.icon} />
+                  </svg>
                 </div>
-                <h3 className="text-5xl font-black mb-2 text-center" style={{ color: pilar.color }}>
-                  {pilar.title}
-                </h3>
-                <p className="text-xl text-center text-gray-500 mb-8 font-semibold">{pilar.subtitle}</p>
-
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: pilar.color + '15' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={pilar.color} strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span className="font-bold text-lg">{pilar.temas}</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: pilar.color + '15' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={pilar.color} strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span className="font-bold text-lg">{pilar.criterios}</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: pilar.color + '15' }}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={pilar.color} strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span className="font-black text-xl" style={{ color: pilar.color }}>{pilar.questoes}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  {pilar.examples.map((ex, j) => (
-                    <div key={j} className="text-sm font-semibold text-gray-600 flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: pilar.color }}></div>
-                      {ex}
+                <h3 className="text-2xl font-bold mb-1" style={{ color: pilar.color }}>{pilar.title}</h3>
+                <p className="text-sm text-gray-400 mb-6">{pilar.subtitle}</p>
+                <div className="space-y-3 mb-6">
+                  {[pilar.temas, pilar.criterios, pilar.questoes].map((item, j) => (
+                    <div key={j} className="flex items-center gap-2.5">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={pilar.color} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span className="text-sm font-medium text-gray-700">{item}</span>
                     </div>
                   ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Certification Levels Section */}
-      <section className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #f8fafb 0%, white 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-6xl font-black mb-6" style={{ color: '#152F27' }}>
-              Níveis de <span className="text-gradient">Certificação ESG</span>
-            </h2>
-            <p className="text-2xl text-gray-600 mb-4">
-              Sua conquista reconhecida
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {[
-              {
-                level: 'Bronze',
-                title: 'Compromisso ESG',
-                score: '0-39 pontos',
-                color: '#CD7F32'
-              },
-              {
-                level: 'Prata',
-                title: 'Integração ESG',
-                score: '40-69 pontos',
-                color: '#C0C0C0'
-              },
-              {
-                level: 'Ouro',
-                title: 'Liderança ESG',
-                score: '70-100 pontos',
-                color: '#FFD700'
-              }
-            ].map((cert, i) => (
-              <div
-                key={i}
-                className="relative p-8 rounded-3xl border-4 hover-lift shadow-xl bg-white"
-                style={{ borderColor: cert.color }}
-              >
-                <div className="text-center">
-                  <h3 className="text-4xl font-black mb-2" style={{ color: cert.color }}>
-                    {cert.level}
-                  </h3>
-                  <p className="text-xl font-bold text-gray-700 mb-4">{cert.title}</p>
-                  <p className="text-sm font-semibold text-gray-500 px-4 py-2 rounded-full inline-block" style={{ backgroundColor: cert.color + '20' }}>
-                    {cert.score}
-                  </p>
+                <div className="pt-5 border-t border-gray-100">
+                  <div className="flex flex-wrap gap-2">
+                    {pilar.examples.map((ex, j) => (
+                      <span key={j} className="text-xs font-medium px-3 py-1.5 rounded-full" style={{ backgroundColor: pilar.color + '10', color: pilar.color }}>{ex}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
@@ -586,560 +238,235 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section - Planos */}
+      {/* Certificação */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-6xl font-black mb-6" style={{ color: '#152F27' }}>
-              Planos que Crescem com<br/>
-              <span className="text-gradient">Seu Negócio</span>
-            </h2>
-            <p className="text-2xl text-gray-600">Escolha o melhor plano para sua jornada ESG</p>
+            <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Certificação</p>
+            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Níveis de Certificação ESG</h2>
+            <p className="text-lg text-gray-500">Sua conquista reconhecida</p>
           </div>
-
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {[
-              {
-                name: 'Teste Grátis',
-                code: 'free',
-                price: 'R$ 0',
-                period: '',
-                highlight: false,
-                features: [
-                  'Questões para identificar dor da empresa no tema ESG',
-                  'Acesso limitado para conhecer a plataforma'
-                ],
-                cta: 'Experimente Grátis',
-                color: '#7B9965',
-                badge: 'Demo',
-                limitation: 'Para captar leads'
-              },
-              {
-                name: 'Start',
-                code: 'start',
-                price: 'R$ 49',
-                period: '/mês',
-                highlight: false,
-                features: [
-                  'Diagnóstico Maturidade ESG',
-                  'Acesso ao dashboard'
-                ],
-                cta: 'Assinar Start',
-                color: '#152F27'
-              },
-              {
-                name: 'Grow',
-                code: 'grow',
-                price: 'R$ 99',
-                period: '/mês',
-                highlight: true,
-                features: [
-                  'Diagnóstico Maturidade ESG',
-                  'Acesso ao dashboard',
-                  '2h mensais de consultoria',
-                  'Certificação'
-                ],
-                cta: 'Assinar Grow',
-                color: '#924131',
-                badge: 'Mais Popular'
-              },
-              {
-                name: 'Impact',
-                code: 'impact',
-                price: 'R$ 159',
-                period: '/mês',
-                highlight: false,
-                features: [
-                  'Diagnóstico Maturidade ESG',
-                  'Acesso ao dashboard',
-                  '4h mensais de consultoria',
-                  'Certificação',
-                  'Planos de Ação'
-                ],
-                cta: 'Assinar Impact',
-                color: '#152F27'
-              }
-            ].map((plan, i) => (
-              <div
-                key={i}
-                className={`relative p-8 rounded-3xl border-2 hover-lift ${plan.highlight ? 'shadow-2xl' : 'shadow-lg'}`}
-                style={{
-                  borderColor: plan.color,
-                  backgroundColor: plan.highlight ? plan.color + '10' : 'white',
-                  transform: plan.highlight ? 'scale(1.05)' : 'scale(1)'
-                }}
-              >
-                {plan.badge && (
-                  <div
-                    className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-white text-sm font-black"
-                    style={{ backgroundColor: plan.color }}
-                  >
-                    {plan.badge}
-                  </div>
-                )}
-
-                <div className="text-center mb-6">
-                  <h3 className="text-3xl font-black mb-2" style={{ color: plan.color }}>
-                    {plan.name}
-                  </h3>
-                  <div className="flex items-end justify-center gap-1 mb-2">
-                    <span className="text-5xl font-black" style={{ color: plan.color }}>
-                      {plan.price}
-                    </span>
-                    <span className="text-xl text-gray-500 mb-2">{plan.period}</span>
-                  </div>
-                  {plan.limitation && (
-                    <p className="text-xs text-gray-500 italic">{plan.limitation}</p>
-                  )}
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={plan.color} strokeWidth="2" className="flex-shrink-0 mt-0.5">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                      <span className="font-semibold text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  to={plan.code === 'free' ? '/register' : `/checkout?plan=${plan.code}`}
-                  className={`block w-full py-4 text-center font-black rounded-xl transition-all hover:scale-105 ${
-                    plan.highlight ? 'text-white shadow-lg' : 'border-2 hover:text-white'
-                  }`}
-                  style={{
-                    backgroundColor: plan.highlight ? plan.color : 'transparent',
-                    borderColor: plan.color,
-                    color: plan.highlight ? 'white' : plan.color
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!plan.highlight) {
-                      e.currentTarget.style.backgroundColor = plan.color;
-                      e.currentTarget.style.color = 'white';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!plan.highlight) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = plan.color;
-                    }
-                  }}
-                >
-                  {plan.cta}
-                </Link>
+              { level: 'Bronze', title: 'Compromisso ESG', score: '0-39 pontos', color: '#CD7F32', seal: '/images/assets/selo-bronze.png' },
+              { level: 'Prata', title: 'Integração ESG', score: '40-69 pontos', color: '#C0C0C0', seal: '/images/assets/selo-prata.png' },
+              { level: 'Ouro', title: 'Liderança ESG', score: '70-100 pontos', color: '#FFD700', seal: '/images/assets/selo-ouro.png' }
+            ].map((cert, i) => (
+              <div key={i} className="text-center p-8 rounded-2xl border-2 transition-all hover:shadow-md hover:-translate-y-1" style={{ borderColor: cert.color + '60' }}>
+                <img src={cert.seal} alt={`Selo ${cert.level}`} className="w-28 h-28 object-contain mx-auto mb-5" />
+                <h3 className="text-2xl font-bold mb-1" style={{ color: cert.color }}>{cert.level}</h3>
+                <p className="text-base font-medium text-gray-700 mb-3">{cert.title}</p>
+                <span className="text-xs font-semibold px-4 py-1.5 rounded-full" style={{ backgroundColor: cert.color + '15', color: cert.color }}>{cert.score}</span>
               </div>
             ))}
           </div>
-
-          <p className="text-center text-gray-500 mt-8 text-sm">
-            Sem compromisso • Cancelamento fácil • Dados protegidos
-          </p>
         </div>
       </section>
 
-      {/* Consultation Benefits Section */}
-      <section className="py-24 px-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #152F27 0%, #2d5a45 100%)' }}>
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='40' fill='white' opacity='0.3'/%3E%3C/svg%3E")`,
-          backgroundSize: '150px 150px'
-        }}/>
-
-        <div className="max-w-7xl mx-auto relative z-10">
+      {/* Planos */}
+      <section id="planos" className="py-24 px-6" style={{ backgroundColor: '#f5ffeb' }}>
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-6xl font-black mb-6 text-white">
-              Consultoria Especializada <span style={{ color: '#EFD4A8' }}>Inclusa</span>
-            </h2>
-            <p className="text-2xl text-white opacity-90 max-w-3xl mx-auto">
-              Assinantes contam com horas de consultoria ESG para acelerar sua transformação
-            </p>
+            <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Planos</p>
+            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Planos para sua jornada ESG</h2>
+            <p className="text-lg text-gray-500">Comece gratuitamente e evolua conforme sua necessidade</p>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-white/10 backdrop-blur-lg p-10 rounded-3xl border border-white/20">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#7B9965' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { name: 'Demo', code: 'free', price: 'Grátis', period: '', highlight: false, features: [{ text: 'Diagnóstico rápido (6 perguntas)', included: true }, { text: 'Resultado simplificado', included: true }, { text: 'Relatório completo', included: false }, { text: 'Consultoria', included: false }, { text: 'Certificação', included: false }], cta: 'Começar Grátis', subtitle: 'Conheça a plataforma' },
+              { name: 'Start', code: 'start', price: 'R$ 49', period: '/mês', highlight: false, features: [{ text: 'Diagnóstico completo (215 perguntas)', included: true }, { text: 'Dashboard de indicadores', included: true }, { text: 'Relatório detalhado', included: true }, { text: 'Consultoria', included: false }, { text: 'Certificação', included: false }], cta: 'Assinar Start', subtitle: 'Para quem está começando' },
+              { name: 'Grow', code: 'grow', price: 'R$ 99', period: '/mês', highlight: true, features: [{ text: 'Tudo do Start', included: true }, { text: '2h/mês de consultoria ESG', included: true }, { text: 'Certificação ESG', included: true }, { text: 'Insights estratégicos', included: true }, { text: 'Planos de ação', included: false }], cta: 'Assinar Grow', badge: 'Recomendado', subtitle: 'Mais escolhido' },
+              { name: 'Impact', code: 'impact', price: 'R$ 159', period: '/mês', highlight: false, features: [{ text: 'Tudo do Grow', included: true }, { text: '4h/mês de consultoria ESG', included: true }, { text: 'Planos de ação personalizados', included: true }, { text: 'Benchmarking setorial', included: true }, { text: 'Suporte prioritário', included: true }], cta: 'Assinar Impact', subtitle: 'Máximo impacto' }
+            ].map((plan, i) => (
+              <div key={i} className={`relative rounded-2xl bg-white transition-all ${plan.highlight ? 'shadow-lg ring-2 scale-[1.02] z-10' : 'border border-gray-100 hover:shadow-md'}`} style={plan.highlight ? { '--tw-ring-color': '#7B9965' } as any : undefined}>
+                {plan.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-white text-xs font-semibold" style={{ backgroundColor: '#152F27' }}>{plan.badge}</div>
+                )}
+                <div className="p-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold" style={{ color: '#152F27' }}>{plan.name}</h3>
+                    <p className="text-xs text-gray-400">{plan.subtitle}</p>
+                  </div>
+                  <div className="mb-5">
+                    <span className="text-3xl font-bold" style={{ color: plan.highlight ? '#7B9965' : '#152F27' }}>{plan.price}</span>
+                    {plan.period && <span className="text-sm text-gray-400">{plan.period}</span>}
+                  </div>
+                  <ul className="space-y-2.5 mb-6">
+                    {plan.features.map((feature, j) => (
+                      <li key={j} className="flex items-start gap-2">
+                        {feature.included ? (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="12" fill="#7B9965" opacity="0.15"/><polyline points="8 12 11 15 16 9" stroke="#7B9965" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        ) : (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="12" fill="#e5e7eb"/><line x1="8" y1="12" x2="16" y2="12" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/></svg>
+                        )}
+                        <span className={`text-sm ${feature.included ? 'text-gray-700' : 'text-gray-400'}`}>{feature.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to={plan.code === 'free' ? '/register' : `/checkout?plan=${plan.code}`} className={`block w-full py-3 text-center font-semibold text-sm rounded-full transition-all hover:opacity-90 ${plan.highlight ? 'text-white' : 'border-2'}`} style={plan.highlight ? { backgroundColor: '#152F27' } : { borderColor: '#152F27', color: '#152F27' }}>
+                    {plan.cta}
+                  </Link>
                 </div>
-                <h3 className="text-3xl font-black text-white">O que inclui?</h3>
               </div>
+            ))}
+          </div>
+          <p className="text-center text-gray-400 mt-10 text-sm">Sem fidelidade · Cancele quando quiser · Dados protegidos por criptografia</p>
+        </div>
+      </section>
+
+      {/* Consultoria */}
+      <section className="py-24 px-6" style={{ backgroundColor: '#152F27' }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#e2f7d0' }}>Consultoria</p>
+            <h2 className="text-4xl font-bold text-white mb-4">Consultoria Especializada <span style={{ color: '#e2f7d0' }}>Inclusa</span></h2>
+            <p className="text-lg text-white/70 max-w-2xl mx-auto">Assinantes contam com horas de consultoria ESG para acelerar sua transformação</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="p-8 rounded-2xl border border-white/10 bg-white/5">
+              <h3 className="text-xl font-bold text-white mb-6">O que inclui?</h3>
               <ul className="space-y-4">
-                {[
-                  'Orientação estratégica personalizada',
-                  'Análise de resultados do diagnóstico',
-                  'Plano de ação para melhorias',
-                  'Acompanhamento de implementação',
-                  'Benchmarking setorial',
-                  'Preparação para auditorias'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-white">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EFD4A8" strokeWidth="3">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span className="font-semibold text-lg">{item}</span>
+                {['Orientação estratégica personalizada', 'Análise de resultados do diagnóstico', 'Plano de ação para melhorias', 'Acompanhamento de implementação', 'Benchmarking setorial', 'Preparação para auditorias'].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-white/90">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2f7d0" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span className="text-sm font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
-
-            <div className="bg-white/10 backdrop-blur-lg p-10 rounded-3xl border border-white/20">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ backgroundColor: '#924131' }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                  </svg>
-                </div>
-                <h3 className="text-3xl font-black text-white">Horas por Plano</h3>
-              </div>
-              <div className="space-y-4">
+            <div className="p-8 rounded-2xl border border-white/10 bg-white/5">
+              <h3 className="text-xl font-bold text-white mb-6">Horas por Plano</h3>
+              <div className="space-y-3">
                 {[
-                  { plan: 'Teste Grátis', hours: '0 horas', color: '#7B9965' },
-                  { plan: 'Start', hours: '0 horas', color: '#152F27' },
-                  { plan: 'Grow', hours: '2 horas/mês', color: '#924131' },
-                  { plan: 'Impact', hours: '4 horas/mês', color: '#EFD4A8' }
+                  { plan: 'Demo', hours: '0 horas', dim: true },
+                  { plan: 'Start', hours: '0 horas', dim: true },
+                  { plan: 'Grow', hours: '2 horas/mês', dim: false },
+                  { plan: 'Impact', hours: '4 horas/mês', dim: false }
                 ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between p-4 rounded-xl"
-                    style={{ backgroundColor: item.color + '20', borderLeft: `4px solid ${item.color}` }}
-                  >
-                    <span className="font-black text-white text-lg">{item.plan}</span>
-                    <span className="font-black text-2xl" style={{ color: item.color }}>
-                      {item.hours}
-                    </span>
+                  <div key={i} className={`flex items-center justify-between p-4 rounded-xl bg-white/5 ${item.dim ? 'opacity-40' : ''}`}>
+                    <span className="font-semibold text-white">{item.plan}</span>
+                    <span className="font-bold" style={{ color: '#e2f7d0' }}>{item.hours}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-
-          <div className="text-center bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/20">
-            <p className="text-white text-xl mb-4">
-              <strong style={{ color: '#EFD4A8' }}>Certificados ganham horas extras!</strong>
-            </p>
-            <p className="text-white opacity-90">
-              Bronze: 1h extra • Prata: 3h extras • Ouro: 6h extras de consultoria gratuita adicional
-            </p>
+          <div className="text-center p-6 rounded-2xl bg-white/5 border border-white/10">
+            <p className="text-white text-sm"><strong style={{ color: '#e2f7d0' }}>Certificados ganham horas extras!</strong> Bronze: 1h extra · Prata: 3h extras · Ouro: 6h extras de consultoria gratuita</p>
           </div>
         </div>
       </section>
 
-      {/* CTA Banner - GRANDE */}
-      <section className="relative py-32 px-6 overflow-hidden">
-        <div className="absolute inset-0 gradient-green"></div>
-        <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-96 h-96 bg-green-400 rounded-full blur-3xl opacity-30 animate-pulse-slow"></div>
-          <div className="absolute bottom-10 right-10 w-[600px] h-[600px] bg-emerald-300 rounded-full blur-3xl opacity-30 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-        </div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10 text-white">
-          <div className="mb-8 flex justify-center">
-            <RocketIcon size={120} color="white" />
-          </div>
-          <h2 className="text-8xl font-black mb-8 leading-tight">
-            Pronto para Liderar a<br/>Sustentabilidade?
-          </h2>
-          <p className="text-3xl mb-12 opacity-95 leading-relaxed max-w-4xl mx-auto">
-            Junte-se a <strong className="text-yellow-200">mais de 500 empresas</strong> que já estão transformando seus negócios com práticas ESG de excelência
-          </p>
-          <Link
-            to="/login"
-            className="inline-flex items-center gap-4 px-16 py-7 bg-white font-black rounded-2xl transition-all hover:scale-110 shadow-2xl text-3xl"
-            style={{ color: '#152F27' }}
-          >
-            Começar Agora - É Grátis
-            <TrendingIcon size={32} color="#152F27" />
+      {/* CTA */}
+      <section className="py-24 px-6" style={{ backgroundColor: '#f5ffeb' }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-6" style={{ color: '#152F27' }}>Pronto para liderar a sustentabilidade?</h2>
+          <p className="text-lg text-gray-500 mb-10 max-w-xl mx-auto">Junte-se a mais de 500 empresas que já estão transformando seus negócios com práticas ESG de excelência.</p>
+          <Link to="/register" className="inline-flex items-center gap-3 px-10 py-4 text-white font-semibold rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
+            Começar agora — é grátis
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
-          <p className="mt-8 text-xl opacity-80">Sem cartão de crédito • Suporte 24/7 • Certificação Inclusa</p>
+          <p className="mt-6 text-sm text-gray-400">Sem cartão de crédito · Suporte disponível · Certificação inclusa</p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="contato" className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a1a14 0%, #152F27 100%)' }}>
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%237B9965' fill-opacity='1'%3E%3Cpath d='M30 10 L25 15 Q25 18 25 20 Q27 22 30 22 Q33 22 35 20 Q35 18 35 15 L30 10 Z'/%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '80px 80px'
-          }}/>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-8 py-20 relative">
-          {/* Top Section */}
-          <div className="grid md:grid-cols-5 gap-16 mb-16">
-            {/* Brand Column */}
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-4 mb-6">
-                <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-24" />
-              </div>
-              <p className="text-base leading-relaxed mb-8" style={{ color: '#EFD4A8' }}>
-                Transformando negócios através de práticas ESG sustentáveis e responsáveis. Liderando a mudança para um futuro mais verde.
-              </p>
-
-              {/* Social Icons */}
-              <div className="flex gap-4">
+      <footer style={{ backgroundColor: '#152F27' }}>
+        <div className="max-w-7xl mx-auto px-8 py-16">
+          <div className="grid md:grid-cols-4 gap-12 mb-12">
+            <div>
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14 mb-4 brightness-0 invert" />
+              <p className="text-sm text-white/60 leading-relaxed">Transformando negócios através de práticas ESG sustentáveis e responsáveis.</p>
+              <div className="flex gap-3 mt-6">
                 {[
-                  { icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', label: 'LinkedIn', url: 'https://br.linkedin.com/company/greena-solu%C3%A7%C3%B5es-em-sustentabilidade' },
-                  { icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', label: 'Instagram', url: 'https://www.instagram.com/greena.solucoes/' },
-                  { icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61550708137780' }
+                  { icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', url: 'https://br.linkedin.com/company/greena-solu%C3%A7%C3%B5es-em-sustentabilidade' },
+                  { icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', url: 'https://www.instagram.com/greena.solucoes/' },
+                  { icon: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z', url: 'https://www.facebook.com/profile.php?id=61550708137780' }
                 ].map((social, i) => (
-                  <a
-                    key={i}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg"
-                    style={{ backgroundColor: '#7B996530', color: '#7B9965' }}
-                    aria-label={social.label}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={social.icon}/>
-                    </svg>
+                  <a key={i} href={social.url} target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={social.icon}/></svg>
                   </a>
                 ))}
               </div>
             </div>
-
-            {/* Plataforma */}
             <div>
-              <h4 className="font-black text-xl mb-6 flex items-center gap-2" style={{ color: '#7B9965' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2"/>
-                  <line x1="9" y1="3" x2="9" y2="21"/>
-                </svg>
-                Plataforma
-              </h4>
-              <ul className="space-y-4">
-                {[
-                  { label: 'Avaliação ESG', href: '/login' },
-                  { label: 'Relatórios', href: '/login' },
-                  { label: 'Certificação', href: '/login' },
-                  { label: 'Dashboard', href: '/login' },
-                  { label: 'Indicadores', href: '/login' }
-                ].map(item => (
-                  <li key={item.label}>
-                    <Link
-                      to={item.href}
-                      className="text-sm font-semibold hover:text-green-400 transition-all hover:translate-x-2 flex items-center gap-2 group"
-                      style={{ color: '#EFD4A8' }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-600 group-hover:w-3 transition-all"></span>
-                      {item.label}
-                    </Link>
-                  </li>
+              <h4 className="text-sm font-semibold text-white mb-4">Plataforma</h4>
+              <ul className="space-y-3">
+                {['Avaliação ESG', 'Relatórios', 'Certificação', 'Dashboard', 'Indicadores'].map(label => (
+                  <li key={label}><Link to="/login" className="text-sm text-white/60 hover:text-white transition-colors">{label}</Link></li>
                 ))}
               </ul>
             </div>
-
-            {/* Contato */}
             <div>
-              <h4 className="font-black text-xl mb-6 flex items-center gap-2" style={{ color: '#7B9965' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                Contato
-              </h4>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2" className="mt-0.5 flex-shrink-0">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  <div>
-                    <p className="text-sm font-bold" style={{ color: '#EFD4A8' }}>UPF Parque Científico e Tecnológico</p>
-                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>Módulo II - Universidade de Passo Fundo</p>
-                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>BR 285, Bairro São José, 99052-900</p>
-                    <p className="text-xs opacity-80" style={{ color: '#EFD4A8' }}>Passo Fundo / RS</p>
-                  </div>
-                </li>
-                <li className="flex items-center gap-3">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                  </svg>
-                  <a href="tel:+5554991897645" className="text-sm font-semibold hover:text-green-400 transition-colors" style={{ color: '#EFD4A8' }}>
-                    (54) 99189-7645
-                  </a>
-                </li>
-                <li className="flex items-center gap-3">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                    <polyline points="22,6 12,13 2,6"/>
-                  </svg>
-                  <a href="mailto:contato@greenasolucoes.com.br" className="text-sm font-semibold hover:text-green-400 transition-colors" style={{ color: '#EFD4A8' }}>
-                    contato@greenasolucoes.com.br
-                  </a>
-                </li>
-                <li className="flex items-center gap-3">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
-                  </svg>
-                  <span className="text-sm font-semibold" style={{ color: '#EFD4A8' }}>
-                    Segunda a Sexta: 9h às 18h
-                  </span>
-                </li>
+              <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+              <ul className="space-y-3">
+                {[{ label: 'Privacidade', href: '/privacy' }, { label: 'Termos de Uso', href: '/terms' }, { label: 'LGPD', href: '/lgpd' }, { label: 'Cookies', href: '/cookies' }, { label: 'Compliance', href: '/compliance' }].map(item => (
+                  <li key={item.label}><Link to={item.href} className="text-sm text-white/60 hover:text-white transition-colors">{item.label}</Link></li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Contato</h4>
+              <ul className="space-y-3 text-sm text-white/60">
+                <li><p className="font-medium text-white/80">UPF Parque Científico e Tecnológico</p><p>Passo Fundo / RS</p></li>
+                <li><a href="tel:+5554991897645" className="hover:text-white transition-colors">(54) 99189-7645</a></li>
+                <li><a href="mailto:contato@greenasolucoes.com.br" className="hover:text-white transition-colors">contato@greenasolucoes.com.br</a></li>
+                <li>Segunda a Sexta: 9h às 18h</li>
               </ul>
             </div>
           </div>
-
-          {/* Bottom Section */}
-          <div className="pt-10 border-t" style={{ borderColor: '#7B996530' }}>
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="flex flex-wrap gap-6 text-sm">
-                {[
-                  { label: 'Privacidade', href: '/privacy' },
-                  { label: 'Termos de Uso', href: '/terms' },
-                  { label: 'LGPD', href: '/lgpd' },
-                  { label: 'Cookies', href: '/cookies' },
-                  { label: 'Compliance', href: '/compliance' }
-                ].map(item => (
-                  <Link
-                    key={item.label}
-                    to={item.href}
-                    className="font-semibold hover:text-green-400 transition-colors"
-                    style={{ color: '#EFD4A8' }}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-              <div className="text-sm font-semibold" style={{ color: '#7B9965' }}>
-                © 2025 GREENA ESG Platform. Todos os direitos reservados.
-              </div>
-            </div>
+          <div className="pt-8 border-t border-white/10 text-center">
+            <p className="text-sm text-white/40">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
 
       {/* Demo Modal */}
       {showDemo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-scale-in">
-            {/* Header */}
-            <div className="p-6 border-b" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b" style={{ backgroundColor: '#152F27' }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-black text-white">Demonstração ESG</h2>
-                  <p className="text-white/80 text-sm mt-1">
-                    {showDemoResult ? 'Resultado do seu diagnóstico' : `Pergunta ${demoStep + 1} de ${demoQuestions.length}`}
-                  </p>
+                  <h2 className="text-xl font-bold text-white">Demonstração ESG</h2>
+                  <p className="text-white/60 text-sm mt-1">{showDemoResult ? 'Resultado do seu diagnóstico' : `Pergunta ${demoStep + 1} de ${demoQuestions.length}`}</p>
                 </div>
-                <button
-                  onClick={resetDemo}
-                  className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
+                <button onClick={resetDemo} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
               </div>
-              {/* Progress Bar */}
               {!showDemoResult && (
-                <div className="mt-4 h-2 bg-white/20 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-white transition-all duration-500"
-                    style={{ width: `${((demoStep + 1) / demoQuestions.length) * 100}%` }}
-                  />
+                <div className="mt-4 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${((demoStep + 1) / demoQuestions.length) * 100}%`, backgroundColor: '#e2f7d0' }} />
                 </div>
               )}
             </div>
-
-            {/* Content */}
-            <div className="p-8">
+            <div className="p-6">
               {!showDemoResult ? (
                 <>
-                  {/* Category Badge */}
-                  <div
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white mb-6"
-                    style={{ backgroundColor: demoQuestions[demoStep].categoryColor }}
-                  >
-                    {demoQuestions[demoStep].category === 'Ambiental' && <GlobeIcon size={18} color="white" />}
-                    {demoQuestions[demoStep].category === 'Social' && <UsersIcon size={18} color="white" />}
-                    {demoQuestions[demoStep].category === 'Governança' && <ShieldIcon size={18} color="white" />}
-                    {demoQuestions[demoStep].category}
-                  </div>
-
-                  {/* Question */}
-                  <h3 className="text-2xl font-black mb-8" style={{ color: '#152F27' }}>
-                    {demoQuestions[demoStep].question}
-                  </h3>
-
-                  {/* Options */}
-                  <div className="space-y-3">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white mb-5" style={{ backgroundColor: demoQuestions[demoStep].categoryColor }}>{demoQuestions[demoStep].category}</span>
+                  <h3 className="text-xl font-bold mb-6" style={{ color: '#152F27' }}>{demoQuestions[demoStep].question}</h3>
+                  <div className="space-y-2.5">
                     {demoQuestions[demoStep].options.map((option, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleDemoAnswer(index)}
-                        className="w-full p-4 rounded-xl border-2 text-left font-semibold transition-all hover:border-green-600 hover:bg-green-50"
-                        style={{ borderColor: '#e0e0e0', color: '#152F27' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-                            style={{ backgroundColor: '#f0f0f0', color: '#152F27' }}
-                          >
-                            {index + 1}
-                          </div>
-                          {option}
-                        </div>
+                      <button key={index} onClick={() => handleDemoAnswer(index)} className="w-full p-4 rounded-xl border-2 text-left text-sm font-medium transition-all hover:bg-green-50" style={{ borderColor: '#e5e7eb', color: '#152F27' }}>
+                        {option}
                       </button>
                     ))}
                   </div>
                 </>
               ) : (
-                /* Result */
-                <div className="text-center">
-                  <div
-                    className="w-32 h-32 rounded-full mx-auto mb-6 flex items-center justify-center"
-                    style={{ backgroundColor: getDemoLevel().color + '30', border: `4px solid ${getDemoLevel().color}` }}
-                  >
-                    <span className="text-5xl font-black" style={{ color: getDemoLevel().color }}>
-                      {getDemoScore()}%
-                    </span>
+                <div className="text-center py-4">
+                  <div className="w-24 h-24 rounded-full mx-auto mb-5 flex items-center justify-center" style={{ backgroundColor: getDemoLevel().color + '20', border: `3px solid ${getDemoLevel().color}` }}>
+                    <span className="text-4xl font-bold" style={{ color: getDemoLevel().color }}>{getDemoScore()}%</span>
                   </div>
-
-                  <h3 className="text-3xl font-black mb-2" style={{ color: getDemoLevel().color }}>
-                    Nível {getDemoLevel().level}
-                  </h3>
-                  <p className="text-xl font-semibold text-gray-600 mb-6">
-                    {getDemoLevel().title}
-                  </p>
-
-                  <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-                    <p className="text-gray-700 leading-relaxed">
-                      Este foi apenas um diagnóstico demonstrativo com 6 perguntas.
-                      O diagnóstico completo possui <strong className="text-green-700">215 questões</strong> que
-                      avaliam detalhadamente todos os aspectos ESG da sua empresa.
-                    </p>
+                  <h3 className="text-2xl font-bold mb-1" style={{ color: getDemoLevel().color }}>Nível {getDemoLevel().level}</h3>
+                  <p className="text-base text-gray-500 mb-6">{getDemoLevel().title}</p>
+                  <div className="p-5 rounded-xl mb-6" style={{ backgroundColor: '#f5ffeb' }}>
+                    <p className="text-sm text-gray-600 leading-relaxed">Este foi um diagnóstico demonstrativo com 6 perguntas. O diagnóstico completo possui <strong style={{ color: '#152F27' }}>215 questões</strong> que avaliam detalhadamente todos os aspectos ESG da sua empresa.</p>
                   </div>
-
-                  <div className="flex gap-4">
-                    <button
-                      onClick={resetDemo}
-                      className="flex-1 py-4 rounded-xl border-2 font-bold transition-all hover:bg-gray-50"
-                      style={{ borderColor: '#152F27', color: '#152F27' }}
-                    >
-                      Fechar
-                    </button>
-                    <Link
-                      to="/register"
-                      onClick={resetDemo}
-                      className="flex-1 py-4 rounded-xl font-bold text-white text-center transition-all hover:opacity-90"
-                      style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-                    >
-                      Fazer Diagnóstico Completo
-                    </Link>
+                  <div className="flex gap-3">
+                    <button onClick={resetDemo} className="flex-1 py-3 rounded-full border-2 font-semibold text-sm transition-all hover:bg-gray-50" style={{ borderColor: '#152F27', color: '#152F27' }}>Fechar</button>
+                    <Link to="/register" onClick={resetDemo} className="flex-1 py-3 rounded-full font-semibold text-sm text-white text-center transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>Diagnóstico Completo</Link>
                   </div>
                 </div>
               )}

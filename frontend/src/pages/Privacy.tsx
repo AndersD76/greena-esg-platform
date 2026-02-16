@@ -35,7 +35,7 @@ export default function Privacy() {
           <div className="prose prose-lg max-w-none">
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>1. Introdução</h2>
             <p className="text-gray-700 mb-6">
-              A GREENA Soluções em Sustentabilidade ("nós", "nosso" ou "GREENA") está comprometida em proteger sua privacidade.
+              A engreena Soluções em Sustentabilidade ("nós", "nosso" ou "engreena") está comprometida em proteger sua privacidade.
               Esta Política de Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações quando você
               utiliza nossa plataforma ESG.
             </p>
@@ -116,7 +116,7 @@ export default function Privacy() {
 
       {/* Footer */}
       <footer className="py-8 px-6 bg-gray-900 text-white text-center">
-        <p className="text-sm">© 2025 GREENA ESG Platform. Todos os direitos reservados.</p>
+        <p className="text-sm">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 
+// Cores dos pilares ESG da marca
+const PILLAR_COLORS = {
+  environmental: '#7B9965',
+  social: '#924131',
+  governance: '#EFD4A8',
+};
+
 // Componente de Gráfico de Barras
 function BarChart({ data }: { data: { label: string; value: number; color: string }[] }) {
   const maxValue = 100;
@@ -10,11 +17,11 @@ function BarChart({ data }: { data: { label: string; value: number; color: strin
     <div className="space-y-4">
       {data.map((item, index) => (
         <div key={index}>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-bold" style={{ color: '#152F27' }}>{item.label}</span>
-            <span className="text-lg font-black" style={{ color: item.color }}>{item.value.toFixed(0)}</span>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-sm font-medium text-brand-900">{item.label}</span>
+            <span className="text-lg font-bold" style={{ color: item.color }}>{item.value.toFixed(0)}</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+          <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
@@ -35,14 +42,12 @@ function RadarChart({ environmental, social, governance }: { environmental: numb
   const center = size / 2;
   const radius = 70;
 
-  // Calcular pontos do triângulo externo (100%)
   const points = [
-    { x: center, y: center - radius }, // Top (Environmental)
-    { x: center + radius * Math.sin(2 * Math.PI / 3), y: center - radius * Math.cos(2 * Math.PI / 3) }, // Bottom Right (Social)
-    { x: center + radius * Math.sin(4 * Math.PI / 3), y: center - radius * Math.cos(4 * Math.PI / 3) }, // Bottom Left (Governance)
+    { x: center, y: center - radius },
+    { x: center + radius * Math.sin(2 * Math.PI / 3), y: center - radius * Math.cos(2 * Math.PI / 3) },
+    { x: center + radius * Math.sin(4 * Math.PI / 3), y: center - radius * Math.cos(4 * Math.PI / 3) },
   ];
 
-  // Calcular pontos dos dados
   const dataPoints = [
     {
       x: center + (environmental / 100) * (points[0].x - center),
@@ -63,7 +68,6 @@ function RadarChart({ environmental, social, governance }: { environmental: numb
 
   return (
     <svg width={size} height={size} className="mx-auto">
-      {/* Grid circles */}
       {[20, 40, 60, 80, 100].map((percent) => (
         <polygon
           key={percent}
@@ -72,62 +76,26 @@ function RadarChart({ environmental, social, governance }: { environmental: numb
             return `${center + factor * (p.x - center)},${center + factor * (p.y - center)}`;
           }).join(' ')}
           fill="none"
-          stroke="#e0e0e0"
+          stroke="#e5e7eb"
           strokeWidth="1"
         />
       ))}
 
-      {/* Axes */}
       {points.map((p, i) => (
-        <line
-          key={i}
-          x1={center}
-          y1={center}
-          x2={p.x}
-          y2={p.y}
-          stroke="#e0e0e0"
-          strokeWidth="1"
-        />
+        <line key={i} x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e5e7eb" strokeWidth="1" />
       ))}
 
-      {/* Outer triangle */}
-      <polygon
-        points={polygonPoints}
-        fill="none"
-        stroke="#152F27"
-        strokeWidth="2"
-      />
+      <polygon points={polygonPoints} fill="none" stroke="#152F27" strokeWidth="1.5" />
 
-      {/* Data polygon */}
-      <polygon
-        points={dataPolygonPoints}
-        fill="#7B9965"
-        fillOpacity="0.3"
-        stroke="#7B9965"
-        strokeWidth="2"
-      />
+      <polygon points={dataPolygonPoints} fill="#7B9965" fillOpacity="0.2" stroke="#7B9965" strokeWidth="2" />
 
-      {/* Data points */}
       {dataPoints.map((p, i) => (
-        <circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r="4"
-          fill="#7B9965"
-        />
+        <circle key={i} cx={p.x} cy={p.y} r="4" fill={Object.values(PILLAR_COLORS)[i]} />
       ))}
 
-      {/* Labels */}
-      <text x={center} y={center - radius - 15} textAnchor="middle" className="text-xs font-bold" fill="#152F27">
-        E
-      </text>
-      <text x={center + radius + 15} y={center - radius * Math.cos(2 * Math.PI / 3) + 5} textAnchor="start" className="text-xs font-bold" fill="#152F27">
-        S
-      </text>
-      <text x={center + radius * Math.sin(4 * Math.PI / 3) - 15} y={center - radius * Math.cos(4 * Math.PI / 3) + 5} textAnchor="end" className="text-xs font-bold" fill="#152F27">
-        G
-      </text>
+      <text x={center} y={center - radius - 12} textAnchor="middle" className="text-xs font-medium" fill="#152F27">E</text>
+      <text x={center + radius + 12} y={center - radius * Math.cos(2 * Math.PI / 3) + 4} textAnchor="start" className="text-xs font-medium" fill="#152F27">S</text>
+      <text x={center + radius * Math.sin(4 * Math.PI / 3) - 12} y={center - radius * Math.cos(4 * Math.PI / 3) + 4} textAnchor="end" className="text-xs font-medium" fill="#152F27">G</text>
     </svg>
   );
 }
@@ -158,64 +126,35 @@ function LineChart({ diagnoses }: { diagnoses: Diagnosis[] }) {
 
   return (
     <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
-      {/* Grid lines */}
       {[0, 25, 50, 75, 100].map((value) => (
         <g key={value}>
-          <line
-            x1={padding}
-            y1={getY(value)}
-            x2={width - padding}
-            y2={getY(value)}
-            stroke="#e0e0e0"
-            strokeWidth="1"
-          />
-          <text
-            x={padding - 10}
-            y={getY(value) + 4}
-            textAnchor="end"
-            className="text-xs"
-            fill="#666"
-          >
-            {value}
-          </text>
+          <line x1={padding} y1={getY(value)} x2={width - padding} y2={getY(value)} stroke="#e5e7eb" strokeWidth="1" />
+          <text x={padding - 10} y={getY(value) + 4} textAnchor="end" className="text-xs" fill="#9ca3af">{value}</text>
         </g>
       ))}
 
-      {/* Paths */}
-      <path d={envPath} fill="none" stroke="#4CAF50" strokeWidth="3" />
-      <path d={socPath} fill="none" stroke="#2196F3" strokeWidth="3" />
-      <path d={govPath} fill="none" stroke="#FF9800" strokeWidth="3" />
+      <path d={envPath} fill="none" stroke={PILLAR_COLORS.environmental} strokeWidth="2.5" />
+      <path d={socPath} fill="none" stroke={PILLAR_COLORS.social} strokeWidth="2.5" />
+      <path d={govPath} fill="none" stroke={PILLAR_COLORS.governance} strokeWidth="2.5" />
 
-      {/* Points */}
       {points.map((d, i) => (
         <g key={i}>
-          <circle cx={getX(i)} cy={getY(Number(d.environmentalScore))} r="4" fill="#4CAF50" />
-          <circle cx={getX(i)} cy={getY(Number(d.socialScore))} r="4" fill="#2196F3" />
-          <circle cx={getX(i)} cy={getY(Number(d.governanceScore))} r="4" fill="#FF9800" />
-
-          {/* Date labels */}
-          <text
-            x={getX(i)}
-            y={height - 10}
-            textAnchor="middle"
-            className="text-xs"
-            fill="#666"
-          >
+          <circle cx={getX(i)} cy={getY(Number(d.environmentalScore))} r="3.5" fill={PILLAR_COLORS.environmental} />
+          <circle cx={getX(i)} cy={getY(Number(d.socialScore))} r="3.5" fill={PILLAR_COLORS.social} />
+          <circle cx={getX(i)} cy={getY(Number(d.governanceScore))} r="3.5" fill={PILLAR_COLORS.governance} />
+          <text x={getX(i)} y={height - 10} textAnchor="middle" className="text-xs" fill="#9ca3af">
             {new Date(d.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
           </text>
         </g>
       ))}
 
-      {/* Legend */}
       <g transform={`translate(${padding}, 10)`}>
-        <circle cx="0" cy="0" r="4" fill="#4CAF50" />
-        <text x="10" y="4" className="text-xs font-semibold" fill="#152F27">Ambiental</text>
-
-        <circle cx="100" cy="0" r="4" fill="#2196F3" />
-        <text x="110" y="4" className="text-xs font-semibold" fill="#152F27">Social</text>
-
-        <circle cx="180" cy="0" r="4" fill="#FF9800" />
-        <text x="190" y="4" className="text-xs font-semibold" fill="#152F27">Governança</text>
+        <circle cx="0" cy="0" r="3.5" fill={PILLAR_COLORS.environmental} />
+        <text x="10" y="4" className="text-xs font-medium" fill="#152F27">Ambiental</text>
+        <circle cx="100" cy="0" r="3.5" fill={PILLAR_COLORS.social} />
+        <text x="110" y="4" className="text-xs font-medium" fill="#152F27">Social</text>
+        <circle cx="180" cy="0" r="3.5" fill={PILLAR_COLORS.governance} />
+        <text x="190" y="4" className="text-xs font-medium" fill="#152F27">Governança</text>
       </g>
     </svg>
   );
@@ -239,7 +178,6 @@ export default function Dashboard() {
       const inProgress = data.find((d) => d.status === 'in_progress');
       if (inProgress) {
         setCurrentDiagnosis(inProgress);
-        // Carregar scores parciais
         loadPartialScores(inProgress.id);
       }
     } catch (error) {
@@ -279,7 +217,7 @@ export default function Dashboard() {
     if (score >= 80) return '#7B9965';
     if (score >= 60) return '#EFD4A8';
     if (score >= 40) return '#924131';
-    return '#666';
+    return '#9ca3af';
   };
 
   const getScoreLevel = (score: number) => {
@@ -293,34 +231,31 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-          <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand-700 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-sm font-medium text-brand-900">Carregando...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen bg-brand-100">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2" style={{ color: '#152F27' }}>Dashboard ESG</h1>
-          <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>Acompanhe suas práticas de sustentabilidade</p>
+          <h1 className="text-3xl font-bold text-brand-900 mb-1">Dashboard ESG</h1>
+          <p className="text-sm text-gray-500">Acompanhe suas práticas de sustentabilidade</p>
         </div>
 
-        {/* Welcome / First Diagnosis - only show when no diagnosis exists */}
+        {/* Welcome / First Diagnosis */}
         {!lastCompleted && !currentDiagnosis && (
-          <div className="bg-white rounded-3xl shadow-2xl p-12 text-center mb-8">
-            <h2 className="text-4xl font-black mb-4" style={{ color: '#152F27' }}>
-              Bem-vindo!
-            </h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: '#666' }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center mb-8">
+            <h2 className="text-2xl font-bold text-brand-900 mb-3">Bem-vindo!</h2>
+            <p className="text-gray-500 mb-8 max-w-xl mx-auto">
               Comece seu primeiro diagnóstico ESG e descubra como sua empresa pode ser mais sustentável.
             </p>
             <button
               onClick={handleStartNewDiagnosis}
-              className="px-12 py-4 text-lg font-black text-white rounded-2xl transition-all hover:scale-105 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+              className="px-10 py-3.5 font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
             >
               Fazer Primeiro Diagnóstico
             </button>
@@ -351,22 +286,23 @@ export default function Dashboard() {
               }};
               const cert = scoringService.getCertificationLevel(Number(lastCompleted.overallScore));
               return (
-                <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-8 mb-6 border-4"
-                     style={{ borderColor: cert.color }}>
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
                   <div className="flex items-center gap-6">
-                    <div className="text-4xl font-black" style={{ color: cert.color }}>{cert.levelLabel}</div>
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white" style={{ backgroundColor: cert.color }}>
+                      {cert.levelLabel.charAt(0)}
+                    </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-3xl font-black" style={{ color: '#152F27' }}>
+                      <div className="flex items-center gap-3 mb-1">
+                        <h2 className="text-xl font-bold text-brand-900">
                           Certificação Nível {cert.level === 'bronze' ? 'Bronze' : cert.level === 'silver' ? 'Prata' : 'Ouro'}
                         </h2>
-                        <span className="px-4 py-1.5 rounded-full text-sm font-bold text-white" style={{ backgroundColor: cert.color }}>
+                        <span className="px-3 py-1 rounded-full text-xs font-medium text-white" style={{ backgroundColor: cert.color }}>
                           {cert.scoreRange} pontos
                         </span>
                       </div>
-                      <h3 className="text-2xl font-bold mb-3" style={{ color: cert.color }}>{cert.name}</h3>
-                      <p className="text-lg font-semibold mb-1" style={{ color: '#666' }}>{cert.message}</p>
-                      <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>
+                      <h3 className="text-lg font-semibold mb-1" style={{ color: cert.color }}>{cert.name}</h3>
+                      <p className="text-sm text-gray-500">{cert.message}</p>
+                      <p className="text-xs text-brand-700 mt-1">
                         Score alcançado: {Number(lastCompleted.overallScore).toFixed(0)} pontos
                       </p>
                     </div>
@@ -376,58 +312,58 @@ export default function Dashboard() {
             })()}
 
             {/* Main Score Card */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8 mb-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-black mb-1" style={{ color: '#152F27' }}>Score ESG Geral</h2>
-                  <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>
+                  <h2 className="text-xl font-bold text-brand-900 mb-1">Score ESG Geral</h2>
+                  <p className="text-xs text-gray-400">
                     Última avaliação: {new Date(lastCompleted.completedAt!).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
                 <Link to={`/diagnosis/${lastCompleted.id}/insights`}>
-                  <button className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
+                  <button className="px-5 py-2 text-sm font-medium text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
                     Ver Insights
                   </button>
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="text-center p-6 rounded-2xl" style={{ backgroundColor: '#f5f5f5' }}>
-                  <p className="text-sm font-bold mb-3" style={{ color: '#666' }}>SCORE GERAL</p>
-                  <p className="text-6xl font-black mb-2" style={{ color: getScoreColor(Number(lastCompleted.overallScore)) }}>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="text-center p-5 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Score Geral</p>
+                  <p className="text-5xl font-bold mb-2" style={{ color: getScoreColor(Number(lastCompleted.overallScore)) }}>
                     {Number(lastCompleted.overallScore).toFixed(0)}
                   </p>
-                  <span className="inline-block px-4 py-1 rounded-full text-sm font-bold" style={{ backgroundColor: getScoreColor(Number(lastCompleted.overallScore)) + '20', color: getScoreColor(Number(lastCompleted.overallScore)) }}>
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: getScoreColor(Number(lastCompleted.overallScore)) + '15', color: getScoreColor(Number(lastCompleted.overallScore)) }}>
                     {getScoreLevel(Number(lastCompleted.overallScore))}
                   </span>
                 </div>
 
-                <div className="text-center p-6 rounded-2xl" style={{ backgroundColor: '#e8f5e9' }}>
-                  <p className="text-sm font-bold mb-3" style={{ color: '#152F27' }}>AMBIENTAL</p>
-                  <p className="text-6xl font-black mb-2" style={{ color: getScoreColor(Number(lastCompleted.environmentalScore)) }}>
+                <div className="text-center p-5 rounded-xl" style={{ backgroundColor: '#f5ffeb' }}>
+                  <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
+                  <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.environmental }}>
                     {Number(lastCompleted.environmentalScore).toFixed(0)}
                   </p>
-                  <span className="inline-block px-4 py-1 rounded-full text-sm font-bold" style={{ backgroundColor: getScoreColor(Number(lastCompleted.environmentalScore)) + '20', color: getScoreColor(Number(lastCompleted.environmentalScore)) }}>
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: PILLAR_COLORS.environmental + '15', color: PILLAR_COLORS.environmental }}>
                     {getScoreLevel(Number(lastCompleted.environmentalScore))}
                   </span>
                 </div>
 
-                <div className="text-center p-6 rounded-2xl" style={{ backgroundColor: '#e3f2fd' }}>
-                  <p className="text-sm font-bold mb-3" style={{ color: '#152F27' }}>SOCIAL</p>
-                  <p className="text-6xl font-black mb-2" style={{ color: getScoreColor(Number(lastCompleted.socialScore)) }}>
+                <div className="text-center p-5 rounded-xl" style={{ backgroundColor: '#fdf5f3' }}>
+                  <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
+                  <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.social }}>
                     {Number(lastCompleted.socialScore).toFixed(0)}
                   </p>
-                  <span className="inline-block px-4 py-1 rounded-full text-sm font-bold" style={{ backgroundColor: getScoreColor(Number(lastCompleted.socialScore)) + '20', color: getScoreColor(Number(lastCompleted.socialScore)) }}>
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: PILLAR_COLORS.social + '15', color: PILLAR_COLORS.social }}>
                     {getScoreLevel(Number(lastCompleted.socialScore))}
                   </span>
                 </div>
 
-                <div className="text-center p-6 rounded-2xl" style={{ backgroundColor: '#fff3e0' }}>
-                  <p className="text-sm font-bold mb-3" style={{ color: '#152F27' }}>GOVERNANÇA</p>
-                  <p className="text-6xl font-black mb-2" style={{ color: getScoreColor(Number(lastCompleted.governanceScore)) }}>
+                <div className="text-center p-5 rounded-xl" style={{ backgroundColor: '#fdf8ef' }}>
+                  <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
+                  <p className="text-5xl font-bold mb-2" style={{ color: '#b8963a' }}>
                     {Number(lastCompleted.governanceScore).toFixed(0)}
                   </p>
-                  <span className="inline-block px-4 py-1 rounded-full text-sm font-bold" style={{ backgroundColor: getScoreColor(Number(lastCompleted.governanceScore)) + '20', color: getScoreColor(Number(lastCompleted.governanceScore)) }}>
+                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: PILLAR_COLORS.governance + '30', color: '#b8963a' }}>
                     {getScoreLevel(Number(lastCompleted.governanceScore))}
                   </span>
                 </div>
@@ -436,21 +372,19 @@ export default function Dashboard() {
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              {/* Bar Chart */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h3 className="text-xl font-black mb-6" style={{ color: '#152F27' }}>Comparativo por Pilar</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 className="text-base font-bold text-brand-900 mb-5">Comparativo por Pilar</h3>
                 <BarChart
                   data={[
-                    { label: 'Ambiental (E)', value: Number(lastCompleted.environmentalScore), color: '#4CAF50' },
-                    { label: 'Social (S)', value: Number(lastCompleted.socialScore), color: '#2196F3' },
-                    { label: 'Governança (G)', value: Number(lastCompleted.governanceScore), color: '#FF9800' },
+                    { label: 'Ambiental (E)', value: Number(lastCompleted.environmentalScore), color: PILLAR_COLORS.environmental },
+                    { label: 'Social (S)', value: Number(lastCompleted.socialScore), color: PILLAR_COLORS.social },
+                    { label: 'Governança (G)', value: Number(lastCompleted.governanceScore), color: '#b8963a' },
                   ]}
                 />
               </div>
 
-              {/* Radar Chart */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h3 className="text-xl font-black mb-6 text-center" style={{ color: '#152F27' }}>Visão Geral ESG</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 className="text-base font-bold text-brand-900 mb-5 text-center">Visão Geral ESG</h3>
                 <RadarChart
                   environmental={Number(lastCompleted.environmentalScore)}
                   social={Number(lastCompleted.socialScore)}
@@ -461,92 +395,89 @@ export default function Dashboard() {
 
             {/* Evolution Chart */}
             {completedDiagnoses.length > 1 && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-                <h3 className="text-xl font-black mb-6" style={{ color: '#152F27' }}>Evolução dos Scores</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+                <h3 className="text-base font-bold text-brand-900 mb-5">Evolução dos Scores</h3>
                 <LineChart diagnoses={completedDiagnoses} />
               </div>
             )}
 
             {/* Pillar Details */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              {/* Environmental Card */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: '#e8f5e9' }}>
-                    <svg className="w-6 h-6" style={{ color: '#152F27' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-brand-300">
+                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-black" style={{ color: '#152F27' }}>Ambiental</h3>
-                    <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>Environmental</p>
+                    <h3 className="text-base font-bold text-brand-900">Ambiental</h3>
+                    <p className="text-xs text-gray-400">Environmental</p>
                   </div>
                 </div>
-                <p className="text-sm mb-4" style={{ color: '#666' }}>
+                <p className="text-sm text-gray-500 mb-4">
                   Gestão de recursos naturais, emissões, resíduos e impacto ambiental das operações.
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl font-black" style={{ color: getScoreColor(Number(lastCompleted.environmentalScore)) }}>
+                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>
                     {Number(lastCompleted.environmentalScore).toFixed(0)}
                   </span>
                   <Link to={`/diagnosis/${lastCompleted.id}/results`}>
-                    <button className="px-4 py-2 text-xs font-bold border-2 rounded-lg transition-all hover:bg-green-50" style={{ borderColor: '#152F27', color: '#152F27' }}>
+                    <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
                       Ver Detalhes
                     </button>
                   </Link>
                 </div>
               </div>
 
-              {/* Social Card */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: '#e3f2fd' }}>
-                    <svg className="w-6 h-6" style={{ color: '#152F27' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf5f3' }}>
+                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-black" style={{ color: '#152F27' }}>Social</h3>
-                    <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>Social</p>
+                    <h3 className="text-base font-bold text-brand-900">Social</h3>
+                    <p className="text-xs text-gray-400">Social</p>
                   </div>
                 </div>
-                <p className="text-sm mb-4" style={{ color: '#666' }}>
+                <p className="text-sm text-gray-500 mb-4">
                   Relações com colaboradores, diversidade, saúde, segurança e impacto na comunidade.
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl font-black" style={{ color: getScoreColor(Number(lastCompleted.socialScore)) }}>
+                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.social }}>
                     {Number(lastCompleted.socialScore).toFixed(0)}
                   </span>
                   <Link to={`/diagnosis/${lastCompleted.id}/results`}>
-                    <button className="px-4 py-2 text-xs font-bold border-2 rounded-lg transition-all hover:bg-green-50" style={{ borderColor: '#152F27', color: '#152F27' }}>
+                    <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
                       Ver Detalhes
                     </button>
                   </Link>
                 </div>
               </div>
 
-              {/* Governance Card */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: '#fff3e0' }}>
-                    <svg className="w-6 h-6" style={{ color: '#152F27' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf8ef' }}>
+                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-black" style={{ color: '#152F27' }}>Governança</h3>
-                    <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>Governance</p>
+                    <h3 className="text-base font-bold text-brand-900">Governança</h3>
+                    <p className="text-xs text-gray-400">Governance</p>
                   </div>
                 </div>
-                <p className="text-sm mb-4" style={{ color: '#666' }}>
+                <p className="text-sm text-gray-500 mb-4">
                   Estrutura de gestão, ética, transparência, compliance e responsabilidade corporativa.
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl font-black" style={{ color: getScoreColor(Number(lastCompleted.governanceScore)) }}>
+                  <span className="text-2xl font-bold" style={{ color: '#b8963a' }}>
                     {Number(lastCompleted.governanceScore).toFixed(0)}
                   </span>
                   <Link to={`/diagnosis/${lastCompleted.id}/results`}>
-                    <button className="px-4 py-2 text-xs font-bold border-2 rounded-lg transition-all hover:bg-green-50" style={{ borderColor: '#152F27', color: '#152F27' }}>
+                    <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
                       Ver Detalhes
                     </button>
                   </Link>
@@ -558,90 +489,86 @@ export default function Dashboard() {
 
         {/* Current Diagnosis with Partial Scores */}
         {currentDiagnosis && (
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-2xl font-black mb-2" style={{ color: '#152F27' }}>Diagnóstico em Andamento</h3>
-                <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>
+                <h3 className="text-xl font-bold text-brand-900 mb-1">Diagnóstico em Andamento</h3>
+                <p className="text-xs text-gray-400">
                   Iniciado em {new Date(currentDiagnosis.startedAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
               <Link to={`/diagnosis/${currentDiagnosis.id}/questionnaire`}>
-                <button className="px-8 py-3 text-lg font-black text-white rounded-xl transition-all hover:scale-105 shadow-lg" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
-                  Continuar Diagnóstico →
+                <button className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
+                  Continuar Diagnóstico
                 </button>
               </Link>
             </div>
 
-            {/* Partial Scores */}
             {partialScores && (
               <>
                 <div className="mb-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <h4 className="text-lg font-black" style={{ color: '#152F27' }}>Resultados Parciais</h4>
-                    <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>
+                    <h4 className="text-base font-bold text-brand-900">Resultados Parciais</h4>
+                    <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>
                       PRELIMINAR
                     </span>
                     {partialScores.certification && (
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={`/images/assets/selo-${partialScores.certification.level === 'gold' ? 'ouro' : partialScores.certification.level === 'silver' ? 'prata' : 'bronze'}.png`}
-                          alt={`Selo ${partialScores.certification.level === 'gold' ? 'Ouro' : partialScores.certification.level === 'silver' ? 'Prata' : 'Bronze'}`}
-                          className="w-16 h-16 object-contain"
-                        />
-                      </div>
+                      <img
+                        src={`/images/assets/selo-${partialScores.certification.level === 'gold' ? 'ouro' : partialScores.certification.level === 'silver' ? 'prata' : 'bronze'}.png`}
+                        alt={`Selo ${partialScores.certification.level === 'gold' ? 'Ouro' : partialScores.certification.level === 'silver' ? 'Prata' : 'Bronze'}`}
+                        className="w-14 h-14 object-contain"
+                      />
                     )}
                   </div>
-                  <p className="text-sm font-semibold" style={{ color: '#666' }}>
+                  <p className="text-xs text-gray-400">
                     Baseado nas respostas fornecidas até o momento
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>
-                    <p className="text-xs font-bold mb-2" style={{ color: '#666' }}>GERAL</p>
-                    <p className="text-4xl font-black" style={{ color: getScoreColor(partialScores.overall) }}>
+                  <div className="text-center p-4 rounded-xl bg-gray-50">
+                    <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Geral</p>
+                    <p className="text-3xl font-bold" style={{ color: getScoreColor(partialScores.overall) }}>
                       {partialScores.overall.toFixed(0)}
                     </p>
                   </div>
 
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#e8f5e9' }}>
-                    <p className="text-xs font-bold mb-2" style={{ color: '#152F27' }}>AMBIENTAL</p>
-                    <p className="text-4xl font-black" style={{ color: '#4CAF50' }}>
+                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#f5ffeb' }}>
+                    <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
+                    <p className="text-3xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>
                       {partialScores.environmental.toFixed(0)}
                     </p>
                   </div>
 
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#e3f2fd' }}>
-                    <p className="text-xs font-bold mb-2" style={{ color: '#152F27' }}>SOCIAL</p>
-                    <p className="text-4xl font-black" style={{ color: '#2196F3' }}>
+                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#fdf5f3' }}>
+                    <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
+                    <p className="text-3xl font-bold" style={{ color: PILLAR_COLORS.social }}>
                       {partialScores.social.toFixed(0)}
                     </p>
                   </div>
 
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#fff3e0' }}>
-                    <p className="text-xs font-bold mb-2" style={{ color: '#152F27' }}>GOVERNANÇA</p>
-                    <p className="text-4xl font-black" style={{ color: '#FF9800' }}>
+                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#fdf8ef' }}>
+                    <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
+                    <p className="text-3xl font-bold" style={{ color: '#b8963a' }}>
                       {partialScores.governance.toFixed(0)}
                     </p>
                   </div>
                 </div>
 
-                {/* Partial Charts */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>
-                    <h4 className="text-sm font-black mb-3" style={{ color: '#152F27' }}>Comparativo Parcial</h4>
+                  <div className="p-4 rounded-xl bg-gray-50">
+                    <h4 className="text-sm font-bold text-brand-900 mb-3">Comparativo Parcial</h4>
                     <BarChart
                       data={[
-                        { label: 'Ambiental (E)', value: partialScores.environmental, color: '#4CAF50' },
-                        { label: 'Social (S)', value: partialScores.social, color: '#2196F3' },
-                        { label: 'Governança (G)', value: partialScores.governance, color: '#FF9800' },
+                        { label: 'Ambiental (E)', value: partialScores.environmental, color: PILLAR_COLORS.environmental },
+                        { label: 'Social (S)', value: partialScores.social, color: PILLAR_COLORS.social },
+                        { label: 'Governança (G)', value: partialScores.governance, color: '#b8963a' },
                       ]}
                     />
                   </div>
 
-                  <div className="p-4 rounded-xl" style={{ backgroundColor: '#f5f5f5' }}>
-                    <h4 className="text-sm font-black mb-3 text-center" style={{ color: '#152F27' }}>Visão Geral Parcial</h4>
+                  <div className="p-4 rounded-xl bg-gray-50">
+                    <h4 className="text-sm font-bold text-brand-900 mb-3 text-center">Visão Geral Parcial</h4>
                     <RadarChart
                       environmental={partialScores.environmental}
                       social={partialScores.social}
@@ -657,39 +584,38 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {!currentDiagnosis && lastCompleted && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Novo Diagnóstico</h3>
-              <p className="text-sm mb-4" style={{ color: '#666' }}>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-base font-bold text-brand-900 mb-2">Novo Diagnóstico</h3>
+              <p className="text-sm text-gray-500 mb-4">
                 Inicie uma nova avaliação ESG e acompanhe sua evolução
               </p>
               <button
                 onClick={handleStartNewDiagnosis}
-                className="w-full px-6 py-3 text-base font-black text-white rounded-lg transition-all hover:scale-105 shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                className="w-full py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
               >
                 Novo Diagnóstico
               </button>
             </div>
           )}
 
-          <Link to="/reports" className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all">
-            <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Relatórios</h3>
-            <p className="text-sm mb-4" style={{ color: '#666' }}>
+          <Link to="/reports" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-brand-700/30 transition-all">
+            <h3 className="text-base font-bold text-brand-900 mb-2">Relatórios</h3>
+            <p className="text-sm text-gray-500 mb-4">
               Visualize todo o histórico de diagnósticos realizados
             </p>
-            <p className="text-sm font-bold" style={{ color: '#7B9965' }}>
-              {completedDiagnoses.length} diagnóstico(s) completo(s) →
+            <p className="text-sm font-medium text-brand-700">
+              {completedDiagnoses.length} diagnóstico(s) completo(s)
             </p>
           </Link>
 
           {lastCompleted && (
-            <Link to={`/diagnosis/${lastCompleted.id}/insights`} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all">
-              <h3 className="text-xl font-black mb-2" style={{ color: '#152F27' }}>Insights & Ações</h3>
-              <p className="text-sm mb-4" style={{ color: '#666' }}>
+            <Link to={`/diagnosis/${lastCompleted.id}/insights`} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-brand-700/30 transition-all">
+              <h3 className="text-base font-bold text-brand-900 mb-2">Insights & Ações</h3>
+              <p className="text-sm text-gray-500 mb-4">
                 Veja recomendações e plano de ação personalizado
               </p>
-              <p className="text-sm font-bold" style={{ color: '#7B9965' }}>
-                Ver plano de ação →
+              <p className="text-sm font-medium text-brand-700">
+                Ver plano de ação
               </p>
             </Link>
           )}
@@ -697,38 +623,37 @@ export default function Dashboard() {
 
         {/* Recent History */}
         {completedDiagnoses.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-black" style={{ color: '#152F27' }}>Histórico Recente</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-base font-bold text-brand-900">Histórico Recente</h3>
               <Link to="/reports">
-                <button className="text-sm font-bold" style={{ color: '#7B9965' }}>
-                  Ver Todos →
+                <button className="text-sm font-medium text-brand-700 hover:text-brand-900 transition-colors">
+                  Ver Todos
                 </button>
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {completedDiagnoses.slice(0, 3).map((diagnosis) => (
                 <div
                   key={diagnosis.id}
-                  className="flex items-center justify-between p-6 rounded-xl transition-all hover:shadow-md"
-                  style={{ backgroundColor: '#f5f5f5' }}
+                  className="flex items-center justify-between p-5 rounded-xl bg-gray-50 hover:bg-brand-100 transition-all"
                 >
                   <div className="flex-1">
-                    <p className="font-black text-xl mb-1" style={{ color: '#152F27' }}>
+                    <p className="font-bold text-brand-900 mb-0.5">
                       Score Geral: {Number(diagnosis.overallScore).toFixed(0)}
                     </p>
-                    <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>
+                    <p className="text-xs text-gray-400">
                       {new Date(diagnosis.completedAt!).toLocaleDateString('pt-BR')}
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Link to={`/diagnosis/${diagnosis.id}/results`}>
-                      <button className="px-4 py-2 text-sm font-bold border-2 rounded-lg transition-all hover:bg-green-50" style={{ color: '#152F27', borderColor: '#152F27' }}>
+                      <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-white">
                         Resultados
                       </button>
                     </Link>
                     <Link to={`/diagnosis/${diagnosis.id}/insights`}>
-                      <button className="px-4 py-2 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
+                      <button className="px-4 py-2 text-xs font-medium text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
                         Insights
                       </button>
                     </Link>

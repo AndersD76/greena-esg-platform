@@ -27,20 +27,18 @@ export default function Login() {
     }
   }
 
-
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #152F27 0%, #2d5a45 50%, #7B9965 100%)' }}>
+    <div className="min-h-screen bg-brand-100">
       {/* Header */}
-      <div className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-3">
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14" />
+            <Link to="/" className="flex items-center">
+              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-10" />
             </Link>
             <Link
               to="/register"
-              className="text-sm font-semibold transition-colors"
-              style={{ color: '#152F27' }}
+              className="text-sm font-semibold text-brand-900 hover:text-brand-700 transition-colors"
             >
               Criar Conta
             </Link>
@@ -49,28 +47,25 @@ export default function Login() {
       </div>
 
       {/* Content */}
-      <div className="flex items-center justify-center px-4 py-20">
+      <div className="flex items-center justify-center px-4 py-16">
         <div className="max-w-md w-full">
-          {/* Logo e Título */}
+          {/* Título */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-6">
-              <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-32" />
-            </div>
-            <h2 className="text-4xl font-black text-white mb-3">Bem-vindo de volta</h2>
-            <p className="text-xl text-white opacity-90">Faça login para acessar sua plataforma ESG</p>
+            <h2 className="text-3xl font-bold text-brand-900 mb-2">Bem-vindo de volta</h2>
+            <p className="text-gray-500">Faça login para acessar sua plataforma ESG</p>
           </div>
 
           {/* Form Card */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             {error && (
-              <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: '#fee', border: '2px solid #fcc' }}>
-                <p className="text-sm font-semibold" style={{ color: '#c33' }}>{error}</p>
+              <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
+                <p className="text-sm font-medium text-red-600">{error}</p>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                <label className="block text-sm font-semibold text-brand-900 mb-2">
                   Email
                 </label>
                 <input
@@ -79,13 +74,12 @@ export default function Login() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
+                <label className="block text-sm font-semibold text-brand-900 mb-2">
                   Senha
                 </label>
                 <input
@@ -94,8 +88,7 @@ export default function Login() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
-                  className="w-full px-4 py-3 rounded-xl border-2 font-semibold transition-all focus:outline-none focus:border-green-600"
-                  style={{ borderColor: '#e0e0e0' }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700"
                 />
               </div>
 
@@ -103,14 +96,14 @@ export default function Login() {
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded"
+                    className="w-4 h-4 rounded border-gray-300"
                     style={{ accentColor: '#7B9965' }}
                   />
-                  <span className="ml-2 text-sm font-semibold" style={{ color: '#152F27' }}>
+                  <span className="ml-2 text-sm text-gray-600">
                     Lembrar-me
                   </span>
                 </label>
-                <a href="#" className="text-sm font-bold hover:underline" style={{ color: '#7B9965' }}>
+                <a href="#" className="text-sm font-medium text-brand-700 hover:underline">
                   Esqueceu a senha?
                 </a>
               </div>
@@ -118,17 +111,16 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl text-white font-black text-lg transition-all hover:opacity-90 disabled:opacity-50 shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                className="w-full py-3.5 rounded-full bg-brand-900 text-white font-semibold text-sm transition-all hover:bg-brand-900/90 disabled:opacity-50"
               >
                 {loading ? 'Entrando...' : 'Entrar na Plataforma'}
               </button>
             </form>
 
-            <div className="mt-8 text-center">
-              <p className="text-sm font-semibold" style={{ color: '#666' }}>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-500">
                 Não tem uma conta?{' '}
-                <Link to="/register" className="font-black hover:underline" style={{ color: '#7B9965' }}>
+                <Link to="/register" className="font-semibold text-brand-700 hover:underline">
                   Cadastre-se grátis
                 </Link>
               </p>
@@ -137,7 +129,7 @@ export default function Login() {
 
           {/* Voltar para home */}
           <div className="mt-6 text-center">
-            <Link to="/" className="text-sm font-bold text-white hover:underline flex items-center justify-center gap-2">
+            <Link to="/" className="text-sm text-gray-500 hover:text-brand-900 transition-colors inline-flex items-center gap-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
               </svg>

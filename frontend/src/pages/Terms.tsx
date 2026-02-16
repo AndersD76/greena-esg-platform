@@ -35,13 +35,13 @@ export default function Terms() {
           <div className="prose prose-lg max-w-none">
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>1. Aceitação dos Termos</h2>
             <p className="text-gray-700 mb-6">
-              Ao acessar e usar a plataforma GREENA ESG, você concorda com estes Termos de Uso.
+              Ao acessar e usar a plataforma engreena ESG, você concorda com estes Termos de Uso.
               Se você não concordar com qualquer parte destes termos, não poderá acessar nossos serviços.
             </p>
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>2. Descrição do Serviço</h2>
             <p className="text-gray-700 mb-6">
-              A GREENA oferece uma plataforma de avaliação e gestão ESG (Environmental, Social, Governance) que inclui:
+              A engreena oferece uma plataforma de avaliação e gestão ESG (Environmental, Social, Governance) que inclui:
             </p>
             <ul className="list-disc pl-6 mb-6 text-gray-700 space-y-2">
               <li>Questionários de diagnóstico ESG com 215 questões</li>
@@ -92,20 +92,20 @@ export default function Terms() {
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>6. Propriedade Intelectual</h2>
             <p className="text-gray-700 mb-6">
               Todo o conteúdo da plataforma, incluindo metodologia de avaliação, questionários, relatórios
-              e materiais de suporte, são propriedade da GREENA ou de seus licenciadores. O uso da plataforma
+              e materiais de suporte, são propriedade da engreena ou de seus licenciadores. O uso da plataforma
               não transfere nenhum direito de propriedade intelectual.
             </p>
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>7. Certificação ESG</h2>
             <p className="text-gray-700 mb-6">
-              A certificação ESG GREENA é baseada nas respostas fornecidas pelo usuário. A GREENA não se
+              A certificação ESG engreena é baseada nas respostas fornecidas pelo usuário. A engreena não se
               responsabiliza por informações incorretas ou fraudulentas. A certificação é válida por 12 meses
               e pode ser revogada em caso de descumprimento destes termos.
             </p>
 
             <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>8. Limitação de Responsabilidade</h2>
             <p className="text-gray-700 mb-6">
-              A GREENA não será responsável por danos indiretos, incidentais ou consequentes resultantes do
+              A engreena não será responsável por danos indiretos, incidentais ou consequentes resultantes do
               uso ou impossibilidade de uso da plataforma. Nossa responsabilidade total está limitada ao valor
               pago pelo usuário nos últimos 12 meses.
             </p>
@@ -130,7 +130,7 @@ export default function Terms() {
 
       {/* Footer */}
       <footer className="py-8 px-6 bg-gray-900 text-white text-center">
-        <p className="text-sm">© 2025 GREENA ESG Platform. Todos os direitos reservados.</p>
+        <p className="text-sm">© 2025 engreena ESG Platform. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

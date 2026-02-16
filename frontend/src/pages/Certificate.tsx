@@ -90,7 +90,7 @@ export default function Certificate() {
     const url = window.location.href;
     if (navigator.share) {
       navigator.share({
-        title: `Certificado ${certificate?.certificationLevel.name} - GREENA ESG`,
+        title: `Certificado ${certificate?.certificationLevel.name} - engreena ESG`,
         text: `Confira meu Certificado ESG ${certificate?.level.toUpperCase()}!`,
         url: url
       });
@@ -212,7 +212,7 @@ export default function Certificate() {
                 {user.companyName || user.name}
               </p>
               <p className="text-lg text-gray-600">
-                Concluiu com sucesso a avaliação ESG GREENA, demonstrando compromisso com<br/>
+                Concluiu com sucesso a avaliação ESG engreena, demonstrando compromisso com<br/>
                 práticas ambientais, sociais e de governança responsáveis.
               </p>
             </div>
@@ -305,7 +305,7 @@ export default function Certificate() {
               </div>
               <div className="text-right">
                 <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-16 ml-auto mb-2" />
-                <p className="text-xs text-gray-500 font-semibold">GREENA ESG Platform</p>
+                <p className="text-xs text-gray-500 font-semibold">engreena ESG Platform</p>
               </div>
             </div>
           </div>

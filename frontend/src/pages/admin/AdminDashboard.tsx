@@ -48,7 +48,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-black">Painel Administrativo</h1>
-              <p className="text-green-200 mt-1">Gestão completa da plataforma Greena ESG</p>
+              <p className="text-green-200 mt-1">Gestão completa da plataforma engreena ESG</p>
             </div>
             <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-16 filter brightness-0 invert" />
           </div>

@@ -289,7 +289,7 @@ export default function ConsultationRoom() {
                 Chat da Consultoria
               </h2>
               <p className="text-sm font-semibold" style={{ color: '#7B9965' }}>
-                {consultation.consultantName || 'Consultor Greena'}
+                {consultation.consultantName || 'Consultor engreena'}
               </p>
             </div>
 
