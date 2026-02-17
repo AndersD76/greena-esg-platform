@@ -509,7 +509,7 @@ export default function Checkout() {
                     </div>
                     <div>
                       <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                        Celular
+                        Celular *
                       </label>
                       <input
                         type="text"
@@ -526,7 +526,7 @@ export default function Checkout() {
                   <div className="grid grid-cols-3 gap-4">
                     <div className="col-span-2">
                       <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                        Endereço
+                        Endereço *
                       </label>
                       <input
                         type="text"
@@ -539,7 +539,7 @@ export default function Checkout() {
                     </div>
                     <div>
                       <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                        Número
+                        Número *
                       </label>
                       <input
                         type="text"
@@ -581,7 +581,7 @@ export default function Checkout() {
                     </div>
                     <div>
                       <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                        CEP
+                        CEP *
                       </label>
                       <input
                         type="text"

@@ -101,11 +101,25 @@ export class SubscriptionController {
 
       if (paymentMethod === 'CREDIT_CARD') {
         if (!creditCard || !creditCard.number || !creditCard.holderName || !creditCard.expiryMonth || !creditCard.expiryYear || !creditCard.ccv) {
-          return res.status(400).json({ error: 'Dados do cartão de crédito são obrigatórios' });
+          return res.status(400).json({ error: 'Preencha todos os dados do cartão de crédito (número, nome, validade e CVV)' });
         }
-        if (!creditCardHolderInfo || !creditCardHolderInfo.name || !creditCardHolderInfo.email || !creditCardHolderInfo.cpfCnpj || !creditCardHolderInfo.postalCode || !creditCardHolderInfo.addressNumber) {
+        if (!creditCardHolderInfo) {
           return res.status(400).json({ error: 'Dados do titular do cartão são obrigatórios' });
         }
+        const missingFields: string[] = [];
+        if (!creditCardHolderInfo.name) missingFields.push('Nome do titular');
+        if (!creditCardHolderInfo.email) missingFields.push('Email');
+        if (!creditCardHolderInfo.cpfCnpj) missingFields.push('CPF/CNPJ');
+        if (!creditCardHolderInfo.postalCode) missingFields.push('CEP');
+        if (!creditCardHolderInfo.addressNumber) missingFields.push('Número do endereço');
+        if (!creditCardHolderInfo.mobilePhone) missingFields.push('Celular');
+        if (missingFields.length > 0) {
+          return res.status(400).json({ error: `Campos obrigatórios não preenchidos: ${missingFields.join(', ')}` });
+        }
+      }
+
+      if (!billingData?.mobilePhone) {
+        return res.status(400).json({ error: 'Celular é obrigatório para o pagamento' });
       }
 
       const result = await subscriptionService.createSubscription(userId, {
