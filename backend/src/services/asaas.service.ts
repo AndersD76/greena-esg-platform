@@ -3,6 +3,17 @@ import axios, { AxiosInstance } from 'axios';
 const ASAAS_API_URL = process.env.ASAAS_API_URL || 'https://api-sandbox.asaas.com/v3';
 const ASAAS_API_KEY = process.env.ASAAS_API_KEY || '';
 
+// Log de diagnóstico na inicialização
+if (!ASAAS_API_KEY) {
+  console.error('[ASAAS] ERRO: ASAAS_API_KEY não está configurada!');
+} else {
+  const keyPreview = ASAAS_API_KEY.substring(0, 15) + '...' + ASAAS_API_KEY.substring(ASAAS_API_KEY.length - 5);
+  console.log(`[ASAAS] API Key configurada: ${keyPreview} (${ASAAS_API_KEY.length} chars)`);
+  if (!ASAAS_API_KEY.startsWith('$aact_')) {
+    console.warn('[ASAAS] AVISO: A chave não começa com "$aact_". Verifique se o Railway não está interpretando o $ como variável. No Railway, use $$aact_ para escapar o $.');
+  }
+}
+
 interface CreateCustomerData {
   name: string;
   cpfCnpj: string;

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/layout/Header';
@@ -102,12 +102,23 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   return user ? <Navigate to="/dashboard" /> : <>{children}</>;
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function AppRoutes() {
   const { user } = useAuth();
+  const { pathname } = useLocation();
+  const hideMainLayout = pathname === '/checkout';
 
   return (
     <div className="flex flex-col min-h-screen">
-      {user && <Header />}
+      <ScrollToTop />
+      {user && !hideMainLayout && <Header />}
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -289,7 +300,7 @@ function AppRoutes() {
           />
         </Routes>
       </main>
-      {user && <Footer />}
+      {user && !hideMainLayout && <Footer />}
     </div>
   );
 }

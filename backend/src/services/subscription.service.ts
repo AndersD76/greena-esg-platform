@@ -248,7 +248,14 @@ export class SubscriptionService {
     }
 
     // Buscar ou criar customer no Asaas
-    const asaasCustomerId = await this.ensureAsaasCustomer(userId, billingData);
+    let asaasCustomerId: string;
+    try {
+      asaasCustomerId = await this.ensureAsaasCustomer(userId, billingData);
+    } catch (error: any) {
+      const msg = error.response?.data?.errors?.[0]?.description || error.response?.data?.message || error.message;
+      console.error('[ASAAS] Erro ao criar/buscar customer:', msg);
+      throw new Error(`Erro na comunicação com o gateway de pagamento: ${msg}`);
+    }
 
     // Calcular próximo vencimento (hoje)
     const today = new Date();
@@ -287,7 +294,15 @@ export class SubscriptionService {
     }
 
     // Criar assinatura no Asaas
-    const asaasSubscription = await asaasService.createSubscription(asaasSubscriptionData);
+    let asaasSubscription;
+    try {
+      asaasSubscription = await asaasService.createSubscription(asaasSubscriptionData);
+    } catch (error: any) {
+      const asaasErrors = error.response?.data?.errors;
+      const msg = asaasErrors?.[0]?.description || error.response?.data?.message || error.message;
+      console.error('[ASAAS] Erro ao criar assinatura:', JSON.stringify(error.response?.data || error.message));
+      throw new Error(`Erro no pagamento: ${msg}`);
+    }
 
     // Calcular data de expiração
     const now = new Date();
