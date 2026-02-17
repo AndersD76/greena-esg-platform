@@ -3,6 +3,10 @@ import axios, { AxiosInstance } from 'axios';
 const ASAAS_API_URL = process.env.ASAAS_API_URL || 'https://api-sandbox.asaas.com/v3';
 const ASAAS_API_KEY = process.env.ASAAS_API_KEY || '';
 
+// Debug temporário - verificar se a chave está sendo carregada
+console.log('[Asaas] API URL:', ASAAS_API_URL);
+console.log('[Asaas] API Key loaded:', ASAAS_API_KEY ? `${ASAAS_API_KEY.substring(0, 15)}...${ASAAS_API_KEY.substring(ASAAS_API_KEY.length - 10)} (${ASAAS_API_KEY.length} chars)` : 'VAZIA');
+
 interface CreateCustomerData {
   name: string;
   cpfCnpj: string;
