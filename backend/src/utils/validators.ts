@@ -8,6 +8,7 @@ export const registerSchema = z.object({
   cnpj: z.string().optional(),
   sector: z.string().optional(),
   employees: z.number().optional(),
+  esgPainPoint: z.string().optional(),
 });
 
 export const loginSchema = z.object({

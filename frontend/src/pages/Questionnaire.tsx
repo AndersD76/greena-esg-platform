@@ -135,8 +135,8 @@ export default function Questionnaire() {
       await diagnosisService.finalize(diagnosisId);
       navigate(`/diagnosis/${diagnosisId}/results`);
     } catch (error) {
-      console.error('Erro ao finalizar diagnostico:', error);
-      alert('Erro ao finalizar diagnostico. Tente novamente.');
+      console.error('Erro ao finalizar diagnóstico:', error);
+      alert('Erro ao finalizar diagnóstico. Tente novamente.');
       setSaving(false);
     }
   }
@@ -231,10 +231,10 @@ export default function Questionnaire() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Nenhuma questao encontrada
+              Nenhuma questão encontrada
             </h2>
             <p className="text-gray-600 mb-6">
-              Nao foi possivel carregar as questoes do diagnostico.
+              Não foi possível carregar as questões do diagnóstico.
             </p>
             <Button onClick={() => navigate('/dashboard')}>
               Voltar ao Dashboard
@@ -263,8 +263,10 @@ export default function Questionnaire() {
                 </svg>
               </button>
               <div>
-                <h1 className="text-lg font-bold" style={{ color: '#152F27' }}>Diagnostico ESG</h1>
-                <p className="text-xs text-gray-500">Questao {currentIndex + 1} de {totalQuestions}</p>
+                <h1 className="text-lg font-bold" style={{ color: '#152F27' }}>Diagnóstico ESG</h1>
+                <p className="text-xs text-gray-500">
+                  {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'} — Questão {currentQuestionIndexInPillar + 1} de {questionsOfCurrentPillar.length}
+                </p>
               </div>
             </div>
 
@@ -361,7 +363,7 @@ export default function Questionnaire() {
                   </div>
                 </button>
 
-                {/* Governanca */}
+                {/* Governança */}
                 <button
                   onClick={() => navigateToPillar('G')}
                   className="w-full p-3 rounded-xl transition-all shadow-sm"
@@ -384,7 +386,7 @@ export default function Questionnaire() {
                       </span>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#152F27' }}>Governanca</p>
+                      <p className="text-sm font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#152F27' }}>Governança</p>
                       <p className="text-xs" style={{ color: pillarCode === 'G' ? 'rgba(255,255,255,0.7)' : '#666' }}>
                         {pillarProgress.G.answered}/{pillarProgress.G.total} respostas
                       </p>
@@ -399,11 +401,11 @@ export default function Questionnaire() {
                 <div className="space-y-1.5 text-xs" style={{ color: '#666' }}>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#E5E7EB', color: '#666' }}>0</span>
-                    <span>Nao se aplica</span>
+                    <span>Não se aplica</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: '#924131' }}>1</span>
-                    <span>Nao iniciado</span>
+                    <span>Não iniciado</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>2</span>
@@ -415,11 +417,11 @@ export default function Questionnaire() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#D4E8C7', color: '#7B9965' }}>4</span>
-                    <span>Impl. parcialmente</span>
+                    <span>Implementado parcialmente</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#C5E1B5', color: '#152F27' }}>5</span>
-                    <span>Totalmente impl.</span>
+                    <span>Totalmente implementado</span>
                   </div>
                 </div>
               </div>
@@ -434,7 +436,7 @@ export default function Questionnaire() {
               <div className="px-6 py-4" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-white font-bold text-lg">
-                    {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governanca'}
+                    {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'}
                   </h2>
                   <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-white text-sm font-medium">
                     {currentQuestionIndexInPillar + 1} / {questionsOfCurrentPillar.length}
@@ -445,7 +447,7 @@ export default function Questionnaire() {
                 </div>
                 <div className="mt-1 px-3 py-1.5 rounded-lg bg-white/15 inline-block">
                   <span className="text-white text-xs font-bold uppercase tracking-wide">
-                    Criterio: {criteriaName}
+                    Critério: {criteriaName}
                   </span>
                 </div>
               </div>
@@ -460,7 +462,7 @@ export default function Questionnaire() {
                 {/* Opcoes de avaliacao - Dropdown */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-600 mb-3">
-                    Qual o nivel de maturidade desta pratica na sua empresa?
+                    Qual o nível de maturidade desta prática na sua empresa?
                   </label>
 
                   <select
@@ -478,7 +480,7 @@ export default function Questionnaire() {
                       paddingRight: '44px',
                     }}
                   >
-                    <option value="" disabled>Selecione o nivel de maturidade...</option>
+                    <option value="" disabled>Selecione o nível de maturidade...</option>
                     {evaluationOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.score === 0 ? 'N/A' : option.score} - {option.fullLabel} ({option.maturity})
@@ -506,7 +508,7 @@ export default function Questionnaire() {
                         </span>
                         {currentResponse.evaluation === 'Não se aplica' && (
                           <span className="text-xs text-gray-500 italic">
-                            - Nao sera contabilizada no calculo do score
+                            - Não será contabilizada no cálculo do score
                           </span>
                         )}
                       </div>
@@ -524,7 +526,7 @@ export default function Questionnaire() {
                     <svg className={`w-4 h-4 transition-transform ${showObservations ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                    Adicionar observacao (opcional)
+                    Adicionar observação (opcional)
                   </button>
 
                   {showObservations && (
@@ -533,7 +535,7 @@ export default function Questionnaire() {
                       onChange={(e) => updateResponse('observations', e.target.value)}
                       rows={3}
                       className="w-full mt-3 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm"
-                      placeholder="Adicione observacoes relevantes sobre esta questao..."
+                      placeholder="Adicione observações relevantes sobre esta questão..."
                     />
                   )}
                 </div>
@@ -573,7 +575,7 @@ export default function Questionnaire() {
                       </>
                     ) : (
                       <>
-                        {currentIndex === questions.length - 1 ? 'Finalizar' : 'Proxima'}
+                        {currentIndex === questions.length - 1 ? 'Finalizar' : 'Próxima'}
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -586,7 +588,7 @@ export default function Questionnaire() {
 
             {/* Info */}
             <p className="text-center text-xs text-gray-400 mt-4">
-              Suas respostas sao salvas automaticamente
+              Suas respostas são salvas automaticamente
             </p>
           </div>
         </div>
