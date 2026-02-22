@@ -3,17 +3,57 @@ import { Link, useNavigate } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 import api from '../services/api';
 
-// Cores dos pilares ESG da marca
 const PILLAR_COLORS = {
   environmental: '#7B9965',
   social: '#924131',
   governance: '#EFD4A8',
 };
 
-// Componente de Gráfico de Barras
-function BarChart({ data }: { data: { label: string; value: number; color: string }[] }) {
-  const maxValue = 100;
+// Circular Score Gauge
+function ScoreGauge({ score, size = 120, label, color }: { score: number; size?: number; label?: string; color?: string }) {
+  const strokeWidth = size > 100 ? 10 : 8;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (score / 100) * circumference;
+  const scoreColor = color || getScoreColorStatic(score);
 
+  return (
+    <div className="relative inline-flex flex-col items-center">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="transform -rotate-90">
+          <circle cx={size / 2} cy={size / 2} r={radius} stroke="#e5e7eb" strokeWidth={strokeWidth} fill="none" />
+          <circle
+            cx={size / 2} cy={size / 2} r={radius}
+            stroke={scoreColor}
+            strokeWidth={strokeWidth}
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            className="transition-all duration-1000"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-3xl font-bold" style={{ color: scoreColor, fontSize: size > 100 ? '2rem' : '1.5rem' }}>
+            {score.toFixed(0)}
+          </span>
+          {size > 100 && <span className="text-xs text-gray-400">pontos</span>}
+        </div>
+      </div>
+      {label && <span className="mt-2 text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</span>}
+    </div>
+  );
+}
+
+function getScoreColorStatic(score: number) {
+  if (score >= 80) return '#7B9965';
+  if (score >= 60) return '#EFD4A8';
+  if (score >= 40) return '#924131';
+  return '#9ca3af';
+}
+
+// Bar Chart
+function BarChart({ data }: { data: { label: string; value: number; color: string }[] }) {
   return (
     <div className="space-y-4">
       {data.map((item, index) => (
@@ -24,11 +64,8 @@ function BarChart({ data }: { data: { label: string; value: number; color: strin
           </div>
           <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
             <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${(item.value / maxValue) * 100}%`,
-                backgroundColor: item.color
-              }}
+              className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${(item.value / 100) * 100}%`, backgroundColor: item.color }}
             />
           </div>
         </div>
@@ -37,71 +74,76 @@ function BarChart({ data }: { data: { label: string; value: number; color: strin
   );
 }
 
-// Componente de Gráfico de Radar (Spider Chart)
+// Radar Chart
 function RadarChart({ environmental, social, governance }: { environmental: number; social: number; governance: number }) {
-  const size = 200;
+  const size = 220;
   const center = size / 2;
-  const radius = 70;
+  const radius = 80;
 
-  const points = [
-    { x: center, y: center - radius },
-    { x: center + radius * Math.sin(2 * Math.PI / 3), y: center - radius * Math.cos(2 * Math.PI / 3) },
-    { x: center + radius * Math.sin(4 * Math.PI / 3), y: center - radius * Math.cos(4 * Math.PI / 3) },
-  ];
+  const angles = [-90, 30, 150];
+  const getPoint = (value: number, angleIdx: number) => {
+    const rad = (angles[angleIdx] * Math.PI) / 180;
+    const r = (value / 100) * radius;
+    return { x: center + r * Math.cos(rad), y: center + r * Math.sin(rad) };
+  };
 
+  const outerPoints = angles.map((_, i) => getPoint(100, i));
   const dataPoints = [
-    {
-      x: center + (environmental / 100) * (points[0].x - center),
-      y: center + (environmental / 100) * (points[0].y - center)
-    },
-    {
-      x: center + (social / 100) * (points[1].x - center),
-      y: center + (social / 100) * (points[1].y - center)
-    },
-    {
-      x: center + (governance / 100) * (points[2].x - center),
-      y: center + (governance / 100) * (points[2].y - center)
-    },
+    getPoint(environmental, 0),
+    getPoint(social, 1),
+    getPoint(governance, 2),
   ];
 
-  const polygonPoints = points.map(p => `${p.x},${p.y}`).join(' ');
-  const dataPolygonPoints = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+  const colors = [PILLAR_COLORS.environmental, PILLAR_COLORS.social, '#b8963a'];
+  const labels = ['Ambiental', 'Social', 'Governança'];
 
   return (
-    <svg width={size} height={size} className="mx-auto">
-      {[20, 40, 60, 80, 100].map((percent) => (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="mx-auto">
+      {[20, 40, 60, 80, 100].map((pct) => (
         <polygon
-          key={percent}
-          points={points.map(p => {
-            const factor = percent / 100;
-            return `${center + factor * (p.x - center)},${center + factor * (p.y - center)}`;
+          key={pct}
+          points={angles.map((_, i) => {
+            const p = getPoint(pct, i);
+            return `${p.x},${p.y}`;
           }).join(' ')}
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth="1"
+          fill="none" stroke="#e5e7eb" strokeWidth="1"
+          strokeDasharray={pct < 100 ? '3,3' : ''}
         />
       ))}
 
-      {points.map((p, i) => (
-        <line key={i} x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e5e7eb" strokeWidth="1" />
+      {outerPoints.map((p, i) => (
+        <line key={i} x1={center} y1={center} x2={p.x} y2={p.y} stroke="#d1d5db" strokeWidth="1" />
       ))}
 
-      <polygon points={polygonPoints} fill="none" stroke="#152F27" strokeWidth="1.5" />
-
-      <polygon points={dataPolygonPoints} fill="#7B9965" fillOpacity="0.2" stroke="#7B9965" strokeWidth="2" />
+      <polygon
+        points={dataPoints.map(p => `${p.x},${p.y}`).join(' ')}
+        fill="rgba(123, 153, 101, 0.15)"
+        stroke="#7B9965"
+        strokeWidth="2"
+      />
 
       {dataPoints.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="4" fill={Object.values(PILLAR_COLORS)[i]} />
+        <g key={i}>
+          <circle cx={p.x} cy={p.y} r="5" fill="white" stroke={colors[i]} strokeWidth="2.5" />
+          <circle cx={p.x} cy={p.y} r="2" fill={colors[i]} />
+        </g>
       ))}
 
-      <text x={center} y={center - radius - 12} textAnchor="middle" className="text-xs font-medium" fill="#152F27">E</text>
-      <text x={center + radius + 12} y={center - radius * Math.cos(2 * Math.PI / 3) + 4} textAnchor="start" className="text-xs font-medium" fill="#152F27">S</text>
-      <text x={center + radius * Math.sin(4 * Math.PI / 3) - 12} y={center - radius * Math.cos(4 * Math.PI / 3) + 4} textAnchor="end" className="text-xs font-medium" fill="#152F27">G</text>
+      {angles.map((angle, i) => {
+        const rad = (angle * Math.PI) / 180;
+        const lx = center + (radius + 28) * Math.cos(rad);
+        const ly = center + (radius + 28) * Math.sin(rad);
+        return (
+          <text key={i} x={lx} y={ly} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight="600" fill={colors[i]}>
+            {labels[i]}
+          </text>
+        );
+      })}
     </svg>
   );
 }
 
-// Componente de Gráfico de Linha (Evolução)
+// Line Chart
 function LineChart({ diagnoses }: { diagnoses: Diagnosis[] }) {
   if (diagnoses.length === 0) return null;
 
@@ -110,20 +152,14 @@ function LineChart({ diagnoses }: { diagnoses: Diagnosis[] }) {
   const padding = 40;
   const chartWidth = width - 2 * padding;
   const chartHeight = height - 2 * padding;
-
-  const maxScore = 100;
   const points = diagnoses.slice(0, 5).reverse();
 
   const getX = (index: number) => padding + (chartWidth / (points.length - 1 || 1)) * index;
-  const getY = (score: number) => height - padding - (score / maxScore) * chartHeight;
+  const getY = (score: number) => height - padding - (score / 100) * chartHeight;
 
   const createPath = (scores: number[]) => {
     return scores.map((score, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(score)}`).join(' ');
   };
-
-  const envPath = createPath(points.map(d => Number(d.environmentalScore)));
-  const socPath = createPath(points.map(d => Number(d.socialScore)));
-  const govPath = createPath(points.map(d => Number(d.governanceScore)));
 
   return (
     <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
@@ -134,15 +170,15 @@ function LineChart({ diagnoses }: { diagnoses: Diagnosis[] }) {
         </g>
       ))}
 
-      <path d={envPath} fill="none" stroke={PILLAR_COLORS.environmental} strokeWidth="2.5" />
-      <path d={socPath} fill="none" stroke={PILLAR_COLORS.social} strokeWidth="2.5" />
-      <path d={govPath} fill="none" stroke={PILLAR_COLORS.governance} strokeWidth="2.5" />
+      <path d={createPath(points.map(d => Number(d.environmentalScore)))} fill="none" stroke={PILLAR_COLORS.environmental} strokeWidth="2.5" />
+      <path d={createPath(points.map(d => Number(d.socialScore)))} fill="none" stroke={PILLAR_COLORS.social} strokeWidth="2.5" />
+      <path d={createPath(points.map(d => Number(d.governanceScore)))} fill="none" stroke="#b8963a" strokeWidth="2.5" />
 
       {points.map((d, i) => (
         <g key={i}>
           <circle cx={getX(i)} cy={getY(Number(d.environmentalScore))} r="3.5" fill={PILLAR_COLORS.environmental} />
           <circle cx={getX(i)} cy={getY(Number(d.socialScore))} r="3.5" fill={PILLAR_COLORS.social} />
-          <circle cx={getX(i)} cy={getY(Number(d.governanceScore))} r="3.5" fill={PILLAR_COLORS.governance} />
+          <circle cx={getX(i)} cy={getY(Number(d.governanceScore))} r="3.5" fill="#b8963a" />
           <text x={getX(i)} y={height - 10} textAnchor="middle" className="text-xs" fill="#9ca3af">
             {new Date(d.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
           </text>
@@ -154,7 +190,7 @@ function LineChart({ diagnoses }: { diagnoses: Diagnosis[] }) {
         <text x="10" y="4" className="text-xs font-medium" fill="#152F27">Ambiental</text>
         <circle cx="100" cy="0" r="3.5" fill={PILLAR_COLORS.social} />
         <text x="110" y="4" className="text-xs font-medium" fill="#152F27">Social</text>
-        <circle cx="180" cy="0" r="3.5" fill={PILLAR_COLORS.governance} />
+        <circle cx="180" cy="0" r="3.5" fill="#b8963a" />
         <text x="190" y="4" className="text-xs font-medium" fill="#152F27">Governança</text>
       </g>
     </svg>
@@ -166,11 +202,20 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [currentDiagnosis, setCurrentDiagnosis] = useState<Diagnosis | null>(null);
   const [partialScores, setPartialScores] = useState<any>(null);
+  const [userName, setUserName] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     loadDiagnoses();
+    loadUserName();
   }, []);
+
+  async function loadUserName() {
+    try {
+      const response = await api.get('/auth/me');
+      setUserName(response.data.name?.split(' ')[0] || '');
+    } catch {}
+  }
 
   async function loadDiagnoses() {
     try {
@@ -209,11 +254,11 @@ export default function Dashboard() {
   const completedDiagnoses = diagnoses.filter((d) => d.status === 'completed');
   const lastCompleted = completedDiagnoses[0];
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return '#7B9965';
-    if (score >= 60) return '#EFD4A8';
-    if (score >= 40) return '#924131';
-    return '#9ca3af';
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Bom dia';
+    if (hour < 18) return 'Boa tarde';
+    return 'Boa noite';
   };
 
   const getScoreLevel = (score: number) => {
@@ -237,155 +282,198 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-brand-100">
       <div className="max-w-7xl mx-auto px-6 py-8">
+
+        {/* Header with greeting */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-brand-900 mb-1">Dashboard ESG</h1>
+          <h1 className="text-3xl font-bold text-brand-900 mb-1">
+            {getGreeting()}{userName ? `, ${userName}` : ''}
+          </h1>
           <p className="text-sm text-gray-500">Acompanhe suas práticas de sustentabilidade</p>
         </div>
 
         {/* Welcome / First Diagnosis */}
         {!lastCompleted && !currentDiagnosis && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-3">Bem-vindo!</h2>
-            <p className="text-gray-500 mb-8 max-w-xl mx-auto">
-              Comece seu primeiro diagnóstico ESG e descubra como sua empresa pode ser mais sustentável.
-            </p>
-            <button
-              onClick={handleStartNewDiagnosis}
-              className="px-10 py-3.5 font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
-            >
-              Fazer Primeiro Diagnóstico
-            </button>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 mb-8">
+            <div className="flex items-center gap-12">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-brand-900 mb-3">Bem-vindo à Greena!</h2>
+                <p className="text-gray-500 mb-6 max-w-lg">
+                  Faça seu primeiro diagnóstico ESG e descubra como sua empresa pode ser mais sustentável. A avaliação é rápida e você terá insights personalizados.
+                </p>
+                <button
+                  onClick={handleStartNewDiagnosis}
+                  className="px-10 py-3.5 font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
+                >
+                  Fazer Primeiro Diagnóstico
+                </button>
+              </div>
+              <div className="hidden md:flex flex-col items-center gap-3">
+                <div className="w-32 h-32 rounded-full bg-brand-300/30 flex items-center justify-center">
+                  <svg className="w-16 h-16 text-brand-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="text-xs text-gray-400">75 perguntas</span>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Score Overview */}
+        {/* ========== COMPLETED DIAGNOSIS SECTION ========== */}
         {lastCompleted && (
           <>
-            {/* Certification Badge */}
-            {(() => {
-              const scoringService = { getCertificationLevel: (score: number) => {
-                if (score < 40) return {
-                  level: 'bronze', name: 'Compromisso ESG', title: 'Fundamentos ESG',
-                  message: 'Quem da o primeiro passo na transformacao sustentavel.',
-                  color: '#CD7F32', levelLabel: 'BRONZE', scoreRange: '0-39'
-                };
-                if (score < 70) return {
-                  level: 'silver', name: 'Integracao ESG', title: 'Gestao ESG',
-                  message: 'Quem transforma intencoes em praticas consistentes.',
-                  color: '#C0C0C0', levelLabel: 'PRATA', scoreRange: '40-69'
-                };
-                return {
-                  level: 'gold', name: 'Lideranca ESG', title: 'Excelencia ESG',
-                  message: 'Quem inspira o mercado e multiplica o impacto positivo.',
-                  color: '#FFD700', levelLabel: 'OURO', scoreRange: '70-100'
-                };
-              }};
-              const cert = scoringService.getCertificationLevel(Number(lastCompleted.overallScore));
-              return (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
-                  <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white" style={{ backgroundColor: cert.color }}>
-                      {cert.levelLabel.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <h2 className="text-xl font-bold text-brand-900">
-                          Certificação Nível {cert.level === 'bronze' ? 'Bronze' : cert.level === 'silver' ? 'Prata' : 'Ouro'}
-                        </h2>
-                        <span className="px-3 py-1 rounded-full text-xs font-medium text-white" style={{ backgroundColor: cert.color }}>
-                          {cert.scoreRange} pontos
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-semibold mb-1" style={{ color: cert.color }}>{cert.name}</h3>
-                      <p className="text-sm text-gray-500">{cert.message}</p>
-                      <p className="text-xs text-brand-700 mt-1">
-                        Score alcançado: {Number(lastCompleted.overallScore).toFixed(0)} pontos
-                      </p>
-                    </div>
+            {/* Top Stats Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-brand-300/30 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Score Geral</p>
+                    <p className="text-2xl font-bold" style={{ color: getScoreColorStatic(Number(lastCompleted.overallScore)) }}>
+                      {Number(lastCompleted.overallScore).toFixed(0)}
+                    </p>
                   </div>
                 </div>
-              );
-            })()}
-
-            {/* Main Score Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-bold text-brand-900 mb-1">Score ESG Geral</h2>
-                  <p className="text-xs text-gray-400">
-                    Última avaliação: {new Date(lastCompleted.completedAt!).toLocaleDateString('pt-BR')}
-                  </p>
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${Number(lastCompleted.overallScore)}%`, backgroundColor: getScoreColorStatic(Number(lastCompleted.overallScore)) }} />
                 </div>
-                <Link to={`/diagnosis/${lastCompleted.id}/insights`}>
-                  <button className="px-5 py-2 text-sm font-medium text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
-                    Ver Insights
-                  </button>
-                </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="text-center p-5 rounded-xl bg-gray-50">
-                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Score Geral</p>
-                  <p className="text-5xl font-bold mb-2" style={{ color: getScoreColor(Number(lastCompleted.overallScore)) }}>
-                    {Number(lastCompleted.overallScore).toFixed(0)}
-                  </p>
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: getScoreColor(Number(lastCompleted.overallScore)) + '15', color: getScoreColor(Number(lastCompleted.overallScore)) }}>
-                    {getScoreLevel(Number(lastCompleted.overallScore))}
-                  </span>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#f5ffeb' }}>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#7B9965">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Ambiental</p>
+                    <p className="text-2xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>
+                      {Number(lastCompleted.environmentalScore).toFixed(0)}
+                    </p>
+                  </div>
                 </div>
-
-                <div className="text-center p-5 rounded-xl" style={{ backgroundColor: '#f5ffeb' }}>
-                  <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
-                  <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.environmental }}>
-                    {Number(lastCompleted.environmentalScore).toFixed(0)}
-                  </p>
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: PILLAR_COLORS.environmental + '15', color: PILLAR_COLORS.environmental }}>
-                    {getScoreLevel(Number(lastCompleted.environmentalScore))}
-                  </span>
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${Number(lastCompleted.environmentalScore)}%`, backgroundColor: PILLAR_COLORS.environmental }} />
                 </div>
+              </div>
 
-                <div className="text-center p-5 rounded-xl" style={{ backgroundColor: '#fdf5f3' }}>
-                  <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
-                  <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.social }}>
-                    {Number(lastCompleted.socialScore).toFixed(0)}
-                  </p>
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: PILLAR_COLORS.social + '15', color: PILLAR_COLORS.social }}>
-                    {getScoreLevel(Number(lastCompleted.socialScore))}
-                  </span>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf5f3' }}>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#924131">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Social</p>
+                    <p className="text-2xl font-bold" style={{ color: PILLAR_COLORS.social }}>
+                      {Number(lastCompleted.socialScore).toFixed(0)}
+                    </p>
+                  </div>
                 </div>
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${Number(lastCompleted.socialScore)}%`, backgroundColor: PILLAR_COLORS.social }} />
+                </div>
+              </div>
 
-                <div className="text-center p-5 rounded-xl" style={{ backgroundColor: '#fdf8ef' }}>
-                  <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
-                  <p className="text-5xl font-bold mb-2" style={{ color: '#b8963a' }}>
-                    {Number(lastCompleted.governanceScore).toFixed(0)}
-                  </p>
-                  <span className="inline-block px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: PILLAR_COLORS.governance + '30', color: '#b8963a' }}>
-                    {getScoreLevel(Number(lastCompleted.governanceScore))}
-                  </span>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf8ef' }}>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#b8963a">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Governança</p>
+                    <p className="text-2xl font-bold" style={{ color: '#b8963a' }}>
+                      {Number(lastCompleted.governanceScore).toFixed(0)}
+                    </p>
+                  </div>
+                </div>
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${Number(lastCompleted.governanceScore)}%`, backgroundColor: '#b8963a' }} />
                 </div>
               </div>
             </div>
 
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-base font-bold text-brand-900 mb-5">Comparativo por Pilar</h3>
-                <BarChart
-                  data={[
-                    { label: 'Ambiental (E)', value: Number(lastCompleted.environmentalScore), color: PILLAR_COLORS.environmental },
-                    { label: 'Social (S)', value: Number(lastCompleted.socialScore), color: PILLAR_COLORS.social },
-                    { label: 'Governança (G)', value: Number(lastCompleted.governanceScore), color: '#b8963a' },
-                  ]}
-                />
+            {/* Main Score + Certification + Radar */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              {/* Score Gauge + Cert */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center justify-center">
+                <ScoreGauge score={Number(lastCompleted.overallScore)} size={160} />
+                <span
+                  className="mt-3 inline-block px-4 py-1.5 rounded-full text-sm font-medium"
+                  style={{
+                    backgroundColor: getScoreColorStatic(Number(lastCompleted.overallScore)) + '15',
+                    color: getScoreColorStatic(Number(lastCompleted.overallScore))
+                  }}
+                >
+                  {getScoreLevel(Number(lastCompleted.overallScore))}
+                </span>
+                <p className="text-xs text-gray-400 mt-3">
+                  Última avaliação: {new Date(lastCompleted.completedAt!).toLocaleDateString('pt-BR')}
+                </p>
+
+                {/* Certification seal */}
+                {(() => {
+                  const score = Number(lastCompleted.overallScore);
+                  const level = score < 40 ? 'bronze' : score < 70 ? 'prata' : 'ouro';
+                  const levelName = score < 40 ? 'Bronze' : score < 70 ? 'Prata' : 'Ouro';
+                  return (
+                    <div className="mt-4 flex items-center gap-3">
+                      <img
+                        src={`/images/assets/selo-${level}.png`}
+                        alt={`Selo ${levelName}`}
+                        className="w-14 h-14 object-contain"
+                      />
+                      <div>
+                        <p className="text-sm font-bold text-brand-900">Nível {levelName}</p>
+                        <p className="text-xs text-gray-400">{score < 40 ? '0-39' : score < 70 ? '40-69' : '70-100'} pontos</p>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-base font-bold text-brand-900 mb-5 text-center">Visão Geral ESG</h3>
+              {/* Radar Chart */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center">
+                <h3 className="text-base font-bold text-brand-900 mb-2">Visão Geral ESG</h3>
                 <RadarChart
                   environmental={Number(lastCompleted.environmentalScore)}
                   social={Number(lastCompleted.socialScore)}
                   governance={Number(lastCompleted.governanceScore)}
                 />
+              </div>
+
+              {/* Bar Chart + Actions */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
+                <h3 className="text-base font-bold text-brand-900 mb-5">Comparativo por Pilar</h3>
+                <div className="flex-1">
+                  <BarChart
+                    data={[
+                      { label: 'Ambiental (E)', value: Number(lastCompleted.environmentalScore), color: PILLAR_COLORS.environmental },
+                      { label: 'Social (S)', value: Number(lastCompleted.socialScore), color: PILLAR_COLORS.social },
+                      { label: 'Governança (G)', value: Number(lastCompleted.governanceScore), color: '#b8963a' },
+                    ]}
+                  />
+                </div>
+                <div className="mt-6 flex gap-2">
+                  <Link to={`/diagnosis/${lastCompleted.id}/insights`} className="flex-1">
+                    <button className="w-full py-2.5 text-xs font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
+                      Ver Insights
+                    </button>
+                  </Link>
+                  <Link to={`/diagnosis/${lastCompleted.id}/results`} className="flex-1">
+                    <button className="w-full py-2.5 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
+                      Resultados
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -396,102 +484,25 @@ export default function Dashboard() {
                 <LineChart diagnoses={completedDiagnoses} />
               </div>
             )}
-
-            {/* Pillar Details */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-brand-300">
-                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-brand-900">Ambiental</h3>
-                    <p className="text-xs text-gray-400">Environmental</p>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">
-                  Gestão de recursos naturais, emissões, resíduos e impacto ambiental das operações.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>
-                    {Number(lastCompleted.environmentalScore).toFixed(0)}
-                  </span>
-                  <Link to={`/diagnosis/${lastCompleted.id}/results`}>
-                    <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
-                      Ver Detalhes
-                    </button>
-                  </Link>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf5f3' }}>
-                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-brand-900">Social</h3>
-                    <p className="text-xs text-gray-400">Social</p>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">
-                  Relações com colaboradores, diversidade, saúde, segurança e impacto na comunidade.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.social }}>
-                    {Number(lastCompleted.socialScore).toFixed(0)}
-                  </span>
-                  <Link to={`/diagnosis/${lastCompleted.id}/results`}>
-                    <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
-                      Ver Detalhes
-                    </button>
-                  </Link>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf8ef' }}>
-                    <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-brand-900">Governança</h3>
-                    <p className="text-xs text-gray-400">Governance</p>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">
-                  Estrutura de gestão, ética, transparência, compliance e responsabilidade corporativa.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold" style={{ color: '#b8963a' }}>
-                    {Number(lastCompleted.governanceScore).toFixed(0)}
-                  </span>
-                  <Link to={`/diagnosis/${lastCompleted.id}/results`}>
-                    <button className="px-4 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
-                      Ver Detalhes
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
           </>
         )}
 
-        {/* Current Diagnosis with Partial Scores */}
+        {/* ========== IN-PROGRESS DIAGNOSIS ========== */}
         {currentDiagnosis && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-xl font-bold text-brand-900 mb-1">Diagnóstico em Andamento</h3>
-                <p className="text-xs text-gray-400">
-                  Iniciado em {new Date(currentDiagnosis.startedAt).toLocaleDateString('pt-BR')}
-                </p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-brand-300/30 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-brand-900">Diagnóstico em Andamento</h3>
+                  <p className="text-xs text-gray-400">
+                    Iniciado em {new Date(currentDiagnosis.startedAt).toLocaleDateString('pt-BR')}
+                  </p>
+                </div>
               </div>
               <Link to={`/diagnosis/${currentDiagnosis.id}/questionnaire`}>
                 <button className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
@@ -500,60 +511,52 @@ export default function Dashboard() {
               </Link>
             </div>
 
+            {/* Progress bar for questionnaire */}
             {partialScores && (
               <>
-                <div className="mb-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h4 className="text-base font-bold text-brand-900">Resultados Parciais</h4>
-                    <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>
-                      PRELIMINAR
+                <div className="mb-6 p-4 rounded-xl bg-gray-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-brand-900">Progresso</span>
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>
+                        PRELIMINAR
+                      </span>
+                    </div>
+                    <span className="text-sm font-bold text-brand-700">
+                      {partialScores.answeredCount || 0}/{partialScores.totalCount || 75} respostas
                     </span>
-                    {partialScores.certification && (
+                  </div>
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-brand-700 transition-all duration-500"
+                      style={{ width: `${((partialScores.answeredCount || 0) / (partialScores.totalCount || 75)) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Score gauges row */}
+                <div className="flex items-center justify-around mb-6 py-4">
+                  <ScoreGauge score={partialScores.overall} size={110} label="Geral" />
+                  <ScoreGauge score={partialScores.environmental} size={90} label="Ambiental" color={PILLAR_COLORS.environmental} />
+                  <ScoreGauge score={partialScores.social} size={90} label="Social" color={PILLAR_COLORS.social} />
+                  <ScoreGauge score={partialScores.governance} size={90} label="Governança" color="#b8963a" />
+
+                  {partialScores.certification && (
+                    <div className="flex flex-col items-center">
                       <img
                         src={`/images/assets/selo-${partialScores.certification.level === 'gold' ? 'ouro' : partialScores.certification.level === 'silver' ? 'prata' : 'bronze'}.png`}
-                        alt={`Selo ${partialScores.certification.level === 'gold' ? 'Ouro' : partialScores.certification.level === 'silver' ? 'Prata' : 'Bronze'}`}
-                        className="w-14 h-14 object-contain"
+                        alt="Selo"
+                        className="w-16 h-16 object-contain"
                       />
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-400">
-                    Baseado nas respostas fornecidas até o momento
-                  </p>
+                      <span className="mt-2 text-xs font-medium text-gray-500 uppercase tracking-wide">Certificação</span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                  <div className="text-center p-4 rounded-xl bg-gray-50">
-                    <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Geral</p>
-                    <p className="text-3xl font-bold" style={{ color: getScoreColor(partialScores.overall) }}>
-                      {partialScores.overall.toFixed(0)}
-                    </p>
-                  </div>
-
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#f5ffeb' }}>
-                    <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
-                    <p className="text-3xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>
-                      {partialScores.environmental.toFixed(0)}
-                    </p>
-                  </div>
-
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#fdf5f3' }}>
-                    <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
-                    <p className="text-3xl font-bold" style={{ color: PILLAR_COLORS.social }}>
-                      {partialScores.social.toFixed(0)}
-                    </p>
-                  </div>
-
-                  <div className="text-center p-4 rounded-xl" style={{ backgroundColor: '#fdf8ef' }}>
-                    <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
-                    <p className="text-3xl font-bold" style={{ color: '#b8963a' }}>
-                      {partialScores.governance.toFixed(0)}
-                    </p>
-                  </div>
-                </div>
-
+                {/* Charts side by side */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-gray-50">
-                    <h4 className="text-sm font-bold text-brand-900 mb-3">Comparativo Parcial</h4>
+                  <div className="p-5 rounded-xl bg-gray-50">
+                    <h4 className="text-sm font-bold text-brand-900 mb-4">Comparativo Parcial</h4>
                     <BarChart
                       data={[
                         { label: 'Ambiental (E)', value: partialScores.environmental, color: PILLAR_COLORS.environmental },
@@ -563,8 +566,8 @@ export default function Dashboard() {
                     />
                   </div>
 
-                  <div className="p-4 rounded-xl bg-gray-50">
-                    <h4 className="text-sm font-bold text-brand-900 mb-3 text-center">Visão Geral Parcial</h4>
+                  <div className="p-5 rounded-xl bg-gray-50 flex flex-col items-center">
+                    <h4 className="text-sm font-bold text-brand-900 mb-2">Visão Geral Parcial</h4>
                     <RadarChart
                       environmental={partialScores.environmental}
                       social={partialScores.social}
@@ -577,14 +580,19 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        {/* ========== QUICK ACTIONS ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {!currentDiagnosis && lastCompleted && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-base font-bold text-brand-900 mb-2">Novo Diagnóstico</h3>
-              <p className="text-sm text-gray-500 mb-4">
-                Inicie uma nova avaliação ESG e acompanhe sua evolução
-              </p>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-brand-700/30 transition-all">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-brand-300/30 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <h3 className="text-base font-bold text-brand-900">Novo Diagnóstico</h3>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">Inicie uma nova avaliação ESG e acompanhe sua evolução</p>
               <button
                 onClick={handleStartNewDiagnosis}
                 className="w-full py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
@@ -595,37 +603,41 @@ export default function Dashboard() {
           )}
 
           <Link to="/reports" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-brand-700/30 transition-all">
-            <h3 className="text-base font-bold text-brand-900 mb-2">Relatórios</h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Visualize todo o histórico de diagnósticos realizados
-            </p>
-            <p className="text-sm font-medium text-brand-700">
-              {completedDiagnoses.length} diagnóstico(s) completo(s)
-            </p>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
+                <svg className="w-5 h-5 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-base font-bold text-brand-900">Relatórios</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-3">Visualize todo o histórico de diagnósticos realizados</p>
+            <p className="text-sm font-medium text-brand-700">{completedDiagnoses.length} diagnóstico(s) completo(s)</p>
           </Link>
 
           {lastCompleted && (
             <Link to={`/diagnosis/${lastCompleted.id}/insights`} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-brand-700/30 transition-all">
-              <h3 className="text-base font-bold text-brand-900 mb-2">Insights & Ações</h3>
-              <p className="text-sm text-gray-500 mb-4">
-                Veja recomendações e plano de ação personalizado
-              </p>
-              <p className="text-sm font-medium text-brand-700">
-                Ver plano de ação
-              </p>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fdf8ef' }}>
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#b8963a">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h3 className="text-base font-bold text-brand-900">Insights & Ações</h3>
+              </div>
+              <p className="text-sm text-gray-500 mb-3">Veja recomendações e plano de ação personalizado</p>
+              <p className="text-sm font-medium text-brand-700">Ver plano de ação</p>
             </Link>
           )}
         </div>
 
-        {/* Recent History */}
+        {/* ========== RECENT HISTORY ========== */}
         {completedDiagnoses.length > 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-brand-900">Histórico Recente</h3>
               <Link to="/reports">
-                <button className="text-sm font-medium text-brand-700 hover:text-brand-900 transition-colors">
-                  Ver Todos
-                </button>
+                <button className="text-sm font-medium text-brand-700 hover:text-brand-900 transition-colors">Ver Todos</button>
               </Link>
             </div>
             <div className="space-y-3">
@@ -634,13 +646,20 @@ export default function Dashboard() {
                   key={diagnosis.id}
                   className="flex items-center justify-between p-5 rounded-xl bg-gray-50 hover:bg-brand-100 transition-all"
                 >
-                  <div className="flex-1">
-                    <p className="font-bold text-brand-900 mb-0.5">
-                      Score Geral: {Number(diagnosis.overallScore).toFixed(0)}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(diagnosis.completedAt!).toLocaleDateString('pt-BR')}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: getScoreColorStatic(Number(diagnosis.overallScore)) + '15' }}>
+                      <span className="text-lg font-bold" style={{ color: getScoreColorStatic(Number(diagnosis.overallScore)) }}>
+                        {Number(diagnosis.overallScore).toFixed(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-bold text-brand-900 mb-0.5">
+                        Score Geral: {Number(diagnosis.overallScore).toFixed(0)}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(diagnosis.completedAt!).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <Link to={`/diagnosis/${diagnosis.id}/results`}>
