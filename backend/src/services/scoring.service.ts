@@ -200,11 +200,92 @@ export class ScoringService {
 
     const overallScore = (environmentalScore + socialScore + governanceScore) / 3;
 
+    // Contar respostas e total de questões
+    const answeredCount = await prisma.response.count({
+      where: { diagnosisId },
+    });
+
+    const totalCount = await prisma.assessmentItem.count();
+
+    // Scores por tema para gráficos detalhados
+    const themeScores = await this.calculateThemeScores(diagnosisId);
+
     return {
       environmental: environmentalScore,
       social: socialScore,
       governance: governanceScore,
       overall: Math.round(overallScore * 100) / 100,
+      answeredCount,
+      totalCount,
+      themeScores,
     };
+  }
+
+  /**
+   * Calcula scores por tema para gráficos detalhados
+   */
+  async calculateThemeScores(diagnosisId: string) {
+    const pillars = await prisma.pillar.findMany({
+      include: {
+        themes: {
+          include: {
+            criteria: {
+              include: {
+                assessmentItems: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const results: Array<{
+      pillarCode: string;
+      pillarName: string;
+      themeName: string;
+      score: number;
+      answeredCount: number;
+      totalCount: number;
+    }> = [];
+
+    for (const pillar of pillars) {
+      for (const theme of pillar.themes) {
+        const itemIds: number[] = [];
+        theme.criteria.forEach((c) => {
+          c.assessmentItems.forEach((item) => {
+            itemIds.push(item.id);
+          });
+        });
+
+        const responses = await prisma.response.findMany({
+          where: {
+            diagnosisId,
+            assessmentItemId: { in: itemIds },
+          },
+        });
+
+        let totalScore = 0;
+        let validCount = 0;
+        responses.forEach((r) => {
+          if (r.evaluation !== 'Não se aplica' && r.evaluationValue !== 0) {
+            totalScore += r.evaluationValue;
+            validCount++;
+          }
+        });
+
+        const score = validCount > 0 ? (totalScore / (validCount * 5)) * 100 : 0;
+
+        results.push({
+          pillarCode: pillar.code,
+          pillarName: pillar.name,
+          themeName: theme.name,
+          score: Math.round(score * 100) / 100,
+          answeredCount: responses.length,
+          totalCount: itemIds.length,
+        });
+      }
+    }
+
+    return results;
   }
 }
