@@ -87,6 +87,19 @@ export default function Questionnaire() {
           };
         });
         setResponses(responsesMap);
+
+        // Navigate to first unanswered question
+        if (existingResponses.length > 0) {
+          const firstUnansweredIndex = allQuestions.findIndex(
+            (q) => !responsesMap[q.id]?.evaluation
+          );
+          if (firstUnansweredIndex !== -1) {
+            setCurrentIndex(firstUnansweredIndex);
+          } else {
+            // All answered - go to last question
+            setCurrentIndex(allQuestions.length - 1);
+          }
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar questionario:', error);

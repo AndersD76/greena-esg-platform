@@ -364,7 +364,7 @@ export default function Profile() {
                   <div className="text-sm font-bold text-gray-500 mb-1">PLANO ATUAL</div>
                   <h3 className="text-3xl font-black" style={{ color: '#152F27' }}>{usageStats.plan.name}</h3>
                   <p className="text-xl font-bold text-gray-600 mt-1">
-                    R$ {usageStats.plan.price.toFixed(2)}/{usageStats.plan.billingCycle === 'monthly' ? 'mês' : 'ano'}
+                    R$ {Number(usageStats.plan.price || 0).toFixed(2)}/{usageStats.plan.billingCycle === 'monthly' ? 'mês' : 'ano'}
                   </p>
                 </div>
                 <div className="text-right">
@@ -445,7 +445,7 @@ export default function Profile() {
 
                 <div className="grid md:grid-cols-3 gap-4">
                   {availablePlans
-                    .filter(plan => plan.price > usageStats.plan.price)
+                    .filter(plan => Number(plan.price || 0) > Number(usageStats.plan.price || 0))
                     .map((plan) => (
                       <div
                         key={plan.id}
@@ -455,7 +455,7 @@ export default function Profile() {
                         <div className="text-center mb-4">
                           <h4 className="text-2xl font-black mb-2" style={{ color: '#152F27' }}>{plan.name}</h4>
                           <div className="text-3xl font-black" style={{ color: '#7B9965' }}>
-                            R$ {plan.price.toFixed(2)}
+                            R$ {Number(plan.price || 0).toFixed(2)}
                           </div>
                           <div className="text-sm text-gray-600 font-semibold">por mês</div>
                         </div>
