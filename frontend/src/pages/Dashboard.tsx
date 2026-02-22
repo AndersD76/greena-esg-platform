@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
+import api from '../services/api';
 
 // Cores dos pilares ESG da marca
 const PILLAR_COLORS = {
@@ -189,13 +190,8 @@ export default function Dashboard() {
 
   async function loadPartialScores(diagnosisId: string) {
     try {
-      const response = await fetch(`/api/diagnosis/${diagnosisId}/partial-scores`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
-      setPartialScores(data);
+      const response = await api.get(`/diagnoses/${diagnosisId}/partial-scores`);
+      setPartialScores(response.data);
     } catch (error) {
       console.error('Erro ao carregar scores parciais:', error);
     }

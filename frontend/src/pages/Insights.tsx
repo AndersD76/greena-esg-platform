@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
+import api from '../services/api';
 
 interface ActionPlan {
   pillar: string;
