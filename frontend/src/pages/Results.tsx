@@ -24,11 +24,17 @@ interface ActionPlan {
   impactScore: number;
 }
 
+const PILLAR_COLORS = {
+  environmental: '#7B9965',
+  social: '#924131',
+  governance: '#b8963a',
+};
+
 const getScoreColor = (score: number) => {
   if (score >= 80) return '#7B9965';
   if (score >= 60) return '#EFD4A8';
   if (score >= 40) return '#924131';
-  return '#666';
+  return '#9ca3af';
 };
 
 const getScoreLevel = (score: number) => {
@@ -59,11 +65,9 @@ export default function Results() {
       const diagnosisData = await diagnosisService.getById(diagnosisId);
       setDiagnosis(diagnosisData);
 
-      // Load insights
       const insightsData = await diagnosisService.getInsights(diagnosisId);
       setInsights(insightsData);
 
-      // Load action plans
       const actionPlansData = await diagnosisService.getActionPlans(diagnosisId);
       setActionPlans(actionPlansData);
     } catch (error) {
@@ -77,8 +81,8 @@ export default function Results() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-          <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando resultados...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand-700 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-sm font-medium text-brand-900">Carregando resultados...</p>
         </div>
       </div>
     );
@@ -86,21 +90,13 @@ export default function Results() {
 
   if (!diagnosis) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
-        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md text-center">
-          <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#EFD4A8" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <h2 className="text-2xl font-black mb-2" style={{ color: '#152F27' }}>
-            Diagnostico nao encontrado
-          </h2>
-          <p className="font-semibold mb-6" style={{ color: '#666' }}>
-            Nao foi possivel carregar os resultados do diagnostico.
-          </p>
+      <div className="min-h-screen bg-brand-100 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center max-w-md">
+          <h2 className="text-2xl font-bold text-brand-900 mb-3">Diagnóstico não encontrado</h2>
+          <p className="text-sm text-gray-500 mb-6">Não foi possível carregar os resultados do diagnóstico.</p>
           <button
             onClick={() => navigate('/dashboard')}
-            className="px-8 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+            className="px-8 py-3 font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
           >
             Voltar ao Dashboard
           </button>
@@ -121,22 +117,19 @@ export default function Results() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen bg-brand-100">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-black mb-2" style={{ color: '#152F27' }}>Resultados do Diagnostico ESG</h1>
-              <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>
-                Concluido em {new Date(diagnosis.completedAt!).toLocaleDateString('pt-BR')}
+              <h1 className="text-3xl font-bold text-brand-900 mb-1">Resultados do Diagnóstico ESG</h1>
+              <p className="text-sm text-gray-500">
+                Concluído em {new Date(diagnosis.completedAt!).toLocaleDateString('pt-BR')}
               </p>
             </div>
             <Link to="/dashboard">
-              <button
-                className="px-6 py-3 rounded-xl font-bold border-2 transition-all hover:bg-gray-50"
-                style={{ borderColor: '#152F27', color: '#152F27' }}
-              >
+              <button className="px-5 py-2 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
                 Voltar ao Dashboard
               </button>
             </Link>
@@ -144,112 +137,98 @@ export default function Results() {
         </div>
 
         {/* Overall Score */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
           <div className="text-center">
-            <h2 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Score ESG Geral</h2>
-            <div className="text-8xl font-black mb-4" style={{ color: getScoreColor(overallScore) }}>
+            <h2 className="text-xl font-bold text-brand-900 mb-4">Score ESG Geral</h2>
+            <p className="text-7xl font-bold mb-4" style={{ color: getScoreColor(overallScore) }}>
               {overallScore.toFixed(0)}
-            </div>
+            </p>
             <span
-              className="inline-block px-6 py-2 rounded-full text-lg font-bold"
-              style={{ backgroundColor: '#D1FAE5', color: '#065F46' }}
+              className="inline-block px-4 py-1.5 rounded-full text-sm font-medium"
+              style={{ backgroundColor: getScoreColor(overallScore) + '15', color: getScoreColor(overallScore) }}
             >
               {getScoreLevel(overallScore)}
             </span>
-            <p className="mt-6 text-lg font-semibold max-w-2xl mx-auto" style={{ color: '#666' }}>
-              Sua empresa alcancou um score de <strong style={{ color: '#152F27' }}>{overallScore.toFixed(0)}</strong> pontos,
-              indicando um nivel <strong style={{ color: '#152F27' }}>{getScoreLevel(overallScore)}</strong> de maturidade ESG.
+            <p className="mt-6 text-sm text-gray-500 max-w-2xl mx-auto">
+              Sua empresa alcançou um score de <strong className="text-brand-900">{overallScore.toFixed(0)}</strong> pontos,
+              indicando um nível <strong className="text-brand-900">{getScoreLevel(overallScore)}</strong> de maturidade ESG.
             </p>
           </div>
         </div>
 
         {/* Pillar Scores */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-black mb-4" style={{ color: '#152F27' }}>Ambiental</h3>
-            <div className="text-5xl font-black mb-3" style={{ color: getScoreColor(environmentalScore) }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" style={{ backgroundColor: '#f5ffeb' }}>
+            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
+            <p className="text-5xl font-bold mb-3" style={{ color: PILLAR_COLORS.environmental }}>
               {environmentalScore.toFixed(0)}
-            </div>
-            <div className="w-full h-3 rounded-full" style={{ backgroundColor: '#E5E7EB' }}>
+            </p>
+            <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-3 rounded-full transition-all"
-                style={{ width: `${environmentalScore}%`, backgroundColor: getScoreColor(environmentalScore) }}
+                className="h-full rounded-full transition-all"
+                style={{ width: `${environmentalScore}%`, backgroundColor: PILLAR_COLORS.environmental }}
               />
             </div>
-            <p className="mt-3 font-semibold" style={{ color: '#666' }}>
-              {getScoreLevel(environmentalScore)}
-            </p>
+            <p className="mt-2 text-xs text-gray-400">{getScoreLevel(environmentalScore)}</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-black mb-4" style={{ color: '#152F27' }}>Social</h3>
-            <div className="text-5xl font-black mb-3" style={{ color: getScoreColor(socialScore) }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" style={{ backgroundColor: '#fdf5f3' }}>
+            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
+            <p className="text-5xl font-bold mb-3" style={{ color: PILLAR_COLORS.social }}>
               {socialScore.toFixed(0)}
-            </div>
-            <div className="w-full h-3 rounded-full" style={{ backgroundColor: '#E5E7EB' }}>
+            </p>
+            <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-3 rounded-full transition-all"
-                style={{ width: `${socialScore}%`, backgroundColor: getScoreColor(socialScore) }}
+                className="h-full rounded-full transition-all"
+                style={{ width: `${socialScore}%`, backgroundColor: PILLAR_COLORS.social }}
               />
             </div>
-            <p className="mt-3 font-semibold" style={{ color: '#666' }}>
-              {getScoreLevel(socialScore)}
-            </p>
+            <p className="mt-2 text-xs text-gray-400">{getScoreLevel(socialScore)}</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-black mb-4" style={{ color: '#152F27' }}>Governanca</h3>
-            <div className="text-5xl font-black mb-3" style={{ color: getScoreColor(governanceScore) }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" style={{ backgroundColor: '#fdf8ef' }}>
+            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
+            <p className="text-5xl font-bold mb-3" style={{ color: PILLAR_COLORS.governance }}>
               {governanceScore.toFixed(0)}
-            </div>
-            <div className="w-full h-3 rounded-full" style={{ backgroundColor: '#E5E7EB' }}>
+            </p>
+            <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-3 rounded-full transition-all"
-                style={{ width: `${governanceScore}%`, backgroundColor: getScoreColor(governanceScore) }}
+                className="h-full rounded-full transition-all"
+                style={{ width: `${governanceScore}%`, backgroundColor: PILLAR_COLORS.governance }}
               />
             </div>
-            <p className="mt-3 font-semibold" style={{ color: '#666' }}>
-              {getScoreLevel(governanceScore)}
-            </p>
+            <p className="mt-2 text-xs text-gray-400">{getScoreLevel(governanceScore)}</p>
           </div>
         </div>
 
         {/* Strategic Insights */}
         {insights.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <h2 className="text-2xl font-black mb-6 flex items-center gap-3" style={{ color: '#152F27' }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#FEF3C7' }}>
-                <svg className="w-6 h-6" fill="none" stroke="#92400E" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-              </div>
-              Insights Estrategicos
-            </h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
+            <h2 className="text-xl font-bold text-brand-900 mb-6">Insights Estratégicos</h2>
+            <div className="space-y-3">
               {insights.map((insight) => (
                 <div
                   key={insight.id}
-                  className="p-6 rounded-xl transition-all hover:shadow-md"
-                  style={{ backgroundColor: '#f5f5f5' }}
+                  className="p-5 rounded-xl bg-gray-50"
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <span
-                        className="px-4 py-1.5 rounded-full text-sm font-bold"
+                        className="px-3 py-1 rounded-full text-xs font-medium"
                         style={{
                           backgroundColor: categoryColors[insight.category as keyof typeof categoryColors]?.bg || '#E5E7EB',
                           color: categoryColors[insight.category as keyof typeof categoryColors]?.text || '#374151'
                         }}
                       >
-                        {insight.categoryLabel || (insight.category === 'critical' ? 'Critico' : insight.category === 'attention' ? 'Atencao' : 'Excelente')}
+                        {insight.categoryLabel || (insight.category === 'critical' ? 'Crítico' : insight.category === 'attention' ? 'Atenção' : 'Excelente')}
                       </span>
                       {insight.pillar && (
-                        <span className="text-sm font-semibold" style={{ color: '#7B9965' }}>{insight.pillar.name}</span>
+                        <span className="text-xs font-medium text-brand-700">{insight.pillar.name}</span>
                       )}
                     </div>
                   </div>
-                  <h3 className="font-black text-lg mb-2" style={{ color: '#152F27' }}>{insight.title}</h3>
-                  <p className="font-semibold leading-relaxed" style={{ color: '#666' }}>{insight.description}</p>
+                  <h3 className="font-bold text-brand-900 mb-1">{insight.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{insight.description}</p>
                 </div>
               ))}
             </div>
@@ -258,19 +237,12 @@ export default function Results() {
 
         {/* Action Plan */}
         {actionPlans.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-            <h2 className="text-2xl font-black mb-6 flex items-center gap-3" style={{ color: '#152F27' }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#D1FAE5' }}>
-                <svg className="w-6 h-6" fill="none" stroke="#065F46" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                </svg>
-              </div>
-              Plano de Acao
-            </h2>
-            <p className="font-semibold mb-6" style={{ color: '#666' }}>
-              Acoes priorizadas para melhorar seu desempenho ESG, ordenadas por impacto e urgencia.
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
+            <h2 className="text-xl font-bold text-brand-900 mb-2">Plano de Ação</h2>
+            <p className="text-sm text-gray-500 mb-6">
+              Ações priorizadas para melhorar seu desempenho ESG, ordenadas por impacto e urgência.
             </p>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {actionPlans.map((action, index) => {
                 const priorityColors: Record<string, { bg: string; text: string }> = {
                   critical: { bg: '#FEE2E2', text: '#991B1B' },
@@ -283,48 +255,45 @@ export default function Results() {
                 return (
                   <div
                     key={action.id}
-                    className="p-6 rounded-xl border-l-4"
-                    style={{ backgroundColor: '#f5f5f5', borderLeftColor: '#7B9965' }}
+                    className="p-5 rounded-xl bg-gray-50 border-l-4"
+                    style={{ borderLeftColor: PILLAR_COLORS.environmental }}
                   >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <span
-                          className="flex items-center justify-center w-10 h-10 rounded-xl text-white font-black"
-                          style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-                        >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="flex items-center justify-center w-9 h-9 rounded-lg text-white font-bold text-sm bg-brand-900">
                           {index + 1}
                         </span>
                         <div>
-                          <h3 className="font-black text-lg" style={{ color: '#152F27' }}>
+                          <h3 className="font-bold text-brand-900">
                             {action.title.replace(/^\d+\.\s*/, '')}
                           </h3>
                           {action.description && (
-                            <p className="text-sm font-semibold mt-1" style={{ color: '#666' }}>
+                            <p className="text-xs text-gray-400 mt-0.5">
                               {action.description.substring(0, 120)}{action.description.length > 120 ? '...' : ''}
                             </p>
                           )}
                         </div>
                       </div>
                       <span
-                        className="px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap"
+                        className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
                         style={{ backgroundColor: pColor.bg, color: pColor.text }}
                       >
                         {action.priorityLabel}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6 mt-4">
+                    <div className="grid grid-cols-3 gap-4 mt-3">
                       <div>
-                        <span className="text-sm font-bold" style={{ color: '#666' }}>Investimento:</span>
-                        <p className="font-black" style={{ color: '#152F27' }}>{action.investmentLabel}</p>
+                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Investimento</span>
+                        <p className="text-sm font-bold text-brand-900">{action.investmentLabel}</p>
                       </div>
                       <div>
-                        <span className="text-sm font-bold" style={{ color: '#666' }}>Prazo:</span>
-                        <p className="font-black" style={{ color: '#152F27' }}>{action.deadlineDays} dias</p>
+                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Prazo</span>
+                        <p className="text-sm font-bold text-brand-900">{action.deadlineDays} dias</p>
                       </div>
                       <div>
-                        <span className="text-sm font-bold" style={{ color: '#666' }}>Impacto Esperado:</span>
-                        <p className="font-black" style={{ color: getScoreColor(Number(action.impactScore) * 10) }}>
+                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Impacto</span>
+                        <p className="text-sm font-bold" style={{ color: getScoreColor(Number(action.impactScore) * 10) }}>
                           {Number(action.impactScore)}/10
                         </p>
                       </div>
@@ -337,27 +306,24 @@ export default function Results() {
         )}
 
         {/* Actions */}
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
-            className="px-8 py-3 rounded-xl font-bold border-2 transition-all hover:bg-gray-50"
-            style={{ borderColor: '#152F27', color: '#152F27' }}
+            className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50"
           >
             Voltar ao Dashboard
           </button>
           <button
             onClick={() => navigate(`/diagnosis/${diagnosisId}/report`)}
-            className="px-8 py-3 rounded-xl font-bold border-2 transition-all hover:bg-gray-50"
-            style={{ borderColor: '#152F27', color: '#152F27' }}
+            className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50"
           >
-            Ver Relatorio Completo
+            Ver Relatório Completo
           </button>
           <button
             onClick={() => navigate('/diagnosis/new')}
-            className="px-8 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+            className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
           >
-            Fazer Novo Diagnostico
+            Fazer Novo Diagnóstico
           </button>
         </div>
       </div>

@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 
+const PILLAR_COLORS = {
+  environmental: '#7B9965',
+  social: '#924131',
+  governance: '#b8963a',
+};
+
 interface ActionPlan {
   pillar: string;
   priority: 'high' | 'medium' | 'low';
@@ -9,38 +15,6 @@ interface ActionPlan {
   impact: string;
   timeline: string;
   icon: string;
-}
-
-// Componente de Gráfico de Progresso Circular
-function CircularProgress({ value, size = 120, strokeWidth = 10, color = '#7B9965' }: { value: number; size?: number; strokeWidth?: number; color?: string }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (value / 100) * circumference;
-
-  return (
-    <svg width={size} height={size} className="transform -rotate-90">
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        stroke="#e0e0e0"
-        strokeWidth={strokeWidth}
-        fill="none"
-      />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        stroke={color}
-        strokeWidth={strokeWidth}
-        fill="none"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        className="transition-all duration-1000"
-      />
-    </svg>
-  );
 }
 
 export default function Insights() {
@@ -58,9 +32,7 @@ export default function Insights() {
     try {
       if (!diagnosisId) {
         const diagnoses = await diagnosisService.list();
-        // Tentar buscar diagnóstico completo primeiro
         let targetDiagnosis = diagnoses.find((d) => d.status === 'completed');
-        // Se não houver completo, buscar em andamento
         if (!targetDiagnosis) {
           targetDiagnosis = diagnoses.find((d) => d.status === 'in_progress');
           if (targetDiagnosis) {
@@ -68,7 +40,6 @@ export default function Insights() {
             await loadPartialScores(targetDiagnosis.id);
           }
         } else {
-          // Se completo, carregar certificação
           await loadPartialScores(targetDiagnosis.id);
         }
         if (targetDiagnosis) {
@@ -80,7 +51,6 @@ export default function Insights() {
         if (data.status === 'in_progress') {
           setIsPartial(true);
         }
-        // Sempre carregar scores (que incluem certificação)
         await loadPartialScores(data.id);
       }
     } catch (error) {
@@ -103,12 +73,10 @@ export default function Insights() {
     if (!diagnosis && !partialScores) return [];
 
     const insights = [];
-    // Usar scores parciais se disponíveis, senão usar scores do diagnóstico
     const envScore = partialScores ? partialScores.environmental : Number(diagnosis?.environmentalScore || 0);
     const socScore = partialScores ? partialScores.social : Number(diagnosis?.socialScore || 0);
     const govScore = partialScores ? partialScores.governance : Number(diagnosis?.governanceScore || 0);
 
-    // Environmental
     if (envScore < 60) {
       insights.push({
         pillar: 'Ambiental',
@@ -132,7 +100,6 @@ export default function Insights() {
       });
     }
 
-    // Social
     if (socScore < 60) {
       insights.push({
         pillar: 'Social',
@@ -156,7 +123,6 @@ export default function Insights() {
       });
     }
 
-    // Governance
     if (govScore < 60) {
       insights.push({
         pillar: 'Governança',
@@ -187,7 +153,6 @@ export default function Insights() {
     if (!diagnosis && !partialScores) return [];
 
     const actions: ActionPlan[] = [];
-    // Usar scores parciais se disponíveis, senão usar scores do diagnóstico
     const envScore = partialScores ? partialScores.environmental : Number(diagnosis?.environmentalScore || 0);
     const socScore = partialScores ? partialScores.social : Number(diagnosis?.socialScore || 0);
     const govScore = partialScores ? partialScores.governance : Number(diagnosis?.governanceScore || 0);
@@ -310,15 +275,15 @@ export default function Insights() {
     if (score >= 80) return '#7B9965';
     if (score >= 60) return '#EFD4A8';
     if (score >= 40) return '#924131';
-    return '#666';
+    return '#9ca3af';
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-          <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando insights...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand-700 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-sm font-medium text-brand-900">Carregando insights...</p>
         </div>
       </div>
     );
@@ -326,19 +291,16 @@ export default function Insights() {
 
   if (!diagnosis) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center max-w-md">
-          <h2 className="text-2xl font-bold mb-4" style={{ color: '#152F27' }}>
+      <div className="min-h-screen bg-brand-100 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center max-w-md">
+          <h2 className="text-2xl font-bold text-brand-900 mb-3">
             Nenhum diagnóstico encontrado
           </h2>
-          <p className="mb-6" style={{ color: '#666' }}>
+          <p className="text-sm text-gray-500 mb-6">
             Complete um diagnóstico ESG para visualizar insights e planos de ação.
           </p>
           <Link to="/dashboard">
-            <button
-              className="px-8 py-3 text-lg font-black text-white rounded-xl transition-all hover:scale-105 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-            >
+            <button className="px-8 py-3 font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
               Ir para Dashboard
             </button>
           </Link>
@@ -349,133 +311,91 @@ export default function Insights() {
 
   const insights = generateInsights();
   const actionPlan = generateActionPlan();
+  const envScore = partialScores ? partialScores.environmental : Number(diagnosis?.environmentalScore || 0);
+  const socScore = partialScores ? partialScores.social : Number(diagnosis?.socialScore || 0);
+  const govScore = partialScores ? partialScores.governance : Number(diagnosis?.governanceScore || 0);
+  const overallScore = partialScores ? partialScores.overall : Number(diagnosis?.overallScore || 0);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen bg-brand-100">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-4xl font-black" style={{ color: '#152F27' }}>Insights & Plano de Ação</h1>
-                {isPartial && (
-                  <span className="px-4 py-1.5 rounded-full text-xs font-bold" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>
-                    RESULTADOS PARCIAIS
-                  </span>
-                )}
-              </div>
-              <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>
-                {isPartial ? 'Análise preliminar baseada nas respostas atuais' : 'Análise detalhada e recomendações estratégicas'}
-              </p>
-            </div>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-3xl font-bold text-brand-900">Insights & Plano de Ação</h1>
+            {isPartial && (
+              <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>
+                RESULTADOS PARCIAIS
+              </span>
+            )}
           </div>
+          <p className="text-sm text-gray-500">
+            {isPartial ? 'Análise preliminar baseada nas respostas atuais' : 'Análise detalhada e recomendações estratégicas'}
+          </p>
         </div>
 
-        {/* Score Overview with Circular Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          {/* Overall Score */}
-          <div className="bg-white rounded-3xl shadow-lg p-6 text-center">
-            <p className="text-sm font-bold mb-4" style={{ color: '#666' }}>SCORE GERAL</p>
-            <div className="relative inline-block">
-              <CircularProgress
-                value={partialScores ? partialScores.overall : Number(diagnosis?.overallScore || 0)}
-                color={getScoreColor(partialScores ? partialScores.overall : Number(diagnosis?.overallScore || 0))}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-3xl font-black" style={{ color: getScoreColor(partialScores ? partialScores.overall : Number(diagnosis?.overallScore || 0)) }}>
-                  {(partialScores ? partialScores.overall : Number(diagnosis?.overallScore || 0)).toFixed(0)}
-                </span>
-              </div>
-            </div>
+        {/* Score Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
+            <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Score Geral</p>
+            <p className="text-5xl font-bold mb-2" style={{ color: getScoreColor(overallScore) }}>
+              {overallScore.toFixed(0)}
+            </p>
           </div>
 
-          {/* Environmental */}
-          <div className="bg-white rounded-3xl shadow-lg p-6 text-center" style={{ backgroundColor: '#e8f5e9' }}>
-            <p className="text-sm font-bold mb-4" style={{ color: '#152F27' }}>AMBIENTAL</p>
-            <div className="relative inline-block">
-              <CircularProgress
-                value={partialScores ? partialScores.environmental : Number(diagnosis?.environmentalScore || 0)}
-                color="#4CAF50"
-                size={100}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-black" style={{ color: '#4CAF50' }}>
-                  {(partialScores ? partialScores.environmental : Number(diagnosis?.environmentalScore || 0)).toFixed(0)}
-                </span>
-              </div>
-            </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center" style={{ backgroundColor: '#f5ffeb' }}>
+            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
+            <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.environmental }}>
+              {envScore.toFixed(0)}
+            </p>
           </div>
 
-          {/* Social */}
-          <div className="bg-white rounded-3xl shadow-lg p-6 text-center" style={{ backgroundColor: '#e3f2fd' }}>
-            <p className="text-sm font-bold mb-4" style={{ color: '#152F27' }}>SOCIAL</p>
-            <div className="relative inline-block">
-              <CircularProgress
-                value={partialScores ? partialScores.social : Number(diagnosis?.socialScore || 0)}
-                color="#2196F3"
-                size={100}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-black" style={{ color: '#2196F3' }}>
-                  {(partialScores ? partialScores.social : Number(diagnosis?.socialScore || 0)).toFixed(0)}
-                </span>
-              </div>
-            </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center" style={{ backgroundColor: '#fdf5f3' }}>
+            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
+            <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.social }}>
+              {socScore.toFixed(0)}
+            </p>
           </div>
 
-          {/* Governance */}
-          <div className="bg-white rounded-3xl shadow-lg p-6 text-center" style={{ backgroundColor: '#fff3e0' }}>
-            <p className="text-sm font-bold mb-4" style={{ color: '#152F27' }}>GOVERNANÇA</p>
-            <div className="relative inline-block">
-              <CircularProgress
-                value={partialScores ? partialScores.governance : Number(diagnosis?.governanceScore || 0)}
-                color="#FF9800"
-                size={100}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-black" style={{ color: '#FF9800' }}>
-                  {(partialScores ? partialScores.governance : Number(diagnosis?.governanceScore || 0)).toFixed(0)}
-                </span>
-              </div>
-            </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center" style={{ backgroundColor: '#fdf8ef' }}>
+            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
+            <p className="text-5xl font-bold mb-2" style={{ color: PILLAR_COLORS.governance }}>
+              {govScore.toFixed(0)}
+            </p>
           </div>
         </div>
 
         {/* Certification Card */}
         {partialScores?.certification && (
-          <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-2xl p-8 mb-6 border-4"
-               style={{ borderColor: partialScores.certification.color }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
             <div className="flex items-start gap-6">
               <img
                 src={`/images/assets/selo-${partialScores.certification.level === 'gold' ? 'ouro' : partialScores.certification.level === 'silver' ? 'prata' : 'bronze'}.png`}
                 alt={`Selo ${partialScores.certification.level === 'gold' ? 'Ouro' : partialScores.certification.level === 'silver' ? 'Prata' : 'Bronze'}`}
-                className="w-32 h-32 object-contain flex-shrink-0"
+                className="w-24 h-24 object-contain flex-shrink-0"
               />
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-3xl font-black" style={{ color: '#152F27' }}>
+                <div className="flex items-center gap-3 mb-1">
+                  <h2 className="text-xl font-bold text-brand-900">
                     Certificação Nível {partialScores.certification.level === 'bronze' ? 'Bronze' : partialScores.certification.level === 'silver' ? 'Prata' : 'Ouro'}
                   </h2>
-                  <span className="px-4 py-1.5 rounded-full text-sm font-bold text-white" style={{ backgroundColor: partialScores.certification.color }}>
+                  <span className="px-3 py-1 rounded-full text-xs font-medium text-white" style={{ backgroundColor: partialScores.certification.color }}>
                     {partialScores.certification.scoreRange} pontos
                   </span>
                 </div>
-                <h3 className="text-2xl font-bold mb-2" style={{ color: partialScores.certification.color }}>
+                <h3 className="text-lg font-semibold mb-1" style={{ color: partialScores.certification.color }}>
                   {partialScores.certification.name}
                 </h3>
-                <p className="text-lg font-semibold mb-4" style={{ color: '#666' }}>
-                  {partialScores.certification.message}
-                </p>
-                <div className="bg-white rounded-xl p-4 border-2" style={{ borderColor: partialScores.certification.color }}>
-                  <p className="text-sm font-bold mb-3" style={{ color: '#152F27' }}>Características deste nível:</p>
+                <p className="text-sm text-gray-500 mb-4">{partialScores.certification.message}</p>
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <p className="text-xs font-medium text-gray-400 mb-3 uppercase tracking-wide">Características deste nível</p>
                   <ul className="space-y-2">
                     {partialScores.certification.characteristics.map((char: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2">
                         <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke={partialScores.certification.color} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span className="text-sm font-semibold" style={{ color: '#666' }}>{char}</span>
+                        <span className="text-sm text-gray-500">{char}</span>
                       </li>
                     ))}
                   </ul>
@@ -486,53 +406,46 @@ export default function Insights() {
         )}
 
         {/* Insights Cards */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-6">
-          <h2 className="text-2xl font-black mb-6" style={{ color: '#152F27' }}>
-            Insights Principais
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
+          <h2 className="text-xl font-bold text-brand-900 mb-6">Insights Principais</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {insights.map((insight, index) => (
               <div
                 key={index}
-                className="p-6 rounded-2xl border-2 transition-all hover:shadow-lg"
-                style={{ borderColor: insight.color }}
+                className="p-5 rounded-xl border border-gray-100"
+                style={{ borderLeftWidth: 4, borderLeftColor: insight.color }}
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="text-4xl">{insight.icon}</div>
-                  <div>
-                    <h3 className="text-lg font-black" style={{ color: '#152F27' }}>{insight.pillar}</h3>
-                    <div className="w-12 h-1 rounded" style={{ backgroundColor: insight.color }}></div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold"
+                    style={{ backgroundColor: insight.color }}
+                  >
+                    {insight.icon}
                   </div>
+                  <h3 className="text-base font-bold text-brand-900">{insight.pillar}</h3>
                 </div>
-                <p className="text-base font-semibold leading-relaxed" style={{ color: '#666' }}>
-                  {insight.message}
-                </p>
+                <p className="text-sm text-gray-500 leading-relaxed">{insight.message}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Action Plan */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: '#152F27' }}>
-              <svg className="w-6 h-6" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              Plano de Acao Recomendado
-            </h2>
-            <div className="flex gap-4 text-xs font-bold">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#924131' }}></div>
-                <span>ALTA</span>
+            <h2 className="text-xl font-bold text-brand-900">Plano de Ação Recomendado</h2>
+            <div className="flex gap-4 text-xs font-medium text-gray-500">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#924131' }}></div>
+                <span>Alta</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#EFD4A8' }}></div>
-                <span>MÉDIA</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#EFD4A8' }}></div>
+                <span>Média</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#7B9965' }}></div>
-                <span>BAIXA</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#7B9965' }}></div>
+                <span>Baixa</span>
               </div>
             </div>
           </div>
@@ -541,34 +454,32 @@ export default function Insights() {
             {actionPlan.map((action, index) => (
               <div
                 key={index}
-                className="p-6 rounded-2xl border-l-4 transition-all hover:shadow-lg"
-                style={{
-                  backgroundColor: '#f5f5f5',
-                  borderColor: getPriorityColor(action.priority)
-                }}
+                className="p-5 rounded-xl bg-gray-50 border-l-4"
+                style={{ borderColor: getPriorityColor(action.priority) }}
               >
-                <div className="flex items-start gap-4">
-                  <div className="text-4xl flex-shrink-0">{action.icon}</div>
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                    style={{ backgroundColor: getPriorityColor(action.priority) }}
+                  >
+                    {action.icon}
+                  </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-2">
                       <span
-                        className="px-3 py-1 rounded-full text-xs font-black text-white"
+                        className="px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
                         style={{ backgroundColor: getPriorityColor(action.priority) }}
                       >
                         {getPriorityLabel(action.priority)}
                       </span>
-                      <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#e0f0e0', color: '#152F27' }}>
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-300 text-brand-900">
                         {action.pillar}
                       </span>
-                      <span className="ml-auto text-xs font-bold" style={{ color: '#666' }}>
-                        {action.timeline}
-                      </span>
+                      <span className="ml-auto text-xs text-gray-400">{action.timeline}</span>
                     </div>
-                    <h3 className="text-lg font-black mb-2" style={{ color: '#152F27' }}>
-                      {action.action}
-                    </h3>
-                    <p className="text-sm font-semibold flex items-center gap-1" style={{ color: '#7B9965' }}>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <h3 className="text-sm font-bold text-brand-900 mb-1">{action.action}</h3>
+                    <p className="text-xs text-brand-700 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                       </svg>
                       {action.impact}
@@ -579,20 +490,14 @@ export default function Insights() {
             ))}
           </div>
 
-          <div className="mt-8 flex gap-4 justify-center">
+          <div className="mt-8 flex gap-3 justify-center">
             <Link to={`/diagnosis/${diagnosis.id}/results`}>
-              <button
-                className="px-8 py-3 text-lg font-black text-white rounded-xl transition-all hover:scale-105 shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-              >
+              <button className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90">
                 Ver Resultados Completos
               </button>
             </Link>
             <Link to="/dashboard">
-              <button
-                className="px-8 py-3 text-lg font-black border-2 rounded-xl transition-all hover:bg-gray-50"
-                style={{ borderColor: '#152F27', color: '#152F27' }}
-              >
+              <button className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50">
                 Voltar ao Dashboard
               </button>
             </Link>

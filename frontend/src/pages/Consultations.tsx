@@ -124,7 +124,6 @@ export default function Consultations() {
     });
   }
 
-  // Obter data mínima (amanhã)
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split('T')[0];
@@ -133,94 +132,66 @@ export default function Consultations() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div
-            className="animate-spin rounded-full h-12 w-12 border-4 mx-auto"
-            style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}
-          />
-          <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>
-            Carregando consultorias...
-          </p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand-700 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-sm font-medium text-brand-900">Carregando consultorias...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen bg-brand-100">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Cabecalho */}
+        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-black mb-2" style={{ color: '#152F27' }}>
-              Consultorias ESG
-            </h1>
-            <p className="text-lg font-semibold" style={{ color: '#7B9965' }}>Agende e gerencie suas consultorias com especialistas</p>
+            <h1 className="text-3xl font-bold text-brand-900 mb-1">Consultorias ESG</h1>
+            <p className="text-sm text-gray-500">Agende e gerencie suas consultorias com especialistas</p>
           </div>
           <button
             onClick={() => setShowModal(true)}
             disabled={!remainingHours || remainingHours.remaining <= 0}
-            className="px-6 py-3 rounded-xl font-black text-white transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+            className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             + Agendar Consultoria
           </button>
         </div>
 
-        {/* Cards de Informacao */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e8f5e9' }}>
-              <svg className="w-6 h-6" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Horas Disponiveis</div>
-            <div className="text-4xl font-black" style={{ color: '#7B9965' }}>
-              {remainingHours?.remaining || 0}h
-            </div>
-            <div className="text-sm font-semibold" style={{ color: '#999' }}>
-              de {remainingHours?.total || 0}h no plano
-            </div>
+        {/* Info Cards */}
+        <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Horas Disponíveis</p>
+            <p className="text-4xl font-bold text-brand-700">{remainingHours?.remaining || 0}h</p>
+            <p className="text-xs text-gray-400 mt-1">de {remainingHours?.total || 0}h no plano</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#EFD4A8', opacity: 0.3 }}>
-              <svg className="w-6 h-6" fill="none" stroke="#152F27" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Consultorias Agendadas</div>
-            <div className="text-4xl font-black" style={{ color: '#152F27' }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Consultorias Agendadas</p>
+            <p className="text-4xl font-bold text-brand-900">
               {consultations.filter((c) => c.status === 'scheduled').length}
-            </div>
+            </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#e8f5e9' }}>
-              <svg className="w-6 h-6" fill="none" stroke="#7B9965" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="text-sm font-bold mb-1" style={{ color: '#666' }}>Consultorias Concluidas</div>
-            <div className="text-4xl font-black" style={{ color: '#7B9965' }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Consultorias Concluídas</p>
+            <p className="text-4xl font-bold" style={{ color: '#7B9965' }}>
               {consultations.filter((c) => c.status === 'completed').length}
-            </div>
+            </p>
           </div>
         </div>
 
-        {/* Filtros */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex flex-wrap gap-3">
+        {/* Filters */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
+          <div className="flex flex-wrap gap-2">
             {['', 'scheduled', 'in_progress', 'completed', 'cancelled'].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilter(status)}
-                className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                className={`px-5 py-2 text-sm font-medium rounded-full transition-all ${
                   filter === status
-                    ? 'text-white shadow-lg'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'text-white bg-brand-900'
+                    : 'text-gray-500 bg-gray-50 hover:bg-gray-100'
                 }`}
-                style={filter === status ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' } : { backgroundColor: '#f5f5f5' }}
               >
                 {status === '' ? 'Todas' : statusLabels[status]}
               </button>
@@ -228,42 +199,35 @@ export default function Consultations() {
           </div>
         </div>
 
-        {/* Lista de Consultorias */}
+        {/* Consultation List */}
         {consultations.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
-              <svg className="w-10 h-10" fill="none" stroke="#9CA3AF" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-black mb-3" style={{ color: '#152F27' }}>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+            <h2 className="text-2xl font-bold text-brand-900 mb-3">
               Nenhuma consultoria encontrada
             </h2>
-            <p className="text-lg font-semibold mb-6" style={{ color: '#666' }}>
+            <p className="text-sm text-gray-500 mb-6">
               Agende sua primeira consultoria com nossos especialistas ESG
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="px-8 py-3 rounded-xl font-black text-white transition-all hover:scale-105 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+              className="px-8 py-3 font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
             >
               Agendar Agora
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="space-y-3">
               {consultations.map((consultation) => (
                 <div
                   key={consultation.id}
-                  className="p-6 rounded-xl transition-all hover:shadow-md"
-                  style={{ backgroundColor: '#f5f5f5' }}
+                  className="p-5 rounded-xl bg-gray-50 hover:bg-brand-100 transition-all"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-3 mb-2">
                         <span
-                          className="px-4 py-1.5 rounded-full text-xs font-bold"
+                          className="px-3 py-1 rounded-full text-xs font-medium"
                           style={{
                             backgroundColor: statusColors[consultation.status].bg,
                             color: statusColors[consultation.status].text,
@@ -272,38 +236,30 @@ export default function Consultations() {
                           {statusLabels[consultation.status]}
                         </span>
                         {consultation.topic && (
-                          <span className="text-sm font-semibold" style={{ color: '#666' }}>
-                            {consultation.topic}
-                          </span>
+                          <span className="text-xs text-gray-400">{consultation.topic}</span>
                         )}
                       </div>
-                      <div className="text-xl font-black mb-1" style={{ color: '#152F27' }}>
-                        {formatDate(consultation.scheduledAt)}
-                      </div>
-                      <div className="text-sm font-semibold" style={{ color: '#7B9965' }}>
+                      <p className="font-bold text-brand-900 mb-0.5">{formatDate(consultation.scheduledAt)}</p>
+                      <p className="text-xs text-brand-700">
                         {formatTime(consultation.scheduledAt)} - {consultation.duration} minutos
-                      </div>
+                      </p>
                       {consultation.consultantName && (
-                        <div className="text-sm font-semibold mt-2" style={{ color: '#666' }}>
-                          Consultor: {consultation.consultantName}
-                        </div>
+                        <p className="text-xs text-gray-400 mt-1">Consultor: {consultation.consultantName}</p>
                       )}
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-2">
                       {consultation.status === 'scheduled' && (
                         <>
                           <button
                             onClick={() => navigate(`/consultations/${consultation.id}`)}
-                            className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 shadow-lg"
-                            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                            className="px-5 py-2 text-xs font-medium text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
                           >
                             Entrar
                           </button>
                           <button
                             onClick={() => handleCancel(consultation.id)}
-                            className="px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all hover:bg-red-50"
-                            style={{ borderColor: '#991B1B', color: '#991B1B' }}
+                            className="px-5 py-2 text-xs font-medium text-red-700 border border-red-200 rounded-full transition-all hover:bg-red-50"
                           >
                             Cancelar
                           </button>
@@ -312,8 +268,7 @@ export default function Consultations() {
                       {consultation.status === 'in_progress' && (
                         <button
                           onClick={() => navigate(`/consultations/${consultation.id}`)}
-                          className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 shadow-lg"
-                          style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                          className="px-5 py-2 text-xs font-medium text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
                         >
                           Continuar
                         </button>
@@ -321,8 +276,7 @@ export default function Consultations() {
                       {consultation.status === 'completed' && (
                         <button
                           onClick={() => navigate(`/consultations/${consultation.id}`)}
-                          className="px-5 py-2.5 rounded-xl text-sm font-bold border-2 transition-all hover:bg-gray-100"
-                          style={{ borderColor: '#152F27', color: '#152F27' }}
+                          className="px-5 py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50"
                         >
                           Ver Detalhes
                         </button>
@@ -335,37 +289,29 @@ export default function Consultations() {
           </div>
         )}
 
-        {/* Modal de Agendamento */}
+        {/* Schedule Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
-              <h2 className="text-2xl font-black mb-6" style={{ color: '#152F27' }}>
-                Agendar Consultoria
-              </h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-md mx-4">
+              <h2 className="text-xl font-bold text-brand-900 mb-6">Agendar Consultoria</h2>
 
               <div className="space-y-5">
-                {/* Data */}
                 <div>
-                  <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                    Data
-                  </label>
+                  <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Data</label>
                   <input
                     type="date"
                     min={minDate}
                     value={selectedDate}
                     onChange={(e) => handleDateChange(e.target.value)}
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-semibold"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700/30 focus:border-brand-700"
                   />
                 </div>
 
-                {/* Horario */}
                 {selectedDate && (
                   <div>
-                    <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                      Horario
-                    </label>
+                    <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Horário</label>
                     {loadingSlots ? (
-                      <div className="text-center py-4 font-semibold" style={{ color: '#666' }}>Carregando horarios...</div>
+                      <p className="text-center py-4 text-sm text-gray-400">Carregando horários...</p>
                     ) : (
                       <div className="grid grid-cols-4 gap-2">
                         {slots.map((slot) => (
@@ -373,18 +319,13 @@ export default function Consultations() {
                             key={slot.time}
                             onClick={() => setSelectedTime(slot.time)}
                             disabled={!slot.available}
-                            className={`px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            className={`px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                               selectedTime === slot.time
-                                ? 'text-white shadow-lg'
+                                ? 'text-white bg-brand-900'
                                 : slot.available
-                                ? 'text-gray-700 hover:bg-gray-100'
-                                : 'text-gray-400 cursor-not-allowed'
+                                ? 'text-gray-600 bg-gray-50 hover:bg-gray-100'
+                                : 'text-gray-300 bg-gray-50 cursor-not-allowed'
                             }`}
-                            style={
-                              selectedTime === slot.time
-                                ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }
-                                : { backgroundColor: slot.available ? '#f5f5f5' : '#fafafa' }
-                            }
                           >
                             {slot.time}
                           </button>
@@ -394,37 +335,31 @@ export default function Consultations() {
                   </div>
                 )}
 
-                {/* Duracao */}
                 <div>
-                  <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                    Duracao
-                  </label>
+                  <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Duração</label>
                   <select
                     value={selectedDuration}
                     onChange={(e) => setSelectedDuration(parseInt(e.target.value))}
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-semibold"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700/30 focus:border-brand-700"
                   >
                     <option value={30}>30 minutos</option>
                     <option value={60}>1 hora</option>
                     <option value={90}>1 hora e 30 minutos</option>
                     <option value={120}>2 horas</option>
                   </select>
-                  <p className="text-xs font-semibold mt-2" style={{ color: '#7B9965' }}>
-                    Isso consumira {selectedDuration / 60}h das suas horas disponiveis
+                  <p className="text-xs text-brand-700 mt-2">
+                    Isso consumirá {selectedDuration / 60}h das suas horas disponíveis
                   </p>
                 </div>
 
-                {/* Topico */}
                 <div>
-                  <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
-                    Topico (opcional)
-                  </label>
+                  <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Tópico (opcional)</label>
                   <input
                     type="text"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder="Ex: Duvidas sobre relatorio ESG"
-                    className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-semibold"
+                    placeholder="Ex: Dúvidas sobre relatório ESG"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-700/30 focus:border-brand-700"
                   />
                 </div>
               </div>
@@ -432,16 +367,14 @@ export default function Consultations() {
               <div className="flex gap-3 mt-8">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold border-2 transition-all hover:bg-gray-50"
-                  style={{ borderColor: '#152F27', color: '#152F27' }}
+                  className="flex-1 px-6 py-3 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleSchedule}
                   disabled={!selectedDate || !selectedTime || scheduling}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:hover:scale-100"
-                  style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
+                  className="flex-1 px-6 py-3 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90 disabled:opacity-50"
                 >
                   {scheduling ? 'Agendando...' : 'Confirmar'}
                 </button>
