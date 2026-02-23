@@ -326,9 +326,9 @@ export default function Dashboard() {
           </Link>
         )}
 
-        {/* ═══════ ACTION CARDS ═══════ */}
+        {/* ═══════ ACTION CARDS (top row) ═══════ */}
         {completed.length > 0 && (
-          <div className={`grid grid-cols-1 gap-4 ${currentDiagnosis ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
+          <div className={`grid grid-cols-1 gap-4 ${currentDiagnosis ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
             {!currentDiagnosis && (
               <button onClick={handleStartNewDiagnosis} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all text-left group">
                 <div className="flex items-center gap-4">
@@ -356,82 +356,85 @@ export default function Dashboard() {
                 </div>
               </Link>
             )}
-            {selected && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 group">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-                    <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-base font-bold text-brand-900">Certificado ESG</p>
-                    <p className="text-sm text-gray-400">{certificate ? `#${certificate.certificateNumber}` : 'Não emitido'}</p>
-                  </div>
-                  {certificate ? (
-                    <Link to={`/certificate/${certificate.id}`}><button className="px-5 py-2 text-sm font-semibold text-amber-700 bg-amber-100 rounded-full hover:bg-amber-200">Ver</button></Link>
-                  ) : (
-                    <button onClick={async () => { if (!selected) return; try { const res = await api.post(`/certificates/${selected.id}`); setCertificate(res.data); navigate(`/certificate/${res.data.id}`); } catch (err: any) { alert(err?.response?.data?.error || 'Erro ao emitir certificado'); } }} className="px-5 py-2 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Emitir</button>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         )}
 
-        {/* ═══════ MAIN SCORES — Gauge + Radar + Pillar Bars ═══════ */}
+        {/* ═══════ MAIN SCORES — 4 columns: Certificado | Gauge | Radar | Pilares ═══════ */}
         {selected && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Score + Certification */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center justify-center">
-              <ScoreGauge score={overall} size={170} />
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+            {/* 1 — Certificado ESG (destaque) */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center">
+              <h3 className="text-xs font-bold text-brand-900 mb-3 uppercase tracking-wider">Certificado ESG</h3>
+              {(() => {
+                const level = overall >= 70 ? 'ouro' : overall >= 40 ? 'prata' : 'bronze';
+                const levelName = overall >= 70 ? 'Ouro' : overall >= 40 ? 'Prata' : 'Bronze';
+                const medalColor = overall >= 70 ? '#FFD700' : overall >= 40 ? '#C0C0C0' : '#CD7F32';
+                return (
+                  <>
+                    <img src={`/images/assets/selo-${level}.png`} alt={`Selo ${levelName}`} className="w-24 h-24 object-contain mb-3" />
+                    <p className="text-lg font-black" style={{ color: medalColor }}>Certificação {levelName}</p>
+                    <p className="text-xs text-gray-400 mb-1">{overall >= 70 ? '70-100' : overall >= 40 ? '40-69' : '0-39'} pts</p>
+                    {certificate && (
+                      <p className="text-[10px] text-gray-400 font-mono mb-3">#{certificate.certificateNumber}</p>
+                    )}
+                    {certificate ? (
+                      <Link to={`/certificate/${certificate.id}`} className="w-full">
+                        <button className="w-full py-2.5 text-sm font-semibold rounded-full transition-all" style={{ backgroundColor: medalColor + '20', color: medalColor === '#C0C0C0' ? '#6b7280' : medalColor === '#FFD700' ? '#92400E' : '#92400E' }}>
+                          Ver Certificado
+                        </button>
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={async () => { if (!selected) return; try { const res = await api.post(`/certificates/${selected.id}`); setCertificate(res.data); navigate(`/certificate/${res.data.id}`); } catch (err: any) { alert(err?.response?.data?.error || 'Erro ao emitir certificado'); } }}
+                        className="w-full py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90"
+                      >
+                        Emitir Certificado
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* 2 — Score Gauge */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center">
+              <h3 className="text-xs font-bold text-brand-900 mb-3 uppercase tracking-wider">Score Geral</h3>
+              <ScoreGauge score={overall} size={140} />
               <span className="mt-3 text-sm font-bold px-4 py-1 rounded-full" style={{ backgroundColor: scoreColor(overall) + '18', color: scoreColor(overall) }}>
                 {scoreLabel(overall)}
               </span>
               <p className="text-xs text-gray-400 mt-2">
                 {new Date(selected.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
               </p>
-              {(() => {
-                const level = overall >= 70 ? 'ouro' : overall >= 40 ? 'prata' : 'bronze';
-                const levelName = overall >= 70 ? 'Ouro' : overall >= 40 ? 'Prata' : 'Bronze';
-                return (
-                  <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-gray-50 w-full">
-                    <img src={`/images/assets/selo-${level}.png`} alt={`Selo ${levelName}`} className="w-12 h-12 object-contain" />
-                    <div>
-                      <p className="text-sm font-bold text-brand-900">Certificação {levelName}</p>
-                      <p className="text-xs text-gray-400">{overall >= 70 ? '70-100' : overall >= 40 ? '40-69' : '0-39'} pts</p>
-                    </div>
-                  </div>
-                );
-              })()}
             </div>
 
-            {/* Recharts Radar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center">
-              <h3 className="text-sm font-bold text-brand-900 mb-2 uppercase tracking-wider">Visão Geral ESG</h3>
-              <ResponsiveContainer width="100%" height={280}>
+            {/* 3 — Recharts Radar */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col items-center">
+              <h3 className="text-xs font-bold text-brand-900 mb-1 uppercase tracking-wider">Visão Geral ESG</h3>
+              <ResponsiveContainer width="100%" height={200}>
                 <RechartsRadar data={radarData}>
                   <PolarGrid strokeDasharray="3 3" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 13, fontWeight: 700, fill: '#152F27' }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
-                  <Radar name="Score" dataKey="value" stroke="#7B9965" fill="#7B9965" fillOpacity={0.2} strokeWidth={2.5} dot={{ r: 5, fill: '#fff', stroke: '#7B9965', strokeWidth: 2.5 }} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fontWeight: 700, fill: '#152F27' }} />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 9 }} />
+                  <Radar name="Score" dataKey="value" stroke="#7B9965" fill="#7B9965" fillOpacity={0.2} strokeWidth={2} dot={{ r: 4, fill: '#fff', stroke: '#7B9965', strokeWidth: 2 }} />
                   <Tooltip formatter={(v: number) => [`${v.toFixed(1)}`, 'Score']} />
                 </RechartsRadar>
               </ResponsiveContainer>
-              {/* Mini pie for contribution */}
-              <div className="flex items-center gap-4 mt-2">
-                <div className="w-20 h-20">
+              <div className="flex items-center gap-3 mt-1">
+                <div className="w-16 h-16">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pillarPieData} dataKey="value" cx="50%" cy="50%" innerRadius={18} outerRadius={35} paddingAngle={3}>
+                      <Pie data={pillarPieData} dataKey="value" cx="50%" cy="50%" innerRadius={14} outerRadius={28} paddingAngle={3}>
                         {pillarPieData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                       </Pie>
                       <Tooltip formatter={(v: number, name: string) => [`${v.toFixed(0)}`, name]} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   {pillarPieData.map(p => (
-                    <div key={p.name} className="flex items-center gap-2 text-xs">
-                      <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: p.color }} />
+                    <div key={p.name} className="flex items-center gap-1.5 text-[11px]">
+                      <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: p.color }} />
                       <span className="text-gray-500">{p.name}</span>
                       <span className="font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
                     </div>
@@ -440,33 +443,33 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Pillar Details + Navigation */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-sm font-bold text-brand-900 mb-4 uppercase tracking-wider">Pilares</h3>
-              <div className="space-y-5 mb-6">
+            {/* 4 — Pillar Bars + Navigation */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col">
+              <h3 className="text-xs font-bold text-brand-900 mb-3 uppercase tracking-wider">Pilares</h3>
+              <div className="space-y-4 flex-1">
                 {[
                   { label: 'Ambiental (E)', value: env, color: PILLAR_COLORS.environmental },
                   { label: 'Social (S)', value: soc, color: PILLAR_COLORS.social },
                   { label: 'Governança (G)', value: gov, color: PILLAR_COLORS.governance },
                 ].map(p => (
                   <div key={p.label}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-semibold text-gray-600">{p.label}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: p.color + '15', color: p.color }}>{scoreLabel(p.value)}</span>
-                        <span className="text-lg font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-semibold text-gray-600">{p.label}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full" style={{ backgroundColor: p.color + '15', color: p.color }}>{scoreLabel(p.value)}</span>
+                        <span className="text-base font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
                       </div>
                     </div>
-                    <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${p.value}%`, backgroundColor: p.color }} />
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-3">
-                <Link to={`/diagnosis/${selected.id}/insights`}><button className="w-full py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
-                <Link to={`/diagnosis/${selected.id}/results`}><button className="w-full py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Resultados</button></Link>
-                <Link to={`/diagnosis/${selected.id}/report`}><button className="w-full py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Relatório</button></Link>
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                <Link to={`/diagnosis/${selected.id}/insights`}><button className="w-full py-2 text-xs font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
+                <Link to={`/diagnosis/${selected.id}/results`}><button className="w-full py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Resultados</button></Link>
+                <Link to={`/diagnosis/${selected.id}/report`}><button className="w-full py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Relatório</button></Link>
               </div>
             </div>
           </div>

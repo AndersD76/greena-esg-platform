@@ -423,11 +423,8 @@ export default function Insights() {
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-start gap-2 mb-1">
-                          <h4 className={`text-sm font-bold text-brand-900 flex-1 ${action.status === 'completed' ? 'line-through' : ''}`}>
-                            {action.title}
-                          </h4>
-                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <div className="mb-1">
+                          <div className="flex items-center gap-1.5 mb-1">
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ backgroundColor: pCfg.bg, color: pCfg.text }}>
                               {pCfg.label}
                             </span>
@@ -435,6 +432,9 @@ export default function Insights() {
                               {sCfg.label}
                             </span>
                           </div>
+                          <h4 className={`text-sm font-bold text-brand-900 leading-snug ${action.status === 'completed' ? 'line-through' : ''}`}>
+                            {action.title}
+                          </h4>
                         </div>
 
                         {action.description && (

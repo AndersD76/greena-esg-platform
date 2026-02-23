@@ -116,15 +116,18 @@ export default function Certificate() {
     );
   }
 
-  const { certificationLevel, user } = certificate;
+  const user = certificate.user || { name: '', email: '', companyName: null };
+  const certificationLevel = certificate.certificationLevel || { level: certificate.level as any, name: certificate.level, title: '', message: '', color: '', icon: '', scoreRange: '', characteristics: [] };
+  const benefits = certificate.benefits || [];
   const medalColors: Record<string, string> = {
     bronze: '#CD7F32',
     silver: '#C0C0C0',
     gold: '#FFD700'
   };
 
-  const issueDate = new Date(certificate.issuedAt).toLocaleDateString('pt-BR');
+  const issueDate = certificate.issuedAt ? new Date(certificate.issuedAt).toLocaleDateString('pt-BR') : '-';
   const expiryDate = certificate.expiresAt ? new Date(certificate.expiresAt).toLocaleDateString('pt-BR') : 'Indeterminado';
+  const scoreNum = typeof certificate.score === 'number' ? certificate.score : Number(certificate.score) || 0;
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #f0f9f4 0%, white 100%)' }}>
@@ -179,7 +182,7 @@ export default function Certificate() {
               <div className="text-center">
                 <div className="text-sm text-gray-600 font-semibold mb-1">Pontuação ESG</div>
                 <div className="text-5xl font-black" style={{ color: medalColors[certificate.level] }}>
-                  {certificate.score.toFixed(1)}
+                  {scoreNum.toFixed(1)}
                 </div>
               </div>
               <div className="w-px h-16 bg-gray-300"></div>
@@ -222,10 +225,11 @@ export default function Certificate() {
             </div>
 
             {/* Benefits Section */}
+            {benefits.length > 0 && (
             <div className="mb-12">
               <h3 className="text-2xl font-black text-gray-800 mb-6 text-center">Benefícios Inclusos</h3>
               <div className="grid md:grid-cols-2 gap-4">
-                {certificate.benefits.map((benefit) => (
+                {benefits.map((benefit) => (
                   <div
                     key={benefit.id}
                     className="flex items-start gap-4 p-4 rounded-xl border-2 hover:shadow-md transition"
@@ -244,6 +248,7 @@ export default function Certificate() {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-wrap gap-4 justify-center">
@@ -303,7 +308,7 @@ export default function Certificate() {
         <div className="mt-12 bg-white p-8 rounded-2xl shadow-lg">
           <h3 className="text-2xl font-black text-gray-800 mb-6 text-center">Características deste Nível</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {certificationLevel.characteristics.map((char, idx) => (
+            {(certificationLevel.characteristics || []).map((char, idx) => (
               <div key={idx} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm font-bold" style={{ backgroundColor: medalColors[certificate.level] }}>
                   {idx + 1}
