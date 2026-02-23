@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 
 interface CertificationLevel {
   level: 'bronze' | 'silver' | 'gold';
@@ -59,19 +59,7 @@ export default function Certificate() {
 
   const loadCertificate = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      const response = await axios.get(
-        `http://localhost:3000/api/certificates/${certificateId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-
+      const response = await api.get(`/certificates/${certificateId}`);
       setCertificate(response.data);
     } catch (err: any) {
       console.error('Erro ao carregar certificado:', err);
