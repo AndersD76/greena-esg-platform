@@ -3,16 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { reportService, FullReport, PillarBreakdown } from '../services/report.service';
 import api from '../services/api';
 
-// Cores do engreena
+// Cores do engreena — padrão em todas as páginas
 const COLORS = {
   primary: '#152F27',
   accent: '#7B9965',
-  environmental: '#4CAF50',
-  social: '#2196F3',
-  governance: '#FF9800',
-  bgEnv: '#E8F5E9',
-  bgSoc: '#E3F2FD',
-  bgGov: '#FFF3E0',
+  environmental: '#7B9965',
+  social: '#924131',
+  governance: '#b8963a',
+  bgEnv: '#f0f7ed',
+  bgSoc: '#fdf2f0',
+  bgGov: '#faf6ee',
 };
 
 const pillarColors: Record<string, string> = {
@@ -27,21 +27,19 @@ const pillarBgColors: Record<string, string> = {
   G: COLORS.bgGov,
 };
 
-// Score color helper
+// Score color helper — padrão em todas as páginas
 function getScoreColor(score: number) {
-  if (score >= 80) return '#22C55E';
-  if (score >= 60) return '#84CC16';
-  if (score >= 40) return '#F59E0B';
-  if (score >= 20) return '#EF4444';
-  return '#DC2626';
+  if (score >= 80) return '#7B9965';
+  if (score >= 60) return '#b8963a';
+  if (score >= 40) return '#924131';
+  return '#9ca3af';
 }
 
 function getScoreLabel(score: number) {
   if (score >= 80) return 'Excelente';
   if (score >= 60) return 'Bom';
   if (score >= 40) return 'Regular';
-  if (score >= 20) return 'Em Desenvolvimento';
-  return 'Inicial';
+  return 'Crítico';
 }
 
 // Radar Chart - bigger, more detailed
@@ -748,9 +746,9 @@ export default function Report() {
                         </span>
                       </td>
                       <td className="py-3 px-3">
-                        <div className="font-semibold text-gray-800">{action.title.replace(/^\d+\.\s*/, '')}</div>
+                        <div className="font-semibold text-gray-800">{action.title}</div>
                         {action.description && (
-                          <div className="text-xs text-gray-500 mt-0.5">{action.description.substring(0, 80)}...</div>
+                          <div className="text-xs text-gray-500 mt-1 leading-relaxed">{action.description}</div>
                         )}
                       </td>
                       <td className="py-3 px-3">

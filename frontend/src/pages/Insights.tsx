@@ -95,6 +95,7 @@ export default function Insights() {
     }
   }
 
+  // Padrão de cores em todas as páginas
   const getScoreColor = (score: number) => {
     if (score >= 80) return '#7B9965';
     if (score >= 60) return '#b8963a';
@@ -115,12 +116,16 @@ export default function Insights() {
     completed: { bg: '#D1FAE5', text: '#065F46', label: 'Concluído', icon: '●' },
   };
 
-  // Parse pillar from description (format: "Pilar - Tema: Questão")
+  // Parse pillar from description (format: "[E] Ambiental > Tema — ...")
   const getPillarFromAction = (action: DbActionPlan): string => {
     const desc = action.description || '';
-    if (desc.startsWith('Ambiental') || desc.startsWith('Environmental')) return 'E';
-    if (desc.startsWith('Social')) return 'S';
-    if (desc.startsWith('Governança') || desc.startsWith('Governance')) return 'G';
+    if (desc.startsWith('[E]')) return 'E';
+    if (desc.startsWith('[S]')) return 'S';
+    if (desc.startsWith('[G]')) return 'G';
+    // Fallback para formato antigo
+    if (desc.startsWith('Ambiental') || desc.includes('Ambiental')) return 'E';
+    if (desc.startsWith('Social') || desc.includes('Social')) return 'S';
+    if (desc.startsWith('Governança') || desc.includes('Governança')) return 'G';
     return 'E';
   };
 
@@ -418,9 +423,9 @@ export default function Insights() {
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <h4 className={`text-sm font-bold text-brand-900 ${action.status === 'completed' ? 'line-through' : ''}`}>
-                            {action.title.replace(/^Implementar:\s*/, '')}
+                        <div className="flex flex-wrap items-start gap-2 mb-1">
+                          <h4 className={`text-sm font-bold text-brand-900 flex-1 ${action.status === 'completed' ? 'line-through' : ''}`}>
+                            {action.title}
                           </h4>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ backgroundColor: pCfg.bg, color: pCfg.text }}>
@@ -433,7 +438,7 @@ export default function Insights() {
                         </div>
 
                         {action.description && (
-                          <p className="text-xs text-gray-400 mb-2 line-clamp-2">{action.description}</p>
+                          <p className="text-xs text-gray-500 mb-2 leading-relaxed">{action.description}</p>
                         )}
 
                         <div className="flex items-center gap-4 text-[10px] text-gray-400">
