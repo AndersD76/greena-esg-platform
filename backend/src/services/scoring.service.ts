@@ -291,12 +291,12 @@ export class ScoringService {
       where: { diagnosisId },
     });
 
-    // 6. Construir mapa question → assessmentItemId para matching
-    const questionToItem: Record<string, { id: number; pillarCode: string }> = {};
+    // 6. Construir lista de questions para matching flexível
+    const questionItems: Array<{ question: string; id: number; pillarCode: string }> = [];
     for (const [idStr, question] of Object.entries(itemToQuestion)) {
       const id = Number(idStr);
       const pillarCode = itemToPillar[id];
-      questionToItem[question] = { id, pillarCode };
+      questionItems.push({ question, id, pillarCode });
     }
 
     // 7. Simular impacto de cada ação
@@ -311,7 +311,10 @@ export class ScoringService {
     }> = [];
 
     for (const action of actions) {
-      const match = questionToItem[action.title];
+      // Limpar prefixo "N. Implementar: " e trailing "..." do título
+      const cleanTitle = action.title.replace(/^\d+\.\s*(Implementar:\s*)?/, '').replace(/\.{3}$/, '');
+      // Match flexível: buscar question que começa com o cleanTitle ou é exatamente igual
+      const match = questionItems.find(q => q.question === cleanTitle || q.question === action.title || q.question.startsWith(cleanTitle));
       if (!match) continue;
 
       const { pillarCode } = match;
