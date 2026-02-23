@@ -359,82 +359,86 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ═══════ MAIN SCORES — 4 columns: Certificado | Gauge | Radar | Pilares ═══════ */}
+        {/* ═══════ MAIN SCORES — 2x2 grid ═══════ */}
         {selected && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-            {/* 1 — Certificado ESG (destaque) */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center">
-              <h3 className="text-xs font-bold text-brand-900 mb-3 uppercase tracking-wider">Certificado ESG</h3>
-              {(() => {
-                const level = overall >= 70 ? 'ouro' : overall >= 40 ? 'prata' : 'bronze';
-                const levelName = overall >= 70 ? 'Ouro' : overall >= 40 ? 'Prata' : 'Bronze';
-                const medalColor = overall >= 70 ? '#FFD700' : overall >= 40 ? '#C0C0C0' : '#CD7F32';
-                return (
-                  <>
-                    <img src={`/images/assets/selo-${level}.png`} alt={`Selo ${levelName}`} className="w-24 h-24 object-contain mb-3" />
-                    <p className="text-lg font-black" style={{ color: medalColor }}>Certificação {levelName}</p>
-                    <p className="text-xs text-gray-400 mb-1">{overall >= 70 ? '70-100' : overall >= 40 ? '40-69' : '0-39'} pts</p>
-                    {certificate && (
-                      <p className="text-[10px] text-gray-400 font-mono mb-3">#{certificate.certificateNumber}</p>
-                    )}
-                    {certificate ? (
-                      <Link to={`/certificate/${certificate.id}`} className="w-full">
-                        <button className="w-full py-2.5 text-sm font-semibold rounded-full transition-all" style={{ backgroundColor: medalColor + '20', color: medalColor === '#C0C0C0' ? '#6b7280' : medalColor === '#FFD700' ? '#92400E' : '#92400E' }}>
-                          Ver Certificado
-                        </button>
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={async () => { if (!selected) return; try { const res = await api.post(`/certificates/${selected.id}`); setCertificate(res.data); navigate(`/certificate/${res.data.id}`); } catch (err: any) { alert(err?.response?.data?.error || 'Erro ao emitir certificado'); } }}
-                        className="w-full py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90"
-                      >
-                        Emitir Certificado
-                      </button>
-                    )}
-                  </>
-                );
-              })()}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* ROW 1, COL 1 — Certificado + Score */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
+              <div className="flex items-center gap-6">
+                {/* Selo */}
+                {(() => {
+                  const level = overall >= 70 ? 'ouro' : overall >= 40 ? 'prata' : 'bronze';
+                  const levelName = overall >= 70 ? 'Ouro' : overall >= 40 ? 'Prata' : 'Bronze';
+                  const medalColor = overall >= 70 ? '#FFD700' : overall >= 40 ? '#C0C0C0' : '#CD7F32';
+                  return (
+                    <>
+                      <div className="flex flex-col items-center flex-shrink-0">
+                        <img src={`/images/assets/selo-${level}.png`} alt={`Selo ${levelName}`} className="w-28 h-28 object-contain mb-2" />
+                        <p className="text-lg font-black" style={{ color: medalColor }}>Certificação {levelName}</p>
+                        <p className="text-xs text-gray-400">{overall >= 70 ? '70-100' : overall >= 40 ? '40-69' : '0-39'} pts</p>
+                        {certificate && (
+                          <p className="text-[10px] text-gray-400 font-mono mt-1">#{certificate.certificateNumber}</p>
+                        )}
+                      </div>
+                      {/* Score + botão */}
+                      <div className="flex-1 flex flex-col items-center">
+                        <ScoreGauge score={overall} size={160} />
+                        <span className="mt-3 text-sm font-bold px-4 py-1 rounded-full" style={{ backgroundColor: scoreColor(overall) + '18', color: scoreColor(overall) }}>
+                          {scoreLabel(overall)}
+                        </span>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {new Date(selected.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                        </p>
+                        <div className="mt-4 w-full max-w-[220px]">
+                          {certificate ? (
+                            <Link to={`/certificate/${certificate.id}`} className="block">
+                              <button className="w-full py-2.5 text-sm font-semibold rounded-full transition-all" style={{ backgroundColor: medalColor + '20', color: medalColor === '#C0C0C0' ? '#6b7280' : '#92400E' }}>
+                                Ver Certificado
+                              </button>
+                            </Link>
+                          ) : (
+                            <button
+                              onClick={async () => { if (!selected) return; try { const res = await api.post(`/certificates/${selected.id}`); setCertificate(res.data); navigate(`/certificate/${res.data.id}`); } catch (err: any) { alert(err?.response?.data?.error || 'Erro ao emitir certificado'); } }}
+                              className="w-full py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90"
+                            >
+                              Emitir Certificado
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
             </div>
 
-            {/* 2 — Score Gauge */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center">
-              <h3 className="text-xs font-bold text-brand-900 mb-3 uppercase tracking-wider">Score Geral</h3>
-              <ScoreGauge score={overall} size={140} />
-              <span className="mt-3 text-sm font-bold px-4 py-1 rounded-full" style={{ backgroundColor: scoreColor(overall) + '18', color: scoreColor(overall) }}>
-                {scoreLabel(overall)}
-              </span>
-              <p className="text-xs text-gray-400 mt-2">
-                {new Date(selected.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
-              </p>
-            </div>
-
-            {/* 3 — Recharts Radar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col items-center">
-              <h3 className="text-xs font-bold text-brand-900 mb-1 uppercase tracking-wider">Visão Geral ESG</h3>
-              <ResponsiveContainer width="100%" height={200}>
+            {/* ROW 1, COL 2 — Radar + Pie */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center">
+              <h3 className="text-xs font-bold text-brand-900 mb-2 uppercase tracking-wider">Visão Geral ESG</h3>
+              <ResponsiveContainer width="100%" height={280}>
                 <RechartsRadar data={radarData}>
                   <PolarGrid strokeDasharray="3 3" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fontWeight: 700, fill: '#152F27' }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 9 }} />
-                  <Radar name="Score" dataKey="value" stroke="#7B9965" fill="#7B9965" fillOpacity={0.2} strokeWidth={2} dot={{ r: 4, fill: '#fff', stroke: '#7B9965', strokeWidth: 2 }} />
+                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 13, fontWeight: 700, fill: '#152F27' }} />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
+                  <Radar name="Score" dataKey="value" stroke="#7B9965" fill="#7B9965" fillOpacity={0.2} strokeWidth={2.5} dot={{ r: 5, fill: '#fff', stroke: '#7B9965', strokeWidth: 2.5 }} />
                   <Tooltip formatter={(v: number) => [`${v.toFixed(1)}`, 'Score']} />
                 </RechartsRadar>
               </ResponsiveContainer>
-              <div className="flex items-center gap-3 mt-1">
-                <div className="w-16 h-16">
+              <div className="flex items-center gap-4 mt-2">
+                <div className="w-20 h-20">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
-                      <Pie data={pillarPieData} dataKey="value" cx="50%" cy="50%" innerRadius={14} outerRadius={28} paddingAngle={3}>
+                      <Pie data={pillarPieData} dataKey="value" cx="50%" cy="50%" innerRadius={18} outerRadius={35} paddingAngle={3}>
                         {pillarPieData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                       </Pie>
                       <Tooltip formatter={(v: number, name: string) => [`${v.toFixed(0)}`, name]} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-0.5">
+                <div className="space-y-1">
                   {pillarPieData.map(p => (
-                    <div key={p.name} className="flex items-center gap-1.5 text-[11px]">
-                      <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: p.color }} />
+                    <div key={p.name} className="flex items-center gap-2 text-xs">
+                      <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: p.color }} />
                       <span className="text-gray-500">{p.name}</span>
                       <span className="font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
                     </div>
@@ -443,33 +447,65 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* 4 — Pillar Bars + Navigation */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col">
-              <h3 className="text-xs font-bold text-brand-900 mb-3 uppercase tracking-wider">Pilares</h3>
-              <div className="space-y-4 flex-1">
+            {/* ROW 2, COL 1 — Pilares detalhados */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-xs font-bold text-brand-900 mb-4 uppercase tracking-wider">Pilares</h3>
+              <div className="space-y-5">
                 {[
                   { label: 'Ambiental (E)', value: env, color: PILLAR_COLORS.environmental },
                   { label: 'Social (S)', value: soc, color: PILLAR_COLORS.social },
                   { label: 'Governança (G)', value: gov, color: PILLAR_COLORS.governance },
                 ].map(p => (
                   <div key={p.label}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold text-gray-600">{p.label}</span>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full" style={{ backgroundColor: p.color + '15', color: p.color }}>{scoreLabel(p.value)}</span>
-                        <span className="text-base font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-semibold text-gray-600">{p.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: p.color + '15', color: p.color }}>{scoreLabel(p.value)}</span>
+                        <span className="text-lg font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
                       </div>
                     </div>
-                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${p.value}%`, backgroundColor: p.color }} />
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <Link to={`/diagnosis/${selected.id}/insights`}><button className="w-full py-2 text-xs font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
-                <Link to={`/diagnosis/${selected.id}/results`}><button className="w-full py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Resultados</button></Link>
-                <Link to={`/diagnosis/${selected.id}/report`}><button className="w-full py-2 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Relatório</button></Link>
+            </div>
+
+            {/* ROW 2, COL 2 — Navegação */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
+              <h3 className="text-xs font-bold text-brand-900 mb-4 uppercase tracking-wider">Ações Rápidas</h3>
+              <div className="space-y-3 flex-1">
+                <Link to={`/diagnosis/${selected.id}/insights`} className="flex items-center gap-4 p-4 rounded-xl bg-brand-900/5 hover:bg-brand-900/10 transition-all group">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${pendingActions > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
+                    <svg className={`w-5 h-5 ${pendingActions > 0 ? 'text-amber-700' : 'text-green-700'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-brand-900">Plano de Ação</p>
+                    <p className="text-xs text-gray-400">{pendingActions > 0 ? `${pendingActions} pendentes` : actionPlans.length > 0 ? `${completedActionsCount}/${actionPlans.length} concluídas` : 'Nenhuma ação'}</p>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
+                <Link to={`/diagnosis/${selected.id}/results`} className="flex items-center gap-4 p-4 rounded-xl bg-brand-900/5 hover:bg-brand-900/10 transition-all group">
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-brand-900">Resultados</p>
+                    <p className="text-xs text-gray-400">Detalhes do diagnóstico</p>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
+                <Link to={`/diagnosis/${selected.id}/report`} className="flex items-center gap-4 p-4 rounded-xl bg-brand-900/5 hover:bg-brand-900/10 transition-all group">
+                  <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-brand-900">Relatório</p>
+                    <p className="text-xs text-gray-400">Relatório ESG completo</p>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
               </div>
             </div>
           </div>
@@ -498,7 +534,7 @@ export default function Dashboard() {
                     <ReferenceLine y={env} stroke={PILLAR_COLORS.environmental} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${env.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.environmental }} />
                     <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800}>
                       {makeBarData(envThemes).map((entry, i) => (
-                        <Cell key={i} fill={entry.score >= 60 ? PILLAR_COLORS.environmental : entry.score >= 40 ? '#b8963a' : '#924131'} fillOpacity={0.85} />
+                        <Cell key={i} fill={PILLAR_COLORS.environmental} fillOpacity={0.85} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -526,7 +562,7 @@ export default function Dashboard() {
                     <ReferenceLine y={soc} stroke={PILLAR_COLORS.social} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${soc.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.social }} />
                     <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800}>
                       {makeBarData(socThemes).map((entry, i) => (
-                        <Cell key={i} fill={entry.score >= 60 ? PILLAR_COLORS.social : entry.score >= 40 ? '#b8963a' : '#924131'} fillOpacity={0.85} />
+                        <Cell key={i} fill={PILLAR_COLORS.social} fillOpacity={0.85} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -554,7 +590,7 @@ export default function Dashboard() {
                     <ReferenceLine y={gov} stroke={PILLAR_COLORS.governance} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${gov.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.governance }} />
                     <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800}>
                       {makeBarData(govThemes).map((entry, i) => (
-                        <Cell key={i} fill={entry.score >= 60 ? PILLAR_COLORS.governance : entry.score >= 40 ? '#b8963a' : '#924131'} fillOpacity={0.85} />
+                        <Cell key={i} fill={PILLAR_COLORS.governance} fillOpacity={0.85} />
                       ))}
                     </Bar>
                   </BarChart>
