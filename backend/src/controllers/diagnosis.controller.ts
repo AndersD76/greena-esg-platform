@@ -128,6 +128,21 @@ export class DiagnosisController {
     }
   }
 
+  async updateActionStatus(req: AuthRequest, res: Response) {
+    try {
+      const { actionId } = req.params;
+      const { status } = req.body;
+      const validStatuses = ['pending', 'in_progress', 'completed'];
+      if (!status || !validStatuses.includes(status)) {
+        return res.status(400).json({ error: 'Status inválido. Use: pending, in_progress ou completed' });
+      }
+      const result = await diagnosisService.updateActionStatus(Number(actionId), status);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async getPartialScores(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;

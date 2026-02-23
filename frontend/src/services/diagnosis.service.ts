@@ -89,6 +89,11 @@ export const diagnosisService = {
     return response.data;
   },
 
+  async updateActionStatus(diagnosisId: string, actionId: number, status: string) {
+    const response = await api.patch(`/diagnoses/${diagnosisId}/action-plans/${actionId}/status`, { status });
+    return response.data;
+  },
+
   async getPartialScores(id: string) {
     const response = await api.get(`/diagnoses/${id}/partial-scores`);
     return response.data;

@@ -6,12 +6,11 @@ export class ActionPlanService {
    * Gera plano de ação automático baseado nas respostas
    */
   async generateActionPlan(diagnosisId: string) {
-    // Buscar respostas com baixa maturidade (1-3 de 5)
+    // Buscar TODAS as respostas "Não iniciado" (score 1) — são as que precisam de ação imediata
     const responses = await prisma.response.findMany({
       where: {
         diagnosisId,
-        evaluation: { in: ['Não iniciado', 'Planejado', 'Em andamento'] },
-        NOT: { evaluation: 'Não se aplica' },
+        evaluationValue: 1, // Somente "Não iniciado"
       },
       include: {
         assessmentItem: {
@@ -29,9 +28,8 @@ export class ActionPlanService {
         },
       },
       orderBy: [
-        { evaluationValue: 'asc' }, // Menores valores primeiro (maior necessidade de melhoria)
+        { assessmentItem: { criteria: { theme: { pillar: { code: 'asc' } } } } },
       ],
-      take: 10, // Top 10 ações
     });
 
     const actions: Array<{
@@ -45,57 +43,39 @@ export class ActionPlanService {
       impactScore: number;
     }> = [];
 
-    responses.forEach((response, index) => {
+    responses.forEach((response) => {
       const pillarName = response.assessmentItem.criteria.theme.pillar.name;
+      const pillarCode = response.assessmentItem.criteria.theme.pillar.code;
       const themeName = response.assessmentItem.criteria.theme.name;
       const question = response.assessmentItem.question;
 
-      // Calcular impacto potencial (quanto pode melhorar se atingir nota 5)
-      const currentScore = response.evaluationValue;
-      const potentialScore = 5; // Máximo (Totalmente implementado)
-      const impact = potentialScore - currentScore;
+      // Impacto máximo: score 1 → pode melhorar até 5 = impacto 8/10
+      const impactScore = 8;
 
-      // Determinar prioridade baseado no evaluationValue
-      let priority = 'medium';
-      let priorityLabel = 'MÉDIA PRIORIDADE';
-      if (response.evaluationValue === 1) { // Não iniciado (ELEMENTAR)
-        priority = 'critical';
-        priorityLabel = 'PRIORIDADE CRÍTICA';
-      } else if (response.evaluationValue === 2) { // Planejado (NÃO INTEGRADO)
-        priority = 'high';
-        priorityLabel = 'ALTA PRIORIDADE';
-      }
-
-      // Determinar investimento estimado
+      // Determinar investimento por tema
       let investment = 'medium';
       let investmentLabel = 'Médio';
-      if (themeName.includes('Governança') || themeName.includes('Transparência')) {
+      const tLower = themeName.toLowerCase();
+      if (tLower.includes('governança') || tLower.includes('transparência') || tLower.includes('ética') || tLower.includes('compliance')) {
         investment = 'low';
         investmentLabel = 'Baixo';
-      } else if (themeName.includes('Energia') || themeName.includes('Mudanças climáticas')) {
+      } else if (tLower.includes('energia') || tLower.includes('clima') || tLower.includes('emissão') || tLower.includes('infraestrutura')) {
         investment = 'high';
         investmentLabel = 'Alto';
       }
 
-      // Determinar prazo
-      let deadlineDays = 90;
-      if (priority === 'critical') {
-        deadlineDays = 30;
-      } else if (priority === 'high') {
-        deadlineDays = 60;
-      } else {
-        deadlineDays = 180;
-      }
+      // Prazo baseado no tipo de investimento
+      const deadlineDays = investment === 'low' ? 30 : investment === 'high' ? 90 : 60;
 
       actions.push({
-        title: `${index + 1}. Implementar: ${question.substring(0, 60)}${question.length > 60 ? '...' : ''}`,
-        description: `${pillarName} - ${themeName}: ${question}. Esta ação terá impacto significativo no seu score ESG, melhorando a performance neste critério crítico.`,
-        priority,
-        priorityLabel,
+        title: question,
+        description: `[${pillarCode}] ${pillarName} > ${themeName} — Esta prática ainda não foi iniciada na sua organização. Implemente políticas, processos ou controles para atender este critério e elevar significativamente seu score ESG.`,
+        priority: 'critical',
+        priorityLabel: 'PRIORIDADE CRÍTICA',
         investment,
         investmentLabel,
         deadlineDays,
-        impactScore: Math.round((impact / 5) * 10), // Impacto em escala 0-10
+        impactScore,
       });
     });
 

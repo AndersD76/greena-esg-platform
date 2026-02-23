@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório UI GreenMetric 2025 - Universidade de Passo Fundo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      --green-900: #1B4332;
+      --green-700: #2D6A4F;
+      --green-500: #40916C;
+      --green-300: #74C69D;
+      --green-100: #D8F3DC;
+      --gold: #D4A843;
+      --gold-light: #F5E6B8;
+      --white: #FFFFFF;
+      --gray-50: #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-400: #94A3B8;
+      --gray-600: #475569;
+      --gray-800: #1E293B;
+      --red-500: #EF4444;
+      --yellow-500: #F59E0B;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.5; }
+
+    @media print {
+      body { background: white; }
+      .no-print { display: none !important; }
+      .page-break { page-break-before: always; }
+      .card { box-shadow: none !important; border: 1px solid #e2e8f0 !important; }
+      @page { size: A4; margin: 15mm; }
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Cover */
+    .cover {
+      background: linear-gradient(135deg, var(--green-900) 0%, var(--green-700) 50%, var(--green-500) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 80%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 70%);
+    }
+    .cover-content { text-align: center; position: relative; z-index: 1; color: white; padding: 60px 40px; }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 6px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+    .cover h1 { font-size: 52px; font-weight: 900; line-height: 1.1; margin-bottom: 8px; }
+    .cover h2 { font-size: 22px; font-weight: 400; opacity: 0.7; margin-bottom: 40px; }
+    .cover-rank {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 16px 32px;
+      margin-bottom: 40px;
+    }
+    .cover-rank .number { font-size: 48px; font-weight: 900; color: var(--gold); }
+    .cover-rank .label { text-align: left; font-size: 13px; opacity: 0.7; }
+    .cover-score { font-size: 16px; opacity: 0.5; margin-top: 20px; }
+    .cover-date { font-size: 13px; opacity: 0.3; margin-top: 40px; }
+
+    /* Section */
+    .section { padding: 48px 0; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green-700);
+      margin-bottom: 6px;
+    }
+    .section-heading {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--green-900);
+      margin-bottom: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+
+    /* Progress bars */
+    .progress-bar { width: 100%; height: 8px; background: var(--gray-100); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+    .progress-green { background: linear-gradient(90deg, var(--green-500), var(--green-300)); }
+    .progress-yellow { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+    .progress-red { background: linear-gradient(90deg, #EF4444, #F87171); }
+
+    /* KPI card */
+    .kpi { text-align: center; padding: 20px 12px; }
+    .kpi-value { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .kpi-label { font-size: 11px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Category card */
+    .cat-card { border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+    .cat-card .cat-icon { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.7; }
+    .cat-card .cat-score { font-size: 36px; font-weight: 900; line-height: 1; }
+    .cat-card .cat-pct { font-size: 14px; font-weight: 600; opacity: 0.8; }
+    .cat-card .cat-rank { font-size: 11px; opacity: 0.6; margin-top: 8px; }
+
+    /* Table */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th {
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-400);
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* Indicator bar */
+    .ind-bar { display: flex; align-items: center; gap: 8px; }
+    .ind-bar-track { flex: 1; height: 6px; background: var(--gray-100); border-radius: 3px; overflow: hidden; }
+    .ind-bar-fill { height: 100%; border-radius: 3px; }
+    .ind-bar-value { font-size: 12px; font-weight: 700; min-width: 35px; text-align: right; }
+
+    /* Highlight cards */
+    .highlight-strong { background: var(--green-100); border-left: 4px solid var(--green-500); padding: 16px 20px; border-radius: 0 12px 12px 0; margin-bottom: 8px; }
+    .highlight-weak { background: #FEF3C7; border-left: 4px solid var(--yellow-500); padding: 16px 20px; border-radius: 0 12px 12px 0; margin-bottom: 8px; }
+
+    /* Chart containers */
+    .chart-container { position: relative; width: 100%; max-height: 350px; }
+
+    /* Print button */
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--green-900);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(27,67,50,0.3);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn:hover { background: var(--green-700); }
+
+    /* Recommendation timeline */
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--green-500);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .timeline-item:last-child { border-bottom: none; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-6 { grid-template-columns: 1fr; }
+      .cover h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PRINT BUTTON -->
+<button class="print-btn no-print" onclick="window.print()">
+  <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+  Imprimir / PDF
+</button>
+
+<!-- ═══════════ PAGE 1: COVER ═══════════ -->
+<div class="cover">
+  <div class="cover-content">
+    <div class="cover-badge">UI GreenMetric World University Rankings 2025</div>
+    <h1>Universidade de<br>Passo Fundo</h1>
+    <h2>Relatório de Sustentabilidade Universitária</h2>
+
+    <div class="cover-rank">
+      <div class="number">336&ordm;</div>
+      <div class="label">
+        <div style="font-weight:700;font-size:16px;color:white">Ranking Mundial</div>
+        <div>de 1.745 universidades &bull; 105 países</div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px 24px;text-align:center">
+        <div style="font-size:28px;font-weight:800;color:var(--gold)">11&ordm;</div>
+        <div style="font-size:11px;opacity:0.5">Ranking Brasil</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px 24px;text-align:center">
+        <div style="font-size:28px;font-weight:800;color:var(--gold)">7.562,5</div>
+        <div style="font-size:11px;opacity:0.5">Score Total / 10.000</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px 24px;text-align:center">
+        <div style="font-size:28px;font-weight:800;color:var(--gold)">75,63%</div>
+        <div style="font-size:11px;opacity:0.5">Aproveitamento</div>
+      </div>
+    </div>
+
+    <p class="cover-score">Brasil | Fundação: 1970 | Comunitária</p>
+    <p class="cover-date">Dados: UI GreenMetric 2025</p>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 2: EXECUTIVE SUMMARY ═══════════ -->
+<div class="page-break"></div>
+<div class="section">
+  <div class="container">
+    <p class="section-title">Resumo Executivo</p>
+    <h2 class="section-heading">Visão Geral do Desempenho</h2>
+
+    <div class="card" style="background:linear-gradient(135deg, var(--green-900), var(--green-700)); color:white; margin-bottom:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+        <div>
+          <p style="font-size:13px;opacity:0.6;margin-bottom:4px">Score Total</p>
+          <p style="font-size:48px;font-weight:900;line-height:1">7.562,5 <span style="font-size:18px;opacity:0.5">/ 10.000</span></p>
+        </div>
+        <div style="display:flex;gap:20px">
+          <div style="text-align:center;background:rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px">
+            <p style="font-size:32px;font-weight:800;color:var(--gold)">336&ordm;</p>
+            <p style="font-size:10px;opacity:0.5">MUNDIAL</p>
+          </div>
+          <div style="text-align:center;background:rgba(255,255,255,0.1);border-radius:12px;padding:16px 24px">
+            <p style="font-size:32px;font-weight:800;color:var(--gold)">11&ordm;</p>
+            <p style="font-size:10px;opacity:0.5">BRASIL</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category KPIs -->
+    <div class="grid-6">
+      <div class="card kpi" style="border-top:3px solid var(--green-700)">
+        <div class="kpi-value" style="color:var(--green-700)">75%</div>
+        <div class="kpi-label">SI</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Setting & Infra</div>
+      </div>
+      <div class="card kpi" style="border-top:3px solid var(--yellow-500)">
+        <div class="kpi-value" style="color:var(--yellow-500)">66,67%</div>
+        <div class="kpi-label">EC</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Energy & Climate</div>
+      </div>
+      <div class="card kpi" style="border-top:3px solid var(--green-500)">
+        <div class="kpi-value" style="color:var(--green-500)">88,89%</div>
+        <div class="kpi-label">WS</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Waste</div>
+      </div>
+      <div class="card kpi" style="border-top:3px solid var(--green-500)">
+        <div class="kpi-value" style="color:var(--green-500)">90%</div>
+        <div class="kpi-label">WR</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Water</div>
+      </div>
+      <div class="card kpi" style="border-top:3px solid var(--red-500)">
+        <div class="kpi-value" style="color:var(--red-500)">57,64%</div>
+        <div class="kpi-label">TR</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Transportation</div>
+      </div>
+      <div class="card kpi" style="border-top:3px solid var(--green-500)">
+        <div class="kpi-value" style="color:var(--green-500)">83,33%</div>
+        <div class="kpi-label">ED</div>
+        <div style="font-size:10px;color:var(--gray-400);margin-top:2px">Education & Res.</div>
+      </div>
+    </div>
+
+    <!-- Highlights -->
+    <div class="grid-2" style="margin-top:24px">
+      <div>
+        <h3 style="font-size:14px;font-weight:700;color:var(--green-700);margin-bottom:12px">Pontos Fortes</h3>
+        <div class="highlight-strong">
+          <div style="font-weight:700;color:var(--green-900)">Water (WR) - 90,00%</div>
+          <div style="font-size:12px;color:var(--gray-600)">8&ordm; no Brasil, destaque em conservação hídrica</div>
+        </div>
+        <div class="highlight-strong">
+          <div style="font-weight:700;color:var(--green-900)">Waste (WS) - 88,89%</div>
+          <div style="font-size:12px;color:var(--gray-600)">7&ordm; no Brasil, excelência em gestão de resíduos</div>
+        </div>
+        <div class="highlight-strong">
+          <div style="font-weight:700;color:var(--green-900)">Education & Research (ED) - 83,33%</div>
+          <div style="font-size:12px;color:var(--gray-600)">8&ordm; no Brasil, forte compromisso com educação ambiental</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:14px;font-weight:700;color:var(--yellow-500);margin-bottom:12px">Oportunidades de Melhoria</h3>
+        <div class="highlight-weak">
+          <div style="font-weight:700;color:#92400E">Transportation (TR) - 57,64%</div>
+          <div style="font-size:12px;color:var(--gray-600)">25&ordm; no Brasil, maior gap de performance</div>
+        </div>
+        <div class="highlight-weak">
+          <div style="font-weight:700;color:#92400E">Energy & Climate Change (EC) - 66,67%</div>
+          <div style="font-size:12px;color:var(--gray-600)">15&ordm; no Brasil, potencial de melhoria em eficiência</div>
+        </div>
+        <div class="highlight-weak">
+          <div style="font-weight:700;color:#92400E">Setting & Infrastructure (SI) - 75,00%</div>
+          <div style="font-size:12px;color:var(--gray-600)">15&ordm; no Brasil, espaço para otimização</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 3: DASHBOARD ═══════════ -->
+<div class="page-break"></div>
+<div class="section">
+  <div class="container">
+    <p class="section-title">Dashboard Geral</p>
+    <h2 class="section-heading">Distribuição e Performance por Categoria</h2>
+
+    <div class="grid-2">
+      <!-- Pie chart -->
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:700;color:var(--green-900);margin-bottom:16px">Contribuição por Categoria</h3>
+        <div class="chart-container" style="max-height:300px">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+      <!-- Progress bars -->
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:700;color:var(--green-900);margin-bottom:16px">Performance por Categoria</h3>
+        <div id="categoryBars"></div>
+      </div>
+    </div>
+
+    <!-- Category detail table -->
+    <div class="card" style="margin-top:16px">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th>Sigla</th>
+            <th>Score</th>
+            <th>Máximo</th>
+            <th style="width:200px">Performance</th>
+            <th>%</th>
+            <th>Peso</th>
+            <th>Rank Mundial</th>
+            <th>Rank BR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600">Setting & Infrastructure</td>
+            <td><span style="background:var(--green-100);color:var(--green-900);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">SI</span></td>
+            <td style="font-weight:700">1.125</td>
+            <td style="color:var(--gray-400)">1.500</td>
+            <td><div class="progress-bar"><div class="progress-fill progress-green" style="width:75%"></div></div></td>
+            <td style="font-weight:700;color:var(--green-700)">75,00%</td>
+            <td>15%</td>
+            <td>326&ordm;</td>
+            <td>15&ordm;</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600">Energy & Climate Change</td>
+            <td><span style="background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">EC</span></td>
+            <td style="font-weight:700">1.400</td>
+            <td style="color:var(--gray-400)">2.100</td>
+            <td><div class="progress-bar"><div class="progress-fill progress-yellow" style="width:66.67%"></div></div></td>
+            <td style="font-weight:700;color:var(--yellow-500)">66,67%</td>
+            <td>21%</td>
+            <td>549&ordm;</td>
+            <td>15&ordm;</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600">Waste</td>
+            <td><span style="background:var(--green-100);color:var(--green-900);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">WS</span></td>
+            <td style="font-weight:700">1.600</td>
+            <td style="color:var(--gray-400)">1.800</td>
+            <td><div class="progress-bar"><div class="progress-fill progress-green" style="width:88.89%"></div></div></td>
+            <td style="font-weight:700;color:var(--green-500)">88,89%</td>
+            <td>18%</td>
+            <td>159&ordm;</td>
+            <td>7&ordm;</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600">Water</td>
+            <td><span style="background:var(--green-100);color:var(--green-900);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">WR</span></td>
+            <td style="font-weight:700">900</td>
+            <td style="color:var(--gray-400)">1.000</td>
+            <td><div class="progress-bar"><div class="progress-fill progress-green" style="width:90%"></div></div></td>
+            <td style="font-weight:700;color:var(--green-500)">90,00%</td>
+            <td>10%</td>
+            <td>168&ordm;</td>
+            <td>8&ordm;</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600">Transportation</td>
+            <td><span style="background:#FEE2E2;color:#991B1B;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">TR</span></td>
+            <td style="font-weight:700">1.037,5</td>
+            <td style="color:var(--gray-400)">1.800</td>
+            <td><div class="progress-bar"><div class="progress-fill progress-red" style="width:57.64%"></div></div></td>
+            <td style="font-weight:700;color:var(--red-500)">57,64%</td>
+            <td>18%</td>
+            <td>945&ordm;</td>
+            <td>25&ordm;</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600">Education & Research</td>
+            <td><span style="background:var(--green-100);color:var(--green-900);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">ED</span></td>
+            <td style="font-weight:700">1.500</td>
+            <td style="color:var(--gray-400)">1.800</td>
+            <td><div class="progress-bar"><div class="progress-fill progress-green" style="width:83.33%"></div></div></td>
+            <td style="font-weight:700;color:var(--green-500)">83,33%</td>
+            <td>18%</td>
+            <td>325&ordm;</td>
+            <td>8&ordm;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 4: HISTORY ═══════════ -->
+<div class="page-break"></div>
+<div class="section">
+  <div class="container">
+    <p class="section-title">Histórico</p>
+    <h2 class="section-heading">Evolução no Ranking 2010-2025</h2>
+
+    <div class="card">
+      <div class="chart-container" style="max-height:350px">
+        <canvas id="historyChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <table class="data-table">
+        <thead>
+          <tr><th>Ano</th><th>Ranking</th><th>Total Universidades</th><th>Percentil</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2010</td><td style="font-weight:700">95&ordm;</td><td>178</td><td style="font-weight:600;color:var(--green-500)">Top 53%</td></tr>
+          <tr><td>2011</td><td style="font-weight:700">215&ordm;</td><td>301</td><td style="font-weight:600;color:var(--yellow-500)">Top 71%</td></tr>
+          <tr><td>2012</td><td style="font-weight:700">360&ordm;</td><td>407</td><td style="font-weight:600;color:var(--red-500)">Top 88%</td></tr>
+          <tr><td>2013</td><td style="font-weight:700">516&ordm;</td><td>619</td><td style="font-weight:600;color:var(--red-500)">Top 83%</td></tr>
+          <tr><td>2014</td><td style="font-weight:700">719&ordm;</td><td>780</td><td style="font-weight:600;color:var(--red-500)">Top 92%</td></tr>
+          <tr><td>2015</td><td style="font-weight:700">91&ordm;</td><td>295</td><td style="font-weight:600;color:var(--green-500)">Top 31%</td></tr>
+          <tr><td>2016</td><td style="font-weight:700">1.050&ordm;</td><td>1.183</td><td style="font-weight:600;color:var(--red-500)">Top 89%</td></tr>
+          <tr><td>2019</td><td style="font-weight:700">456&ordm;</td><td>—</td><td>—</td></tr>
+          <tr><td>2020</td><td style="font-weight:700">461&ordm;</td><td>—</td><td>—</td></tr>
+          <tr><td>2021</td><td style="font-weight:700">362&ordm;</td><td>—</td><td>—</td></tr>
+          <tr><td>2022</td><td style="font-weight:700">250&ordm;</td><td>1.477</td><td style="font-weight:600;color:var(--green-500)">Top 17%</td></tr>
+          <tr><td>2023</td><td style="font-weight:700">380&ordm;</td><td>—</td><td>—</td></tr>
+          <tr style="background:var(--green-100)"><td style="font-weight:700">2025</td><td style="font-weight:800;color:var(--green-900)">336&ordm;</td><td style="font-weight:700">1.745</td><td style="font-weight:700;color:var(--green-700)">Top 19%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGES 5-10: CATEGORY ANALYSIS ═══════════ -->
+<div id="categoryPages"></div>
+
+<!-- ═══════════ PAGE 11: STRENGTHS & OPPORTUNITIES ═══════════ -->
+<div class="page-break"></div>
+<div class="section">
+  <div class="container">
+    <p class="section-title">Análise Comparativa</p>
+    <h2 class="section-heading">Pontos Fortes e Oportunidades</h2>
+
+    <div class="card">
+      <div class="chart-container" style="max-height:350px">
+        <canvas id="strengthChart"></canvas>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card" style="border-left:4px solid var(--green-500)">
+        <h3 style="font-size:16px;font-weight:700;color:var(--green-900);margin-bottom:16px">Top Performances</h3>
+        <div style="space-y:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-weight:600">WR.5 - Programa Água Tratada</span>
+            <span style="font-weight:800;color:var(--green-500)">200/200</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-weight:600">WS.4 - Tratamento Resíduos Orgânicos</span>
+            <span style="font-weight:800;color:var(--green-500)">300/300</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-weight:600">WS.5 - Tratamento Resíduos Inorgânicos</span>
+            <span style="font-weight:800;color:var(--green-500)">300/300</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+            <span style="font-weight:600">TR.8 - Políticas Redução Veículos</span>
+            <span style="font-weight:800;color:var(--green-500)">250/250</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--yellow-500)">
+        <h3 style="font-size:16px;font-weight:700;color:#92400E;margin-bottom:16px">Maiores Gaps</h3>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-weight:600">TR.9 - Estacionamento Veículos Zero Emissão</span>
+            <span style="font-weight:800;color:var(--red-500)">0/250</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-weight:600">SI.4 - Orçamento Sustentabilidade</span>
+            <span style="font-weight:800;color:var(--red-500)">25/300</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-weight:600">SI.8 - Espaço Proteção Biodiversidade</span>
+            <span style="font-weight:800;color:var(--yellow-500)">50/200</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+            <span style="font-weight:600">EC.3 - Programa Uso Energia Renovável</span>
+            <span style="font-weight:800;color:var(--yellow-500)">75/300</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 12: RECOMMENDATIONS ═══════════ -->
+<div class="page-break"></div>
+<div class="section">
+  <div class="container">
+    <p class="section-title">Recomendações 2026</p>
+    <h2 class="section-heading">Plano de Ação para Subir no Ranking</h2>
+
+    <!-- Timeline -->
+    <div class="card" style="margin-bottom:24px">
+      <h3 style="font-size:14px;font-weight:700;color:var(--green-900);margin-bottom:16px">Timeline de Submissão GreenMetric 2026</h3>
+      <div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--green-700)"></div>
+          <div>
+            <div style="font-weight:700;color:var(--green-900)">Fev - Jun 2026: Coleta de Dados</div>
+            <div style="font-size:13px;color:var(--gray-600)">Compilar dados atualizados de todas as 6 categorias. Documentar novas iniciativas implementadas.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--yellow-500)"></div>
+          <div>
+            <div style="font-weight:700;color:var(--green-900)">Jul - Ago 2026: Validação e Envio</div>
+            <div style="font-size:13px;color:var(--gray-600)">Validar dados com setores responsáveis. Submeter formulário via portal GreenMetric.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--gold)"></div>
+          <div>
+            <div style="font-weight:700;color:var(--green-900)">Set 2026: Resultados</div>
+            <div style="font-size:13px;color:var(--gray-600)">Divulgação do ranking mundial. Meta: subir para Top 250.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Priority actions -->
+    <div class="grid-2">
+      <div class="card" style="border-top:4px solid var(--red-500)">
+        <h3 style="font-size:14px;font-weight:700;color:#991B1B;margin-bottom:4px">Prioridade 1: Transportation (TR)</h3>
+        <p style="font-size:12px;color:var(--gray-400);margin-bottom:12px">Maior potencial de ganho: +762,5 pontos possíveis</p>
+        <ul style="font-size:13px;color:var(--gray-600);list-style:none;padding:0">
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Instalar estações de carregamento veículos elétricos (TR.9 = 0 atualmente)</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Ampliar frota de shuttles elétricos no campus</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Criar programa de incentivo a transporte coletivo</li>
+          <li style="padding:6px 0">Expandir infraestrutura cicloviária</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--yellow-500)">
+        <h3 style="font-size:14px;font-weight:700;color:#92400E;margin-bottom:4px">Prioridade 2: Energy & Climate (EC)</h3>
+        <p style="font-size:12px;color:var(--gray-400);margin-bottom:12px">Maior peso no ranking (21%): +700 pontos possíveis</p>
+        <ul style="font-size:13px;color:var(--gray-600);list-style:none;padding:0">
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Investir em energia solar fotovoltaica (EC.3 = 75/300)</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Implementar sistema de gestão energética (ISO 50001)</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Publicar inventário de emissões GEE</li>
+          <li style="padding:6px 0">Substituir iluminação convencional por LED em 100% do campus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card" style="border-top:4px solid var(--green-500)">
+        <h3 style="font-size:14px;font-weight:700;color:var(--green-900);margin-bottom:4px">Prioridade 3: Setting & Infrastructure (SI)</h3>
+        <p style="font-size:12px;color:var(--gray-400);margin-bottom:12px">Quick wins com baixo investimento</p>
+        <ul style="font-size:13px;color:var(--gray-600);list-style:none;padding:0">
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Ampliar orçamento dedicado a sustentabilidade (SI.4 = 25/300)</li>
+          <li style="padding:6px 0;border-bottom:1px solid var(--gray-100)">Expandir áreas de proteção à biodiversidade (SI.8 = 50/200)</li>
+          <li style="padding:6px 0">Criar plano diretor de infraestrutura verde</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--gold);background:linear-gradient(135deg, #FFFBEB, white)">
+        <h3 style="font-size:14px;font-weight:700;color:var(--green-900);margin-bottom:4px">Meta 2026</h3>
+        <p style="font-size:12px;color:var(--gray-400);margin-bottom:16px">Projeção com implementação das ações</p>
+        <div style="text-align:center">
+          <div style="font-size:48px;font-weight:900;color:var(--green-900)">Top 250</div>
+          <div style="font-size:14px;color:var(--gray-600)">Score projetado: ~8.500 (+937,5 pts)</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:8px">Potencial: 85% aproveitamento</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:40px 0 20px;color:var(--gray-400);font-size:12px">
+      <p>Relatório gerado com base nos dados oficiais do UI GreenMetric World University Rankings 2025</p>
+      <p style="margin-top:4px">Universidade de Passo Fundo &bull; RS, Brasil</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════ DATA ═══════════
+const categories = [
+  { code: 'SI', name: 'Setting & Infrastructure', score: 1125, max: 1500, pct: 75.00, weight: 15, rankWorld: 326, rankBR: 15,
+    color: '#2D6A4F', indicators: [
+      {id:'SI.1',v:150,m:300},{id:'SI.2',v:100,m:200},{id:'SI.3',v:200,m:300},{id:'SI.4',v:25,m:300},{id:'SI.5',v:200,m:200},
+      {id:'SI.6',v:50,m:100},{id:'SI.7',v:100,m:100},{id:'SI.8',v:50,m:200},{id:'SI.9',v:50,m:100},{id:'SI.10',v:100,m:100},{id:'SI.11',v:100,m:100}
+    ]},
+  { code: 'EC', name: 'Energy & Climate Change', score: 1400, max: 2100, pct: 66.67, weight: 21, rankWorld: 549, rankBR: 15,
+    color: '#F59E0B', indicators: [
+      {id:'EC.1',v:150,m:300},{id:'EC.2',v:150,m:200},{id:'EC.3',v:75,m:300},{id:'EC.4',v:150,m:200},{id:'EC.5',v:200,m:200},
+      {id:'EC.6',v:200,m:200},{id:'EC.7',v:150,m:200},{id:'EC.8',v:100,m:200},{id:'EC.9',v:100,m:100},{id:'EC.10',v:75,m:100},{id:'EC.11',v:50,m:100}
+    ]},
+  { code: 'WS', name: 'Waste', score: 1600, max: 1800, pct: 88.89, weight: 18, rankWorld: 159, rankBR: 7,
+    color: '#40916C', indicators: [
+      {id:'WS.1',v:150,m:300},{id:'WS.2',v:225,m:300},{id:'WS.3',v:300,m:300},{id:'WS.4',v:300,m:300},{id:'WS.5',v:300,m:300},{id:'WS.6',v:225,m:300},{id:'WS.7',v:100,m:100}
+    ]},
+  { code: 'WR', name: 'Water', score: 900, max: 1000, pct: 90.00, weight: 10, rankWorld: 168, rankBR: 8,
+    color: '#1B4332', indicators: [
+      {id:'WR.1',v:150,m:200},{id:'WR.2',v:150,m:200},{id:'WR.3',v:150,m:200},{id:'WR.4',v:200,m:200},{id:'WR.5',v:200,m:200},{id:'WR.6',v:50,m:100}
+    ]},
+  { code: 'TR', name: 'Transportation', score: 1037.5, max: 1800, pct: 57.64, weight: 18, rankWorld: 945, rankBR: 25,
+    color: '#EF4444', indicators: [
+      {id:'TR.1',v:100,m:200},{id:'TR.2',v:187.5,m:200},{id:'TR.3',v:100,m:200},{id:'TR.4',v:100,m:200},{id:'TR.5',v:100,m:200},
+      {id:'TR.6',v:50,m:200},{id:'TR.7',v:150,m:200},{id:'TR.8',v:250,m:250},{id:'TR.9',v:0,m:250}
+    ]},
+  { code: 'ED', name: 'Education & Research', score: 1500, max: 1800, pct: 83.33, weight: 18, rankWorld: 325, rankBR: 8,
+    color: '#74C69D', indicators: [
+      {id:'ED.1',v:150,m:200},{id:'ED.2',v:200,m:200},{id:'ED.3',v:200,m:200},{id:'ED.4',v:112.5,m:200},{id:'ED.5',v:112.5,m:200},
+      {id:'ED.6',v:200,m:200},{id:'ED.7',v:25,m:100},{id:'ED.8',v:100,m:100},{id:'ED.9',v:75,m:100},{id:'ED.10',v:100,m:100},
+      {id:'ED.11',v:75,m:100},{id:'ED.12',v:25,m:100},{id:'ED.13',v:50,m:100},{id:'ED.14',v:75,m:100}
+    ]}
+];
+
+const history = [
+  {year:2010,rank:95,total:178},{year:2011,rank:215,total:301},{year:2012,rank:360,total:407},
+  {year:2013,rank:516,total:619},{year:2014,rank:719,total:780},{year:2015,rank:91,total:295},
+  {year:2016,rank:1050,total:1183},{year:2019,rank:456,total:null},{year:2020,rank:461,total:null},
+  {year:2021,rank:362,total:null},{year:2022,rank:250,total:1477},{year:2023,rank:380,total:null},
+  {year:2025,rank:336,total:1745}
+];
+
+// ═══════════ PIE CHART ═══════════
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: categories.map(c => c.code),
+    datasets: [{
+      data: [15, 19, 21, 12, 14, 20],
+      backgroundColor: categories.map(c => c.color),
+      borderWidth: 2,
+      borderColor: '#fff',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, font: { size: 11, weight: '600' } } },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}% do score` } }
+    }
+  }
+});
+
+// ═══════════ HISTORY CHART ═══════════
+new Chart(document.getElementById('historyChart'), {
+  type: 'line',
+  data: {
+    labels: history.map(h => h.year),
+    datasets: [
+      {
+        label: 'Ranking (menor = melhor)',
+        data: history.map(h => h.rank),
+        borderColor: '#1B4332',
+        backgroundColor: 'rgba(27,67,50,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointBackgroundColor: '#1B4332',
+        yAxisID: 'y',
+      },
+      {
+        label: 'Total Universidades',
+        data: history.map(h => h.total),
+        borderColor: '#D4A843',
+        backgroundColor: 'rgba(212,168,67,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#D4A843',
+        borderDash: [5, 5],
+        yAxisID: 'y1',
+        spanGaps: true,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      y: { reverse: true, title: { display: true, text: 'Ranking (invertido)', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+      y1: { position: 'right', title: { display: true, text: 'Total Universidades', font: { size: 11 } }, grid: { display: false } }
+    },
+    plugins: { legend: { labels: { usePointStyle: true, font: { size: 11 } } } }
+  }
+});
+
+// ═══════════ STRENGTH RADAR CHART ═══════════
+new Chart(document.getElementById('strengthChart'), {
+  type: 'radar',
+  data: {
+    labels: categories.map(c => c.code + ' (' + c.pct.toFixed(0) + '%)'),
+    datasets: [{
+      label: 'UPF 2025',
+      data: categories.map(c => c.pct),
+      backgroundColor: 'rgba(45,106,79,0.15)',
+      borderColor: '#2D6A4F',
+      borderWidth: 2,
+      pointBackgroundColor: categories.map(c => c.color),
+      pointRadius: 6,
+    }, {
+      label: 'Meta 2026',
+      data: [80, 75, 92, 92, 72, 88],
+      backgroundColor: 'rgba(212,168,67,0.08)',
+      borderColor: '#D4A843',
+      borderWidth: 2,
+      borderDash: [5, 5],
+      pointRadius: 4,
+      pointBackgroundColor: '#D4A843',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: { r: { min: 0, max: 100, ticks: { stepSize: 20, font: { size: 9 } }, grid: { color: '#e2e8f0' } } },
+    plugins: { legend: { labels: { usePointStyle: true, font: { size: 11 } } } }
+  }
+});
+
+// ═══════════ CATEGORY PAGES (dynamic) ═══════════
+const pagesContainer = document.getElementById('categoryPages');
+
+categories.forEach((cat, idx) => {
+  const pageHtml = `
+    <div class="page-break"></div>
+    <div class="section">
+      <div class="container">
+        <p class="section-title">Análise por Categoria ${idx + 1}/6</p>
+        <h2 class="section-heading">${cat.name} (${cat.code})</h2>
+
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="card" style="border-left:4px solid ${cat.color}">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:${cat.color};text-transform:uppercase;letter-spacing:1px">${cat.code}</div>
+                <div style="font-size:36px;font-weight:900;color:var(--green-900)">${cat.score.toLocaleString('pt-BR')}</div>
+                <div style="font-size:13px;color:var(--gray-400)">de ${cat.max.toLocaleString('pt-BR')} pontos</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:42px;font-weight:900;color:${cat.color}">${cat.pct.toFixed(1)}%</div>
+                <div style="font-size:11px;color:var(--gray-400)">aproveitamento</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px">
+              <div style="flex:1;text-align:center;padding:8px;background:var(--gray-50);border-radius:8px">
+                <div style="font-size:18px;font-weight:800;color:var(--green-900)">${cat.rankWorld}&ordm;</div>
+                <div style="font-size:10px;color:var(--gray-400)">MUNDIAL</div>
+              </div>
+              <div style="flex:1;text-align:center;padding:8px;background:var(--gray-50);border-radius:8px">
+                <div style="font-size:18px;font-weight:800;color:var(--green-900)">${cat.rankBR}&ordm;</div>
+                <div style="font-size:10px;color:var(--gray-400)">BRASIL</div>
+              </div>
+              <div style="flex:1;text-align:center;padding:8px;background:var(--gray-50);border-radius:8px">
+                <div style="font-size:18px;font-weight:800;color:var(--green-900)">${cat.weight}%</div>
+                <div style="font-size:10px;color:var(--gray-400)">PESO</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:13px;font-weight:700;color:var(--green-900);margin-bottom:12px">Radar de Indicadores</h3>
+            <canvas id="radar_${cat.code}" height="200"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:13px;font-weight:700;color:var(--green-900);margin-bottom:16px">Indicadores Detalhados</h3>
+          <table class="data-table">
+            <thead><tr><th>Indicador</th><th>Score</th><th>Máximo</th><th style="width:250px">Performance</th><th>%</th></tr></thead>
+            <tbody>
+              ${cat.indicators.map(ind => {
+                const pct = (ind.v / ind.m * 100).toFixed(1);
+                const barClass = pct >= 80 ? 'progress-green' : pct >= 60 ? 'progress-yellow' : 'progress-red';
+                const textColor = pct >= 80 ? 'var(--green-500)' : pct >= 60 ? 'var(--yellow-500)' : 'var(--red-500)';
+                return `<tr>
+                  <td style="font-weight:600">${ind.id}</td>
+                  <td style="font-weight:700">${ind.v}</td>
+                  <td style="color:var(--gray-400)">${ind.m}</td>
+                  <td><div class="progress-bar"><div class="progress-fill ${barClass}" style="width:${pct}%"></div></div></td>
+                  <td style="font-weight:700;color:${textColor}">${pct}%</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+  pagesContainer.innerHTML += pageHtml;
+});
+
+// Create radar charts for each category
+categories.forEach(cat => {
+  const canvas = document.getElementById('radar_' + cat.code);
+  if (!canvas) return;
+  new Chart(canvas, {
+    type: 'radar',
+    data: {
+      labels: cat.indicators.map(i => i.id),
+      datasets: [{
+        label: 'Atingido %',
+        data: cat.indicators.map(i => (i.v / i.m) * 100),
+        backgroundColor: cat.color + '20',
+        borderColor: cat.color,
+        borderWidth: 2,
+        pointBackgroundColor: cat.color,
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: '#e2e8f0' } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

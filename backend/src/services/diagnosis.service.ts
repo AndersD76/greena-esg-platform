@@ -219,6 +219,13 @@ export class DiagnosisService {
   }
 
   /**
+   * Atualiza status de uma ação do plano
+   */
+  async updateActionStatus(actionId: number, status: string) {
+    return this.actionPlanService.updateActionStatus(actionId, status);
+  }
+
+  /**
    * Completa diagnóstico simplificado (plano free) com scores diretos
    */
   async completeSimplified(id: string, userId: string, scores: {
@@ -272,10 +279,11 @@ export class DiagnosisService {
   async getPartialScores(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
 
-    // Se já está completo, retornar scores oficiais
+    // Se já está completo, retornar scores oficiais + themeScores
     if (diagnosis.status === 'completed') {
       const overallScore = Number(diagnosis.overallScore);
       const certification = this.scoringService.getCertificationLevel(overallScore);
+      const themeScores = await this.scoringService.calculateThemeScores(id);
 
       return {
         overall: overallScore,
@@ -284,6 +292,7 @@ export class DiagnosisService {
         governance: Number(diagnosis.governanceScore),
         isPartial: false,
         certification,
+        themeScores,
       };
     }
 

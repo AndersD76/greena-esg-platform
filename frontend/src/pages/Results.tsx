@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
+import api from '../services/api';
 
 interface Insight {
   id: number;
@@ -52,6 +53,8 @@ export default function Results() {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [actionPlans, setActionPlans] = useState<ActionPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [certificate, setCertificate] = useState<any>(null);
+  const [issuingCert, setIssuingCert] = useState(false);
 
   useEffect(() => {
     loadResults();
@@ -70,6 +73,12 @@ export default function Results() {
 
       const actionPlansData = await diagnosisService.getActionPlans(diagnosisId);
       setActionPlans(actionPlansData);
+
+      // Check if certificate already exists
+      try {
+        const certRes = await api.get(`/certificates/diagnosis/${diagnosisId}`);
+        if (certRes.data) setCertificate(certRes.data);
+      } catch {}
     } catch (error) {
       console.error('Erro ao carregar resultados:', error);
     } finally {
@@ -305,6 +314,60 @@ export default function Results() {
           </div>
         )}
 
+        {/* Certificate Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-amber-50 flex items-center justify-center">
+                <svg className="w-7 h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-brand-900">Certificado ESG</h3>
+                <p className="text-sm text-gray-500">
+                  {certificate ? `Certificado #${certificate.certificateNumber} emitido` : 'Emita seu certificado baseado neste diagnóstico'}
+                </p>
+              </div>
+            </div>
+            {certificate ? (
+              <button
+                onClick={() => navigate(`/certificate/${certificate.id}`)}
+                className="px-6 py-2.5 text-sm font-semibold text-white bg-amber-600 rounded-full hover:bg-amber-700 transition-all flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                Ver Certificado
+              </button>
+            ) : (
+              <button
+                onClick={async () => {
+                  if (!diagnosisId) return;
+                  setIssuingCert(true);
+                  try {
+                    const res = await api.post(`/certificates/${diagnosisId}`);
+                    setCertificate(res.data);
+                    navigate(`/certificate/${res.data.id}`);
+                  } catch (err: any) {
+                    const msg = err?.response?.data?.error || 'Erro ao emitir certificado';
+                    alert(msg);
+                  } finally {
+                    setIssuingCert(false);
+                  }
+                }}
+                disabled={issuingCert}
+                className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90 transition-all disabled:opacity-50 flex items-center gap-2"
+              >
+                {issuingCert ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                )}
+                Emitir Certificado
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Actions */}
         <div className="flex justify-center gap-3">
           <button
@@ -320,10 +383,10 @@ export default function Results() {
             Ver Relatório Completo
           </button>
           <button
-            onClick={() => navigate('/diagnosis/new')}
+            onClick={() => navigate(`/diagnosis/${diagnosisId}/insights`)}
             className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full transition-all hover:bg-brand-900/90"
           >
-            Fazer Novo Diagnóstico
+            Plano de Ação
           </button>
         </div>
       </div>
