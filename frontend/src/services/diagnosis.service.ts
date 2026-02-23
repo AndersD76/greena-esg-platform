@@ -99,6 +99,16 @@ export const diagnosisService = {
     return response.data;
   },
 
+  async getSimulatedActions(id: string) {
+    const response = await api.get(`/diagnoses/${id}/simulate-actions`);
+    return response.data;
+  },
+
+  async getBenchmarking(id: string) {
+    const response = await api.get(`/diagnoses/${id}/benchmarking`);
+    return response.data;
+  },
+
   async completeSimplified(id: string, scores: { environmental: number; social: number; governance: number }) {
     const response = await api.post(`/diagnoses/${id}/complete-simplified`, { scores });
     return response.data;

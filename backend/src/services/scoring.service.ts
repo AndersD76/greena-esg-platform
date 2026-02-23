@@ -222,6 +222,127 @@ export class ScoringService {
   }
 
   /**
+   * Simula impacto de cada ação do plano no score
+   * Para cada ação (que corresponde a uma resposta com evaluationValue=1),
+   * calcula o que aconteceria se a resposta mudasse de 1→5
+   */
+  async simulateActionImpact(diagnosisId: string) {
+    // 1. Buscar todos os pilares com hierarquia completa
+    const pillars = await prisma.pillar.findMany({
+      include: {
+        themes: {
+          include: {
+            criteria: {
+              include: {
+                assessmentItems: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // 2. Buscar todas as respostas do diagnóstico
+    const responses = await prisma.response.findMany({
+      where: { diagnosisId },
+    });
+
+    // 3. Construir mapa assessmentItemId → pillarCode
+    const itemToPillar: Record<number, string> = {};
+    const itemToQuestion: Record<number, string> = {};
+    for (const pillar of pillars) {
+      for (const theme of pillar.themes) {
+        for (const criteria of theme.criteria) {
+          for (const item of criteria.assessmentItems) {
+            itemToPillar[item.id] = pillar.code;
+            itemToQuestion[item.id] = item.question;
+          }
+        }
+      }
+    }
+
+    // 4. Calcular totais atuais por pilar
+    const pillarTotals: Record<string, { totalScore: number; validQuestions: number }> = {
+      E: { totalScore: 0, validQuestions: 0 },
+      S: { totalScore: 0, validQuestions: 0 },
+      G: { totalScore: 0, validQuestions: 0 },
+    };
+
+    for (const resp of responses) {
+      if (resp.evaluation === 'Não se aplica' || resp.evaluationValue === 0) continue;
+      const pillarCode = itemToPillar[resp.assessmentItemId];
+      if (pillarCode && pillarTotals[pillarCode]) {
+        pillarTotals[pillarCode].totalScore += resp.evaluationValue;
+        pillarTotals[pillarCode].validQuestions++;
+      }
+    }
+
+    // Calcular scores atuais
+    const currentScores: Record<string, number> = {};
+    for (const code of ['E', 'S', 'G']) {
+      const { totalScore, validQuestions } = pillarTotals[code];
+      currentScores[code] = validQuestions > 0 ? (totalScore / (validQuestions * 5)) * 100 : 0;
+    }
+    const currentOverall = (currentScores['E'] + currentScores['S'] + currentScores['G']) / 3;
+    const currentLevel = this.getCertificationLevel(currentOverall).level;
+
+    // 5. Buscar ações do diagnóstico
+    const actions = await prisma.actionPlan.findMany({
+      where: { diagnosisId },
+    });
+
+    // 6. Construir mapa question → assessmentItemId para matching
+    const questionToItem: Record<string, { id: number; pillarCode: string }> = {};
+    for (const [idStr, question] of Object.entries(itemToQuestion)) {
+      const id = Number(idStr);
+      const pillarCode = itemToPillar[id];
+      questionToItem[question] = { id, pillarCode };
+    }
+
+    // 7. Simular impacto de cada ação
+    const simulations: Array<{
+      actionId: number;
+      pillarCode: string;
+      scoreDelta: number;
+      simulatedPillarScore: number;
+      simulatedOverall: number;
+      currentLevel: string;
+      simulatedLevel: string;
+    }> = [];
+
+    for (const action of actions) {
+      const match = questionToItem[action.title];
+      if (!match) continue;
+
+      const { pillarCode } = match;
+      const { totalScore, validQuestions } = pillarTotals[pillarCode];
+      if (validQuestions === 0) continue;
+
+      // Simular: mudar resposta de 1→5 (+4 no total)
+      const simulatedPillarScore = ((totalScore + 4) / (validQuestions * 5)) * 100;
+      const scoreDelta = simulatedPillarScore - currentScores[pillarCode];
+
+      // Recalcular overall com pilar simulado
+      const scores = { ...currentScores };
+      scores[pillarCode] = simulatedPillarScore;
+      const simulatedOverall = (scores['E'] + scores['S'] + scores['G']) / 3;
+      const simulatedLevel = this.getCertificationLevel(simulatedOverall).level;
+
+      simulations.push({
+        actionId: action.id,
+        pillarCode,
+        scoreDelta: Math.round(scoreDelta * 10) / 10,
+        simulatedPillarScore: Math.round(simulatedPillarScore * 10) / 10,
+        simulatedOverall: Math.round(simulatedOverall * 10) / 10,
+        currentLevel,
+        simulatedLevel,
+      });
+    }
+
+    return simulations;
+  }
+
+  /**
    * Calcula scores por tema para gráficos detalhados
    */
   async calculateThemeScores(diagnosisId: string) {

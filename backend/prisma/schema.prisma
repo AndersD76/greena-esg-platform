@@ -26,6 +26,8 @@ model User {
   sector            String?  // Agronegócio, Indústria, Construção Civil, etc.
   employeesRange    String?  @map("employees_range") // 1-9, 10-49, 50-99, 100-499, 500+
   esgPainPoint      String?  @map("esg_pain_point") // Maior dor ESG da empresa
+  slug              String?  @unique
+  isPublicProfile   Boolean  @default(false) @map("is_public_profile")
   isActive          Boolean  @default(true) @map("is_active")
   asaasCustomerId   String?  @unique @map("asaas_customer_id")
   createdAt         DateTime @default(now()) @map("created_at")

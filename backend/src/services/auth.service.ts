@@ -1,6 +1,7 @@
 import prisma from '../config/database';
 import { hashPassword, comparePassword } from '../utils/bcrypt';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt';
+import { PublicProfileService } from './publicProfile.service';
 
 interface RegisterData {
   email: string;
@@ -132,6 +133,8 @@ export class AuthService {
         companySize: true,
         sector: true,
         employeesRange: true,
+        slug: true,
+        isPublicProfile: true,
         createdAt: true,
       },
     });
@@ -143,7 +146,25 @@ export class AuthService {
     return user;
   }
 
-  async updateProfile(userId: string, data: Partial<RegisterData>) {
+  async updateProfile(userId: string, data: Partial<RegisterData> & { isPublicProfile?: boolean }) {
+    // Se está ativando perfil público e não tem slug, gerar
+    let slug: string | undefined;
+    if (data.isPublicProfile === true) {
+      const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { slug: true, companyName: true } });
+      if (!currentUser?.slug) {
+        const companyName = data.companyName || currentUser?.companyName;
+        if (companyName) {
+          let baseSlug = PublicProfileService.generateSlug(companyName);
+          // Verificar unicidade
+          const existing = await prisma.user.findUnique({ where: { slug: baseSlug } });
+          if (existing) {
+            baseSlug = baseSlug + '-' + Math.random().toString(36).substring(2, 6);
+          }
+          slug = baseSlug;
+        }
+      }
+    }
+
     const user = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -157,6 +178,8 @@ export class AuthService {
         companySize: data.companySize,
         sector: data.sector,
         employeesRange: data.employeesRange,
+        ...(data.isPublicProfile !== undefined ? { isPublicProfile: data.isPublicProfile } : {}),
+        ...(slug ? { slug } : {}),
       },
       select: {
         id: true,
@@ -171,6 +194,8 @@ export class AuthService {
         companySize: true,
         sector: true,
         employeesRange: true,
+        slug: true,
+        isPublicProfile: true,
       },
     });
 

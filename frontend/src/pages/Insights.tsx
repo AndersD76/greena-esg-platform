@@ -33,6 +33,7 @@ export default function Insights() {
   const [isPartial, setIsPartial] = useState(false);
   const [actions, setActions] = useState<DbActionPlan[]>([]);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [simulations, setSimulations] = useState<Map<number, { actionId: number; pillarCode: string; scoreDelta: number; simulatedPillarScore: number; simulatedOverall: number; currentLevel: string; simulatedLevel: string }>>(new Map());
 
   // Filters
   const [filterPillar, setFilterPillar] = useState<FilterPillar>('all');
@@ -64,6 +65,12 @@ export default function Insights() {
         if (targetDiagnosis.status === 'completed') {
           const ap = await diagnosisService.getActionPlans(targetDiagnosis.id);
           setActions(ap);
+          try {
+            const sims = await diagnosisService.getSimulatedActions(targetDiagnosis.id);
+            const simMap = new Map<number, any>();
+            for (const s of sims) simMap.set(s.actionId, s);
+            setSimulations(simMap);
+          } catch {}
         }
       }
     } catch (error) {
@@ -455,6 +462,28 @@ export default function Insights() {
                             Impacto: <strong className="text-gray-600">{Number(action.impactScore)}/10</strong>
                           </span>
                         </div>
+
+                        {/* Simulador "E se?" */}
+                        {action.status !== 'completed' && simulations.has(action.id) && (() => {
+                          const sim = simulations.get(action.id)!;
+                          const pillarLabel = sim.pillarCode === 'E' ? 'Ambiental' : sim.pillarCode === 'S' ? 'Social' : 'Governança';
+                          const levelChanged = sim.currentLevel !== sim.simulatedLevel;
+                          const levelPt = (l: string) => l === 'gold' ? 'Ouro' : l === 'silver' ? 'Prata' : 'Bronze';
+                          return (
+                            <div className="mt-2 flex items-center gap-2 flex-wrap">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                                Se implementar: +{sim.scoreDelta.toFixed(1)} pts {pillarLabel}
+                              </span>
+                              {levelChanged && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                                  {levelPt(sim.currentLevel)} → {levelPt(sim.simulatedLevel)}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>

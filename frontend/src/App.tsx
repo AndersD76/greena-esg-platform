@@ -33,6 +33,8 @@ import {
   AdminReports
 } from './pages/admin';
 import SimplifiedQuestionnaire from './pages/SimplifiedQuestionnaire';
+import PublicProfile from './pages/PublicProfile';
+import StakeholderReport from './pages/StakeholderReport';
 import { diagnosisService } from './services/diagnosis.service';
 import { subscriptionService } from './services/subscription.service';
 import { useEffect, useState } from 'react';
@@ -113,7 +115,7 @@ function ScrollToTop() {
 function AppRoutes() {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  const hideMainLayout = pathname === '/checkout';
+  const hideMainLayout = pathname === '/checkout' || pathname.includes('/stakeholder-report') || pathname.startsWith('/empresa/');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -129,6 +131,7 @@ function AppRoutes() {
           <Route path="/lgpd" element={<LGPD />} />
           <Route path="/cookies" element={<Cookies />} />
           <Route path="/compliance" element={<Compliance />} />
+          <Route path="/empresa/:slug" element={<PublicProfile />} />
           <Route
             path="/login"
             element={
@@ -230,6 +233,14 @@ function AppRoutes() {
             element={
               <PrivateRoute>
                 <Report />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/diagnosis/:diagnosisId/stakeholder-report"
+            element={
+              <PrivateRoute>
+                <StakeholderReport />
               </PrivateRoute>
             }
           />

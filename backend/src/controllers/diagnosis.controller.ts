@@ -143,6 +143,28 @@ export class DiagnosisController {
     }
   }
 
+  async getSimulatedActions(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { id } = req.params;
+      const simulations = await diagnosisService.getSimulatedActions(id, userId);
+      res.json(simulations);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async getBenchmarking(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user!.userId;
+      const { id } = req.params;
+      const benchmarking = await diagnosisService.getBenchmarking(id, userId);
+      res.json(benchmarking);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async getPartialScores(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;

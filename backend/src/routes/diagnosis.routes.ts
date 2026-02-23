@@ -18,6 +18,8 @@ router.get('/:id/progress', (req, res) => diagnosisController.getProgress(req, r
 router.get('/:id/insights', (req, res) => diagnosisController.getInsights(req, res));
 router.get('/:id/action-plans', (req, res) => diagnosisController.getActionPlans(req, res));
 router.get('/:id/partial-scores', (req, res) => diagnosisController.getPartialScores(req, res));
+router.get('/:id/simulate-actions', (req, res) => diagnosisController.getSimulatedActions(req, res));
+router.get('/:id/benchmarking', (req, res) => diagnosisController.getBenchmarking(req, res));
 router.patch('/:id/action-plans/:actionId/status', (req, res) => diagnosisController.updateActionStatus(req, res));
 
 export default router;

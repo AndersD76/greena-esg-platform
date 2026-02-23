@@ -226,6 +226,81 @@ export class DiagnosisService {
   }
 
   /**
+   * Simula impacto de cada ação no score
+   */
+  async getSimulatedActions(id: string, userId: string) {
+    const diagnosis = await prisma.diagnosis.findFirst({ where: { id, userId } });
+    if (!diagnosis) throw new Error('Diagnóstico não encontrado');
+    if (diagnosis.status !== 'completed') throw new Error('Diagnóstico ainda não foi concluído');
+    return this.scoringService.simulateActionImpact(id);
+  }
+
+  /**
+   * Benchmarking por setor
+   */
+  async getBenchmarking(id: string, userId: string) {
+    const diagnosis = await prisma.diagnosis.findFirst({ where: { id, userId } });
+    if (!diagnosis) throw new Error('Diagnóstico não encontrado');
+    if (diagnosis.status !== 'completed') throw new Error('Diagnóstico ainda não foi concluído');
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user?.sector) return { insufficient: true, reason: 'Setor não informado no perfil' };
+
+    // Buscar todos os diagnósticos concluídos de usuários do mesmo setor
+    const sectorDiagnoses = await prisma.diagnosis.findMany({
+      where: {
+        status: 'completed',
+        user: { sector: user.sector, isActive: true },
+      },
+      orderBy: { completedAt: 'desc' },
+      include: { user: { select: { id: true } } },
+    });
+
+    // Deduplica: apenas o mais recente por usuário
+    const seen = new Set<string>();
+    const unique = sectorDiagnoses.filter(d => {
+      if (seen.has(d.user.id)) return false;
+      seen.add(d.user.id);
+      return true;
+    });
+
+    if (unique.length < 3) {
+      return { insufficient: true, reason: `Dados insuficientes (${unique.length} empresas no setor ${user.sector})` };
+    }
+
+    const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const overalls = unique.map(d => Number(d.overallScore));
+    const envs = unique.map(d => Number(d.environmentalScore));
+    const socs = unique.map(d => Number(d.socialScore));
+    const govs = unique.map(d => Number(d.governanceScore));
+
+    const userOverall = Number(diagnosis.overallScore);
+    const belowCount = overalls.filter(s => s < userOverall).length;
+    const percentile = Math.round((belowCount / unique.length) * 100);
+
+    return {
+      insufficient: false,
+      sector: user.sector,
+      companiesCount: unique.length,
+      userScores: {
+        overall: userOverall,
+        environmental: Number(diagnosis.environmentalScore),
+        social: Number(diagnosis.socialScore),
+        governance: Number(diagnosis.governanceScore),
+      },
+      sectorAverage: {
+        overall: Math.round(avg(overalls) * 100) / 100,
+        environmental: Math.round(avg(envs) * 100) / 100,
+        social: Math.round(avg(socs) * 100) / 100,
+        governance: Math.round(avg(govs) * 100) / 100,
+      },
+      percentile,
+      sectorBest: Math.max(...overalls),
+      sectorWorst: Math.min(...overalls),
+    };
+  }
+
+  /**
    * Completa diagnóstico simplificado (plano free) com scores diretos
    */
   async completeSimplified(id: string, userId: string, scores: {

@@ -10,6 +10,8 @@ interface UserProfile {
   cnpj?: string;
   sector?: string;
   employees?: string;
+  slug?: string;
+  isPublicProfile?: boolean;
   createdAt: string;
 }
 
@@ -287,6 +289,51 @@ export default function Profile() {
                 </button>
               </div>
             </form>
+          )}
+        </div>
+
+        {/* Public Profile Toggle */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
+          <h3 className="text-base font-bold text-brand-900 mb-2">Perfil Público ESG</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            Ative o perfil público para compartilhar seu selo ESG com clientes, parceiros e investidores.
+          </p>
+          <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50">
+            <div>
+              <p className="text-sm font-bold text-brand-900">Perfil Público</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {profile?.isPublicProfile
+                  ? <span>Acessível em: <a href={`/empresa/${profile.slug}`} target="_blank" rel="noopener noreferrer" className="text-brand-700 underline">{window.location.origin}/empresa/{profile.slug}</a></span>
+                  : 'Desativado — sua empresa não aparece publicamente'}
+              </p>
+            </div>
+            <button
+              onClick={async () => {
+                try {
+                  await api.put('/auth/profile', { isPublicProfile: !profile?.isPublicProfile });
+                  await loadProfile();
+                } catch (err: any) {
+                  alert(err?.response?.data?.error || 'Erro ao atualizar perfil público');
+                }
+              }}
+              className={`relative w-12 h-6 rounded-full transition-all ${profile?.isPublicProfile ? 'bg-brand-900' : 'bg-gray-300'}`}
+            >
+              <div className={`absolute w-5 h-5 bg-white rounded-full top-0.5 transition-all shadow ${profile?.isPublicProfile ? 'left-6' : 'left-0.5'}`} />
+            </button>
+          </div>
+          {profile?.isPublicProfile && profile?.slug && (
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/empresa/${profile.slug}`); alert('Link copiado!'); }}
+                className="px-4 py-2 text-xs font-semibold text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50"
+              >
+                Copiar Link
+              </button>
+              <a href={`/empresa/${profile.slug}`} target="_blank" rel="noopener noreferrer"
+                className="px-4 py-2 text-xs font-semibold text-white bg-brand-900 rounded-full hover:opacity-90">
+                Ver Página Pública
+              </a>
+            </div>
           )}
         </div>
 

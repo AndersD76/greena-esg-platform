@@ -88,6 +88,7 @@ export default function Dashboard() {
   const [certificate, setCertificate] = useState<any>(null);
   const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string | null>(null);
   const [selectedScores, setSelectedScores] = useState<any>(null);
+  const [benchmarking, setBenchmarking] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -150,6 +151,10 @@ export default function Dashboard() {
     } catch (e) {
       console.error('Erro ao carregar scores:', e);
     }
+    try {
+      const bench = await diagnosisService.getBenchmarking(id);
+      setBenchmarking(bench);
+    } catch { setBenchmarking(null); }
   }
 
   async function handleSelectDiagnosis(id: string) {
@@ -157,6 +162,7 @@ export default function Dashboard() {
     setSelectedScores(null);
     setActionPlans([]);
     setCertificate(null);
+    setBenchmarking(null);
     loadSelectedScores(id);
     try {
       const ap = await diagnosisService.getActionPlans(id);
@@ -598,6 +604,55 @@ export default function Dashboard() {
               </div>
             )}
           </>
+        )}
+
+        {/* ═══════ BENCHMARKING SETORIAL ═══════ */}
+        {benchmarking && !benchmarking.insufficient && (() => {
+          const benchData = [
+            { name: 'Geral', user: benchmarking.userScores.overall, sector: benchmarking.sectorAverage.overall },
+            { name: 'Ambiental', user: benchmarking.userScores.environmental, sector: benchmarking.sectorAverage.environmental },
+            { name: 'Social', user: benchmarking.userScores.social, sector: benchmarking.sectorAverage.social },
+            { name: 'Governança', user: benchmarking.userScores.governance, sector: benchmarking.sectorAverage.governance },
+          ];
+          const pct = benchmarking.percentile;
+          const topPct = 100 - pct;
+          return (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-bold text-brand-900 uppercase tracking-wider">Benchmarking Setorial</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{benchmarking.sector} — {benchmarking.companiesCount} empresas comparadas</p>
+                </div>
+                <span className="px-4 py-1.5 rounded-full text-sm font-bold" style={{
+                  backgroundColor: topPct <= 30 ? '#D1FAE5' : topPct <= 60 ? '#FEF3C7' : '#FEE2E2',
+                  color: topPct <= 30 ? '#065F46' : topPct <= 60 ? '#92400E' : '#991B1B',
+                }}>
+                  Top {topPct}%
+                </span>
+              </div>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={benchData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
+                  <Tooltip formatter={(v: number, name: string) => [`${v.toFixed(1)}`, name === 'user' ? 'Sua Empresa' : 'Média do Setor']} />
+                  <Legend formatter={(value: string) => value === 'user' ? 'Sua Empresa' : 'Média do Setor'} iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+                  <Bar dataKey="user" fill="#152F27" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="sector" fill="#9ca3af" radius={[4, 4, 0, 0]} fillOpacity={0.6} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          );
+        })()}
+
+        {benchmarking && benchmarking.insufficient && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h3 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-2">Benchmarking Setorial</h3>
+            <div className="bg-gray-50 rounded-xl p-5 text-center">
+              <p className="text-sm text-gray-400">{benchmarking.reason}</p>
+              <p className="text-xs text-gray-300 mt-1">O benchmarking requer pelo menos 3 empresas do mesmo setor na plataforma.</p>
+            </div>
+          </div>
         )}
 
         {/* ═══════ EVOLUTION LINE CHART ═══════ */}
