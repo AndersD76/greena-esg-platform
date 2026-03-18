@@ -123,6 +123,10 @@ export class AdminService {
       role?: string;
       isActive?: boolean;
       companyName?: string;
+      cnpj?: string;
+      city?: string;
+      sector?: string;
+      employeesRange?: string;
     }
   ) {
     return prisma.user.update({
@@ -135,8 +139,43 @@ export class AdminService {
         role: true,
         isActive: true,
         companyName: true,
+        cnpj: true,
+        city: true,
+        sector: true,
+        employeesRange: true,
       },
     });
+  }
+
+  async deleteUser(userId: string) {
+    // Deletar em cascata: activity logs, responses, action plans, insights, diagnoses, subscriptions, consultations, certificates
+    await prisma.$transaction(async (tx) => {
+      // Deletar dados relacionados dos diagnósticos
+      const diagnoses = await tx.diagnosis.findMany({ where: { userId }, select: { id: true } });
+      const diagnosisIds = diagnoses.map(d => d.id);
+
+      if (diagnosisIds.length > 0) {
+        await tx.response.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
+        await tx.actionPlan.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
+        await tx.strategicInsight.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
+        await tx.certificate.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
+      }
+
+      await tx.diagnosis.deleteMany({ where: { userId } });
+
+      // Consultorias
+      const consultations = await tx.consultation.findMany({ where: { userId }, select: { id: true } });
+      if (consultations.length > 0) {
+        await tx.consultationMessage.deleteMany({ where: { consultationId: { in: consultations.map(c => c.id) } } });
+      }
+      await tx.consultation.deleteMany({ where: { userId } });
+
+      await tx.userSubscription.deleteMany({ where: { userId } });
+      await tx.activityLog.deleteMany({ where: { userId } });
+      await tx.user.delete({ where: { id: userId } });
+    });
+
+    return { success: true };
   }
 
   /**
@@ -335,6 +374,38 @@ export class AdminService {
     });
   }
 
+  async createConsultation(data: {
+    userId: string;
+    scheduledAt: Date;
+    duration?: number;
+    topic?: string;
+    consultantName?: string;
+  }) {
+    const user = await prisma.user.findUnique({ where: { id: data.userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
+    return prisma.consultation.create({
+      data: {
+        userId: data.userId,
+        scheduledAt: data.scheduledAt,
+        duration: data.duration || 60,
+        topic: data.topic,
+        consultantName: data.consultantName,
+        status: 'scheduled',
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true, companyName: true } },
+        _count: { select: { messages: true } },
+      },
+    });
+  }
+
+  async deleteConsultation(consultationId: string) {
+    await prisma.consultationMessage.deleteMany({ where: { consultationId } });
+    await prisma.consultation.delete({ where: { id: consultationId } });
+    return { success: true };
+  }
+
   // ==================== DIAGNÓSTICOS ====================
 
   /**
@@ -388,6 +459,47 @@ export class AdminService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async getDiagnosisDetails(diagnosisId: string) {
+    const diagnosis = await prisma.diagnosis.findUnique({
+      where: { id: diagnosisId },
+      include: {
+        user: { select: { id: true, name: true, email: true, companyName: true } },
+        responses: {
+          include: {
+            assessmentItem: {
+              include: {
+                criteria: {
+                  include: {
+                    theme: {
+                      include: { pillar: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { assessmentItem: { order: 'asc' } },
+        },
+        actionPlans: { orderBy: { priority: 'asc' } },
+        strategicInsights: { orderBy: { category: 'asc' } },
+        certificates: true,
+      },
+    });
+    if (!diagnosis) throw new Error('Diagnóstico não encontrado');
+    return diagnosis;
+  }
+
+  async deleteDiagnosis(diagnosisId: string) {
+    await prisma.$transaction(async (tx) => {
+      await tx.response.deleteMany({ where: { diagnosisId } });
+      await tx.actionPlan.deleteMany({ where: { diagnosisId } });
+      await tx.strategicInsight.deleteMany({ where: { diagnosisId } });
+      await tx.certificate.deleteMany({ where: { diagnosisId } });
+      await tx.diagnosis.delete({ where: { id: diagnosisId } });
+    });
+    return { success: true };
   }
 
   // ==================== ASSINATURAS ====================
@@ -444,6 +556,41 @@ export class AdminService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async getPlans() {
+    return prisma.subscriptionPlan.findMany({
+      where: { active: true },
+      orderBy: { price: 'asc' },
+    });
+  }
+
+  async createSubscription(data: {
+    userId: string;
+    planId: string;
+    status?: string;
+    expiresAt?: Date;
+  }) {
+    const user = await prisma.user.findUnique({ where: { id: data.userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
+    return prisma.userSubscription.create({
+      data: {
+        userId: data.userId,
+        planId: data.planId,
+        status: data.status || 'active',
+        expiresAt: data.expiresAt,
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true, companyName: true } },
+        plan: true,
+      },
+    });
+  }
+
+  async deleteSubscription(subscriptionId: string) {
+    await prisma.userSubscription.delete({ where: { id: subscriptionId } });
+    return { success: true };
   }
 
   /**

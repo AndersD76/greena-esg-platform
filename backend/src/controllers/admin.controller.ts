@@ -54,18 +54,25 @@ export class AdminController {
     }
   }
 
+  async deleteUser(req: AuthRequest, res: Response) {
+    try {
+      const { userId } = req.params;
+      await adminService.deleteUser(userId);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async createAdmin(req: AuthRequest, res: Response) {
     try {
       const { email, password, name, role } = req.body;
-
       if (!email || !password || !name || !role) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
       }
-
       if (!['admin', 'superadmin'].includes(role)) {
         return res.status(400).json({ error: 'Role inválida' });
       }
-
       const admin = await adminService.createAdmin({ email, password, name, role });
       res.status(201).json(admin);
     } catch (error: any) {
@@ -113,6 +120,31 @@ export class AdminController {
     }
   }
 
+  async createConsultation(req: AuthRequest, res: Response) {
+    try {
+      const { userId, scheduledAt, duration, topic, consultantName } = req.body;
+      if (!userId || !scheduledAt) {
+        return res.status(400).json({ error: 'userId e scheduledAt são obrigatórios' });
+      }
+      const consultation = await adminService.createConsultation({
+        userId, scheduledAt: new Date(scheduledAt), duration, topic, consultantName,
+      });
+      res.status(201).json(consultation);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async deleteConsultation(req: AuthRequest, res: Response) {
+    try {
+      const { consultationId } = req.params;
+      await adminService.deleteConsultation(consultationId);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   // ==================== DIAGNÓSTICOS ====================
 
   async listDiagnoses(req: AuthRequest, res: Response) {
@@ -125,6 +157,26 @@ export class AdminController {
         userId: userId as string,
       });
       res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async getDiagnosisDetails(req: AuthRequest, res: Response) {
+    try {
+      const { diagnosisId } = req.params;
+      const diagnosis = await adminService.getDiagnosisDetails(diagnosisId);
+      res.json(diagnosis);
+    } catch (error: any) {
+      res.status(404).json({ error: error.message });
+    }
+  }
+
+  async deleteDiagnosis(req: AuthRequest, res: Response) {
+    try {
+      const { diagnosisId } = req.params;
+      await adminService.deleteDiagnosis(diagnosisId);
+      res.json({ success: true });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -147,6 +199,30 @@ export class AdminController {
     }
   }
 
+  async getPlans(req: AuthRequest, res: Response) {
+    try {
+      const plans = await adminService.getPlans();
+      res.json(plans);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async createSubscription(req: AuthRequest, res: Response) {
+    try {
+      const { userId, planId, status, expiresAt } = req.body;
+      if (!userId || !planId) {
+        return res.status(400).json({ error: 'userId e planId são obrigatórios' });
+      }
+      const subscription = await adminService.createSubscription({
+        userId, planId, status, expiresAt: expiresAt ? new Date(expiresAt) : undefined,
+      });
+      res.status(201).json(subscription);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async updateSubscription(req: AuthRequest, res: Response) {
     try {
       const { subscriptionId } = req.params;
@@ -158,19 +234,26 @@ export class AdminController {
     }
   }
 
+  async deleteSubscription(req: AuthRequest, res: Response) {
+    try {
+      const { subscriptionId } = req.params;
+      await adminService.deleteSubscription(subscriptionId);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   // ==================== RELATÓRIOS ====================
 
   async getMetricsReport(req: AuthRequest, res: Response) {
     try {
       const { dateFrom, dateTo } = req.query;
-
       if (!dateFrom || !dateTo) {
         return res.status(400).json({ error: 'Período é obrigatório' });
       }
-
       const report = await adminService.getMetricsReport(
-        new Date(dateFrom as string),
-        new Date(dateTo as string)
+        new Date(dateFrom as string), new Date(dateTo as string)
       );
       res.json(report);
     } catch (error: any) {

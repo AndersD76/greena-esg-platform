@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { adminService, AccessMetrics } from '../../services/admin.service';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend, AreaChart, Area,
+} from 'recharts';
 
 interface MetricsReport {
   period: { from: string; to: string };
@@ -10,12 +14,7 @@ interface MetricsReport {
     consultations: number;
     certificates: number;
     subscriptions: number;
-    averageScores: {
-      overall: number;
-      environmental: number;
-      social: number;
-      governance: number;
-    };
+    averageScores: { overall: number; environmental: number; social: number; governance: number };
   };
 }
 
@@ -29,19 +28,12 @@ interface HoursReport {
 }
 
 const PAGE_LABELS: Record<string, string> = {
-  '/': 'Landing Page',
-  '/login': 'Login',
-  '/register': 'Cadastro',
-  '/dashboard': 'Dashboard',
-  '/reports': 'Relatórios',
-  '/insights': 'Insights',
-  '/profile': 'Perfil',
-  '/consultations': 'Consultorias',
-  '/checkout': 'Checkout',
-  '/contact': 'Contato',
-  '/privacy': 'Privacidade',
-  '/terms': 'Termos',
+  '/': 'Landing Page', '/login': 'Login', '/register': 'Cadastro', '/dashboard': 'Dashboard',
+  '/reports': 'Relatórios', '/insights': 'Insights', '/profile': 'Perfil',
+  '/consultations': 'Consultorias', '/checkout': 'Checkout', '/contact': 'Contato',
 };
+
+const COLORS = ['#7B9965', '#924131', '#b8963a', '#3B82F6', '#8B5CF6', '#EF4444', '#10B981', '#F59E0B'];
 
 export default function AdminReports() {
   const today = new Date();
@@ -56,32 +48,25 @@ export default function AdminReports() {
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<'access' | 'metrics' | 'hours'>('access');
 
-  // Carregar métricas de acesso ao montar
   useEffect(() => { loadAccessMetrics(); }, []);
 
   async function loadAccessMetrics() {
     setLoading(true);
-    try {
-      const data = await adminService.getAccessMetrics(startDate, endDate);
-      setAccessMetrics(data);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+    try { setAccessMetrics(await adminService.getAccessMetrics(startDate, endDate)); }
+    catch (e) { console.error(e); } finally { setLoading(false); }
   }
 
   async function loadMetrics() {
     if (!startDate || !endDate) return;
     setLoading(true);
-    try {
-      const data = await adminService.getMetricsReport(startDate, endDate);
-      setMetrics(data);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+    try { setMetrics(await adminService.getMetricsReport(startDate, endDate)); }
+    catch (e) { console.error(e); } finally { setLoading(false); }
   }
 
   async function loadHoursReport() {
     setLoading(true);
-    try {
-      const data = await adminService.getConsultationHoursReport();
-      setHoursReport(data);
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+    try { setHoursReport(await adminService.getConsultationHoursReport()); }
+    catch (e) { console.error(e); } finally { setLoading(false); }
   }
 
   function handleTabChange(t: 'access' | 'metrics' | 'hours') {
@@ -91,25 +76,35 @@ export default function AdminReports() {
     if (t === 'hours' && hoursReport.length === 0) loadHoursReport();
   }
 
-  const scoreColor = (s: number) => {
-    if (s >= 80) return 'text-green-600';
-    if (s >= 60) return 'text-yellow-600';
-    return 'text-orange-600';
-  };
-
   function getPageLabel(path: string) {
     if (PAGE_LABELS[path]) return PAGE_LABELS[path];
     if (path.includes('/questionnaire')) return 'Questionário';
     if (path.includes('/results')) return 'Resultados';
     if (path.includes('/certificate')) return 'Certificado';
-    if (path.includes('/stakeholder')) return 'Relatório Stakeholders';
     if (path.startsWith('/empresa/')) return 'Perfil Público';
     return path;
   }
 
-  // Maior valor para calcular barras proporcionais
-  const maxDayViews = accessMetrics ? Math.max(...accessMetrics.viewsByDay.map(d => d.count), 1) : 1;
-  const maxPageViews = accessMetrics ? Math.max(...accessMetrics.topPages.map(p => p.count), 1) : 1;
+  const DateFilter = ({ onApply }: { onApply: () => void }) => (
+    <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
+      <div className="flex gap-4 items-end">
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1">De</label>
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1">Até</label>
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
+        </div>
+        <button onClick={onApply}
+          className="px-4 py-2 text-sm font-semibold bg-brand-900 text-white rounded-lg hover:bg-brand-900/90">
+          Gerar Relatório
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="p-8">
@@ -119,11 +114,11 @@ export default function AdminReports() {
       </div>
 
       <div className="flex gap-2 mb-6">
-        {[
-          { key: 'access' as const, label: 'Acessos' },
-          { key: 'metrics' as const, label: 'Métricas por Período' },
-          { key: 'hours' as const, label: 'Horas de Consultoria' },
-        ].map(t => (
+        {([
+          { key: 'access', label: 'Acessos' },
+          { key: 'metrics', label: 'Métricas por Período' },
+          { key: 'hours', label: 'Horas de Consultoria' },
+        ] as const).map(t => (
           <button key={t.key} onClick={() => handleTabChange(t.key)}
             className={`px-4 py-2 text-sm font-semibold rounded-lg ${tab === t.key ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             {t.label}
@@ -134,25 +129,7 @@ export default function AdminReports() {
       {/* ========== TAB: ACESSOS ========== */}
       {tab === 'access' && (
         <>
-          <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
-            <div className="flex gap-4 items-end">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">De</label>
-                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-                  className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Até</label>
-                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
-                  className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
-              </div>
-              <button onClick={loadAccessMetrics}
-                className="px-4 py-2 text-sm font-semibold bg-brand-900 text-white rounded-lg hover:bg-brand-900/90">
-                Atualizar
-              </button>
-            </div>
-          </div>
-
+          <DateFilter onApply={loadAccessMetrics} />
           {loading && <p className="text-center text-gray-400 py-8">Carregando...</p>}
 
           {accessMetrics && !loading && (
@@ -179,82 +156,73 @@ export default function AdminReports() {
                 ))}
               </div>
 
-              {/* Views por Dia - Bar Chart */}
+              {/* Gráfico: Acessos por Dia (Area Chart) */}
               <div className="bg-white rounded-xl border border-gray-100 p-6">
                 <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Acessos por Dia</h2>
                 {accessMetrics.viewsByDay.length === 0 ? (
                   <p className="text-sm text-gray-400 text-center py-4">Nenhum dado no período</p>
                 ) : (
-                  <div className="space-y-2">
-                    {accessMetrics.viewsByDay.map(d => (
-                      <div key={d.date} className="flex items-center gap-3">
-                        <span className="text-xs text-gray-500 w-20 flex-shrink-0">
-                          {new Date(d.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
-                        </span>
-                        <div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full transition-all"
-                            style={{ width: `${(d.count / maxDayViews) * 100}%`, backgroundColor: '#7B9965' }} />
-                        </div>
-                        <span className="text-xs font-semibold text-brand-900 w-10 text-right">{d.count}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <ResponsiveContainer width="100%" height={280}>
+                    <AreaChart data={accessMetrics.viewsByDay.map(d => ({
+                      date: new Date(d.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+                      views: d.count,
+                    }))}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#999' }} />
+                      <YAxis tick={{ fontSize: 11, fill: '#999' }} />
+                      <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                      <Area type="monotone" dataKey="views" stroke="#7B9965" fill="#7B9965" fillOpacity={0.2} strokeWidth={2} name="Views" />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 )}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Páginas mais visitadas */}
+                {/* Gráfico: Páginas mais visitadas (Bar Chart horizontal) */}
                 <div className="bg-white rounded-xl border border-gray-100 p-6">
                   <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Páginas Mais Visitadas</h2>
                   {accessMetrics.topPages.length === 0 ? (
                     <p className="text-sm text-gray-400 text-center py-4">Sem dados</p>
                   ) : (
-                    <div className="space-y-3">
-                      {accessMetrics.topPages.map((p, i) => (
-                        <div key={p.path} className="flex items-center gap-3">
-                          <span className="w-6 h-6 rounded-full bg-brand-100 text-brand-900 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                            {i + 1}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-brand-900 truncate">{getPageLabel(p.path)}</p>
-                            <p className="text-[10px] text-gray-400 truncate">{p.path}</p>
-                          </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <div className="w-20 h-1.5 bg-gray-200 rounded-full">
-                              <div className="h-full rounded-full bg-blue-500" style={{ width: `${(p.count / maxPageViews) * 100}%` }} />
-                            </div>
-                            <span className="text-xs font-semibold text-brand-900 w-8 text-right">{p.count}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <ResponsiveContainer width="100%" height={Math.max(200, accessMetrics.topPages.length * 36)}>
+                      <BarChart layout="vertical" data={accessMetrics.topPages.map(p => ({
+                        page: getPageLabel(p.path),
+                        views: p.count,
+                      }))}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis type="number" tick={{ fontSize: 11, fill: '#999' }} />
+                        <YAxis type="category" dataKey="page" width={120} tick={{ fontSize: 11, fill: '#333' }} />
+                        <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                        <Bar dataKey="views" name="Views" radius={[0, 4, 4, 0]}>
+                          {accessMetrics.topPages.map((_, i) => (
+                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
                   )}
                 </div>
 
-                {/* Atividade por Hora */}
+                {/* Gráfico: Atividade por Hora (Bar Chart) */}
                 <div className="bg-white rounded-xl border border-gray-100 p-6">
                   <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Atividade por Hora</h2>
                   {accessMetrics.viewsByHour.length === 0 ? (
                     <p className="text-sm text-gray-400 text-center py-4">Sem dados</p>
                   ) : (
-                    <div className="flex items-end gap-1 h-32">
-                      {Array.from({ length: 24 }, (_, h) => {
-                        const data = accessMetrics.viewsByHour.find(v => v.hour === h);
-                        const count = data?.count || 0;
-                        const maxH = Math.max(...accessMetrics.viewsByHour.map(v => v.count), 1);
-                        const height = count > 0 ? Math.max(4, (count / maxH) * 100) : 2;
-                        return (
-                          <div key={h} className="flex-1 flex flex-col items-center gap-1" title={`${h}h: ${count} views`}>
-                            <div className="w-full rounded-t transition-all"
-                              style={{ height: `${height}%`, backgroundColor: count > 0 ? '#7B9965' : '#e5e7eb' }} />
-                            {h % 3 === 0 && <span className="text-[9px] text-gray-400">{h}h</span>}
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={Array.from({ length: 24 }, (_, h) => ({
+                        hora: `${h}h`,
+                        views: accessMetrics.viewsByHour.find(v => v.hour === h)?.count || 0,
+                      }))}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="hora" tick={{ fontSize: 10, fill: '#999' }} interval={2} />
+                        <YAxis tick={{ fontSize: 10, fill: '#999' }} />
+                        <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                        <Bar dataKey="views" fill="#3B82F6" radius={[3, 3, 0, 0]} name="Views" />
+                      </BarChart>
+                    </ResponsiveContainer>
                   )}
 
-                  {/* Top Referrers */}
                   {accessMetrics.topReferrers.length > 0 && (
                     <div className="mt-6 pt-4 border-t border-gray-100">
                       <h3 className="text-xs font-bold text-gray-500 uppercase mb-3">Fontes de Tráfego</h3>
@@ -278,29 +246,92 @@ export default function AdminReports() {
       {/* ========== TAB: MÉTRICAS ========== */}
       {tab === 'metrics' && (
         <>
-          <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
-            <div className="flex gap-4 items-end">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Data Inicial</label>
-                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-                  className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Data Final</label>
-                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
-                  className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
-              </div>
-              <button onClick={loadMetrics}
-                className="px-4 py-2 text-sm font-semibold bg-brand-900 text-white rounded-lg hover:bg-brand-900/90">
-                Gerar Relatório
-              </button>
-            </div>
-          </div>
-
+          <DateFilter onApply={loadMetrics} />
           {loading && <p className="text-center text-gray-400 py-8">Carregando...</p>}
 
           {metrics && !loading && (
             <div className="space-y-6">
+              {/* Gráfico: Visão Geral (Bar Chart) */}
+              <div className="bg-white rounded-xl border border-gray-100 p-6">
+                <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Visão Geral do Período</h2>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={[
+                    { name: 'Novos Usuários', valor: metrics.metrics.newUsers, fill: '#3B82F6' },
+                    { name: 'Diagnósticos', valor: metrics.metrics.diagnoses, fill: '#7B9965' },
+                    { name: 'Concluídos', valor: metrics.metrics.completedDiagnoses, fill: '#10B981' },
+                    { name: 'Consultorias', valor: metrics.metrics.consultations, fill: '#8B5CF6' },
+                    { name: 'Certificados', valor: metrics.metrics.certificates, fill: '#b8963a' },
+                    { name: 'Assinaturas', valor: metrics.metrics.subscriptions, fill: '#F59E0B' },
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#666' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#999' }} />
+                    <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                    <Bar dataKey="valor" name="Quantidade" radius={[6, 6, 0, 0]}>
+                      {[
+                        '#3B82F6', '#7B9965', '#10B981', '#8B5CF6', '#b8963a', '#F59E0B'
+                      ].map((color, i) => (
+                        <Cell key={i} fill={color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Gráfico: Scores ESG (Radar-like com barras) */}
+                <div className="bg-white rounded-xl border border-gray-100 p-6">
+                  <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Scores Médios ESG</h2>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={[
+                      { pilar: 'Geral', score: Number(metrics.metrics.averageScores.overall) || 0 },
+                      { pilar: 'Ambiental', score: Number(metrics.metrics.averageScores.environmental) || 0 },
+                      { pilar: 'Social', score: Number(metrics.metrics.averageScores.social) || 0 },
+                      { pilar: 'Governança', score: Number(metrics.metrics.averageScores.governance) || 0 },
+                    ]}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="pilar" tick={{ fontSize: 12, fill: '#333' }} />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#999' }} />
+                      <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                      <Bar dataKey="score" name="Score" radius={[6, 6, 0, 0]}>
+                        <Cell fill="#152F27" />
+                        <Cell fill="#7B9965" />
+                        <Cell fill="#924131" />
+                        <Cell fill="#b8963a" />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Gráfico: Distribuição (Pie Chart) */}
+                <div className="bg-white rounded-xl border border-gray-100 p-6">
+                  <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Distribuição de Atividades</h2>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Diagnósticos', value: metrics.metrics.diagnoses },
+                          { name: 'Consultorias', value: metrics.metrics.consultations },
+                          { name: 'Certificados', value: metrics.metrics.certificates },
+                          { name: 'Assinaturas', value: metrics.metrics.subscriptions },
+                        ].filter(d => d.value > 0)}
+                        cx="50%" cy="50%" innerRadius={50} outerRadius={90}
+                        paddingAngle={3} dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        labelLine={false}
+                      >
+                        {[0, 1, 2, 3].map(i => (
+                          <Cell key={i} fill={['#7B9965', '#8B5CF6', '#b8963a', '#F59E0B'][i]} />
+                        ))}
+                      </Pie>
+                      <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                      <Legend wrapperStyle={{ fontSize: 12 }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Cards resumo */}
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   { label: 'Novos Usuários', value: metrics.metrics.newUsers, color: '#3B82F6', bg: '#EFF6FF' },
@@ -321,23 +352,6 @@ export default function AdminReports() {
                   </div>
                 ))}
               </div>
-
-              <div className="bg-white rounded-xl border border-gray-100 p-6">
-                <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Scores Médios ESG</h2>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {[
-                    { label: 'Geral', value: metrics.metrics.averageScores.overall },
-                    { label: 'Ambiental', value: metrics.metrics.averageScores.environmental },
-                    { label: 'Social', value: metrics.metrics.averageScores.social },
-                    { label: 'Governança', value: metrics.metrics.averageScores.governance },
-                  ].map(s => (
-                    <div key={s.label} className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-xs font-semibold text-gray-500 mb-1">{s.label}</p>
-                      <p className={`text-3xl font-bold ${scoreColor(s.value)}`}>{s.value ? Number(s.value).toFixed(0) : '—'}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
         </>
@@ -347,45 +361,115 @@ export default function AdminReports() {
       {tab === 'hours' && (
         <>
           {loading && <p className="text-center text-gray-400 py-8">Carregando...</p>}
-          {!loading && (
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>
-                    <th className="text-center px-4 py-3 font-semibold text-gray-500">Plano</th>
-                    <th className="text-center px-4 py-3 font-semibold text-gray-500">Total</th>
-                    <th className="text-center px-4 py-3 font-semibold text-gray-500">Usadas</th>
-                    <th className="text-center px-4 py-3 font-semibold text-gray-500">Restantes</th>
-                    <th className="text-center px-4 py-3 font-semibold text-gray-500">Uso</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {hoursReport.length === 0
-                    ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Nenhuma assinatura ativa</td></tr>
-                    : hoursReport.map((r) => (
-                    <tr key={r.user.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                      <td className="px-4 py-3">
-                        <p className="font-semibold text-brand-900">{r.user.name}</p>
-                        <p className="text-xs text-gray-400">{r.user.companyName || r.user.email}</p>
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-600">{r.plan}</td>
-                      <td className="px-4 py-3 text-center text-gray-600">{r.hoursTotal}h</td>
-                      <td className="px-4 py-3 text-center text-gray-600">{r.hoursUsed}h</td>
-                      <td className="px-4 py-3 text-center font-semibold text-brand-900">{r.hoursRemaining}h</td>
-                      <td className="px-4 py-3 text-center">
-                        <div className="flex items-center gap-2 justify-center">
-                          <div className="w-16 h-1.5 bg-gray-200 rounded-full">
-                            <div className="h-full rounded-full bg-brand-700" style={{ width: `${Math.min(100, r.usagePercentage)}%` }} />
-                          </div>
-                          <span className="text-xs text-gray-500">{r.usagePercentage}%</span>
-                        </div>
-                      </td>
+          {!loading && hoursReport.length > 0 && (
+            <div className="space-y-6">
+              {/* Gráfico: Uso de Horas por Usuário */}
+              <div className="bg-white rounded-xl border border-gray-100 p-6">
+                <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Uso de Horas por Usuário</h2>
+                <ResponsiveContainer width="100%" height={Math.max(200, hoursReport.length * 50)}>
+                  <BarChart layout="vertical" data={hoursReport.map(r => ({
+                    name: r.user.name.split(' ').slice(0, 2).join(' '),
+                    usadas: r.hoursUsed,
+                    restantes: r.hoursRemaining,
+                  }))}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis type="number" tick={{ fontSize: 11, fill: '#999' }} />
+                    <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 11, fill: '#333' }} />
+                    <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Bar dataKey="usadas" stackId="a" fill="#924131" name="Usadas" radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="restantes" stackId="a" fill="#7B9965" name="Restantes" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Gráfico: % de Uso (Pie) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-xl border border-gray-100 p-6">
+                  <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Distribuição por Plano</h2>
+                  {(() => {
+                    const planCounts: Record<string, number> = {};
+                    hoursReport.forEach(r => { planCounts[r.plan] = (planCounts[r.plan] || 0) + 1; });
+                    const pieData = Object.entries(planCounts).map(([name, value]) => ({ name, value }));
+                    return (
+                      <ResponsiveContainer width="100%" height={220}>
+                        <PieChart>
+                          <Pie data={pieData} cx="50%" cy="50%" innerRadius={40} outerRadius={80}
+                            paddingAngle={3} dataKey="value"
+                            label={({ name, value }) => `${name}: ${value}`} labelLine={false}>
+                            {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    );
+                  })()}
+                </div>
+
+                <div className="bg-white rounded-xl border border-gray-100 p-6">
+                  <h2 className="text-sm font-bold text-brand-900 uppercase tracking-wider mb-4">Resumo</h2>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-gray-50 rounded-lg">
+                      <p className="text-3xl font-bold text-brand-900">{hoursReport.length}</p>
+                      <p className="text-xs text-gray-500 mt-1">Assinaturas Ativas</p>
+                    </div>
+                    <div className="text-center p-4 bg-gray-50 rounded-lg">
+                      <p className="text-3xl font-bold text-brand-900">{hoursReport.reduce((s, r) => s + r.hoursTotal, 0)}h</p>
+                      <p className="text-xs text-gray-500 mt-1">Horas Totais</p>
+                    </div>
+                    <div className="text-center p-4 bg-gray-50 rounded-lg">
+                      <p className="text-3xl font-bold" style={{ color: '#924131' }}>{hoursReport.reduce((s, r) => s + r.hoursUsed, 0)}h</p>
+                      <p className="text-xs text-gray-500 mt-1">Horas Usadas</p>
+                    </div>
+                    <div className="text-center p-4 bg-gray-50 rounded-lg">
+                      <p className="text-3xl font-bold" style={{ color: '#7B9965' }}>{hoursReport.reduce((s, r) => s + r.hoursRemaining, 0)}h</p>
+                      <p className="text-xs text-gray-500 mt-1">Horas Restantes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabela detalhada */}
+              <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>
+                      <th className="text-center px-4 py-3 font-semibold text-gray-500">Plano</th>
+                      <th className="text-center px-4 py-3 font-semibold text-gray-500">Total</th>
+                      <th className="text-center px-4 py-3 font-semibold text-gray-500">Usadas</th>
+                      <th className="text-center px-4 py-3 font-semibold text-gray-500">Restantes</th>
+                      <th className="text-center px-4 py-3 font-semibold text-gray-500">Uso</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {hoursReport.map((r) => (
+                      <tr key={r.user.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                        <td className="px-4 py-3">
+                          <p className="font-semibold text-brand-900">{r.user.name}</p>
+                          <p className="text-xs text-gray-400">{r.user.companyName || r.user.email}</p>
+                        </td>
+                        <td className="px-4 py-3 text-center text-gray-600">{r.plan}</td>
+                        <td className="px-4 py-3 text-center text-gray-600">{r.hoursTotal}h</td>
+                        <td className="px-4 py-3 text-center text-gray-600">{r.hoursUsed}h</td>
+                        <td className="px-4 py-3 text-center font-semibold text-brand-900">{r.hoursRemaining}h</td>
+                        <td className="px-4 py-3 text-center">
+                          <div className="flex items-center gap-2 justify-center">
+                            <div className="w-16 h-1.5 bg-gray-200 rounded-full">
+                              <div className="h-full rounded-full bg-brand-700" style={{ width: `${Math.min(100, r.usagePercentage)}%` }} />
+                            </div>
+                            <span className="text-xs text-gray-500">{r.usagePercentage}%</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
+          )}
+          {!loading && hoursReport.length === 0 && (
+            <div className="bg-white rounded-xl border border-gray-100 p-8 text-center text-gray-400">Nenhuma assinatura ativa</div>
           )}
         </>
       )}

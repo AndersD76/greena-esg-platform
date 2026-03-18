@@ -155,13 +155,18 @@ class AdminServiceClass {
     return response.data;
   }
 
-  async updateUser(userId: string, data: { name?: string; role?: string; isActive?: boolean; companyName?: string }): Promise<AdminUser> {
+  async updateUser(userId: string, data: { name?: string; role?: string; isActive?: boolean; companyName?: string; cnpj?: string; city?: string; sector?: string; employeesRange?: string }): Promise<AdminUser> {
     const response = await api.put(`/admin/users/${userId}`, data);
     return response.data;
   }
 
   async toggleUserStatus(userId: string): Promise<AdminUser> {
     const response = await api.post(`/admin/users/${userId}/toggle-status`);
+    return response.data;
+  }
+
+  async deleteUser(userId: string): Promise<any> {
+    const response = await api.delete(`/admin/users/${userId}`);
     return response.data;
   }
 
@@ -184,6 +189,16 @@ class AdminServiceClass {
     return response.data;
   }
 
+  async createConsultation(data: { userId: string; scheduledAt: string; duration?: number; topic?: string; consultantName?: string }): Promise<any> {
+    const response = await api.post('/admin/consultations', data);
+    return response.data;
+  }
+
+  async deleteConsultation(id: string): Promise<any> {
+    const response = await api.delete(`/admin/consultations/${id}`);
+    return response.data;
+  }
+
   async addConsultationHours(userId: string, hours: number, reason: string): Promise<any> {
     const response = await api.post('/admin/consultation-hours', { userId, hours, reason });
     return response.data;
@@ -202,11 +217,36 @@ class AdminServiceClass {
     return response.data;
   }
 
+  async getPlans(): Promise<any[]> {
+    const response = await api.get('/admin/plans');
+    return response.data;
+  }
+
+  async createSubscription(data: { userId: string; planId: string; status?: string; expiresAt?: string }): Promise<any> {
+    const response = await api.post('/admin/subscriptions', data);
+    return response.data;
+  }
+
+  async deleteSubscription(id: string): Promise<any> {
+    const response = await api.delete(`/admin/subscriptions/${id}`);
+    return response.data;
+  }
+
   // Diagnoses
   async getDiagnoses(page = 1, limit = 20, status?: string): Promise<{ diagnoses: AdminDiagnosis[]; pagination: any }> {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) });
     if (status) params.append('status', status);
     const response = await api.get(`/admin/diagnoses?${params}`);
+    return response.data;
+  }
+
+  async getDiagnosisDetails(id: string): Promise<any> {
+    const response = await api.get(`/admin/diagnoses/${id}`);
+    return response.data;
+  }
+
+  async deleteDiagnosis(id: string): Promise<any> {
+    const response = await api.delete(`/admin/diagnoses/${id}`);
     return response.data;
   }
 
