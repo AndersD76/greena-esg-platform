@@ -37,6 +37,7 @@ import PublicProfile from './pages/PublicProfile';
 import StakeholderReport from './pages/StakeholderReport';
 import { diagnosisService } from './services/diagnosis.service';
 import { subscriptionService } from './services/subscription.service';
+import { usePageTracking } from './hooks/usePageTracking';
 import { useEffect, useState } from 'react';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -116,6 +117,8 @@ function AppRoutes() {
   const { user } = useAuth();
   const { pathname } = useLocation();
   const hideMainLayout = pathname === '/checkout' || pathname.includes('/stakeholder-report') || pathname.startsWith('/empresa/') || pathname.startsWith('/admin');
+
+  usePageTracking();
 
   return (
     <div className="flex flex-col min-h-screen">

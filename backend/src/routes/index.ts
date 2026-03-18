@@ -10,9 +10,11 @@ import consultationRoutes from './consultation.routes';
 import adminRoutes from './admin.routes';
 import asaasWebhookRoutes from './asaas-webhook.routes';
 import publicRoutes from './public.routes';
+import analyticsRoutes from './analytics.routes';
 
 const router = Router();
 
+router.use('/analytics', analyticsRoutes);
 router.use('/auth', authRoutes);
 router.use('/diagnoses', diagnosisRoutes);
 router.use('/responses', responseRoutes);

@@ -272,6 +272,22 @@ model Consultation {
   @@map("consultations")
 }
 
+model PageView {
+  id        Int      @id @default(autoincrement())
+  path      String
+  userId    String?  @map("user_id")
+  sessionId String   @map("session_id")
+  referrer  String?
+  userAgent String?  @map("user_agent")
+  ip        String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([path])
+  @@index([sessionId])
+  @@map("page_views")
+}
+
 model ConsultationMessage {
   id              String   @id @default(uuid())
   consultationId  String   @map("consultation_id")

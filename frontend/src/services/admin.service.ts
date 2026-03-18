@@ -109,6 +109,21 @@ export interface AdminDiagnosis {
   };
 }
 
+export interface AccessMetrics {
+  summary: {
+    totalViews: number;
+    uniqueSessions: number;
+    uniqueUsers: number;
+    todayViews: number;
+    activeNow: number;
+    avgPagesPerSession: number;
+  };
+  viewsByDay: { date: string; count: number }[];
+  topPages: { path: string; count: number }[];
+  topReferrers: { referrer: string; count: number }[];
+  viewsByHour: { hour: number; count: number }[];
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   pagination: {
@@ -209,6 +224,15 @@ class AdminServiceClass {
   // Activities
   async getActivities(limit = 50): Promise<any[]> {
     const response = await api.get(`/admin/activities?limit=${limit}`);
+    return response.data;
+  }
+
+  // Analytics
+  async getAccessMetrics(dateFrom?: string, dateTo?: string): Promise<AccessMetrics> {
+    const params = new URLSearchParams();
+    if (dateFrom) params.append('dateFrom', dateFrom);
+    if (dateTo) params.append('dateTo', dateTo);
+    const response = await api.get(`/analytics/metrics?${params}`);
     return response.data;
   }
 }
