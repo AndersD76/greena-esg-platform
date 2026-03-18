@@ -72,7 +72,7 @@ export interface AdminSubscription {
   userId: string;
   planId: string;
   status: string;
-  startDate: string;
+  startedAt: string;
   expiresAt: string | null;
   consultationHoursUsed: number;
   createdAt: string;

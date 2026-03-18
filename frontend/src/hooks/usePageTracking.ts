@@ -22,9 +22,6 @@ export function usePageTracking() {
     if (path === lastPath.current) return;
     lastPath.current = path;
 
-    // Não trackear rotas de admin
-    if (path.startsWith('/admin')) return;
-
     // Fire and forget
     api.post('/analytics/track', {
       path,

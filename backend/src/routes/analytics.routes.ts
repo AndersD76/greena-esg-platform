@@ -37,7 +37,7 @@ router.get('/metrics', authMiddleware, adminMiddleware, async (req: Request, res
     const from = dateFrom ? new Date(dateFrom as string) : (() => {
       const d = new Date(); d.setDate(d.getDate() - 30); return d;
     })();
-    const to = dateTo ? new Date(dateTo as string) : new Date();
+    const to = dateTo ? new Date(dateTo as string + 'T23:59:59.999Z') : new Date();
 
     const metrics = await analyticsService.getAccessMetrics(from, to);
     res.json(metrics);
