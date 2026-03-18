@@ -194,6 +194,19 @@ export class AdminController {
 
   // ==================== HORAS ====================
 
+  async addConsultationHours(req: AuthRequest, res: Response) {
+    try {
+      const { userId, hours, reason } = req.body;
+      if (!userId || !hours) {
+        return res.status(400).json({ error: 'userId e hours são obrigatórios' });
+      }
+      const result = await adminService.addConsultationHours(userId, Number(hours), reason || '');
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async getConsultationHoursReport(req: AuthRequest, res: Response) {
     try {
       const report = await adminService.getConsultationHoursReport();

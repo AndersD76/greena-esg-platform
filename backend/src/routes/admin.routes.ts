@@ -16,14 +16,22 @@ router.get('/dashboard', (req, res) => adminController.getDashboardStats(req, re
 router.get('/users', (req, res) => adminController.listUsers(req, res));
 router.get('/users/:userId', (req, res) => adminController.getUserDetails(req, res));
 router.put('/users/:userId', (req, res) => adminController.updateUser(req, res));
+router.patch('/users/:userId', (req, res) => adminController.updateUser(req, res));
+router.patch('/users/:userId/role', (req, res) => adminController.updateUser(req, res));
 router.post('/users/:userId/toggle-status', (req, res) => adminController.toggleUserStatus(req, res));
+router.patch('/users/:userId/toggle-status', (req, res) => adminController.toggleUserStatus(req, res));
 
 // Criar admin (apenas superadmin)
 router.post('/admins', superadminMiddleware, (req, res) => adminController.createAdmin(req, res));
 
+// Horas de consultoria
+router.post('/consultation-hours', (req, res) => adminController.addConsultationHours(req, res));
+
 // Consultorias
 router.get('/consultations', (req, res) => adminController.listConsultations(req, res));
 router.put('/consultations/:consultationId', (req, res) => adminController.updateConsultation(req, res));
+router.patch('/consultations/:consultationId', (req, res) => adminController.updateConsultation(req, res));
+router.patch('/consultations/:consultationId/status', (req, res) => adminController.updateConsultation(req, res));
 
 // Diagnósticos
 router.get('/diagnoses', (req, res) => adminController.listDiagnoses(req, res));
@@ -31,6 +39,8 @@ router.get('/diagnoses', (req, res) => adminController.listDiagnoses(req, res));
 // Assinaturas
 router.get('/subscriptions', (req, res) => adminController.listSubscriptions(req, res));
 router.put('/subscriptions/:subscriptionId', (req, res) => adminController.updateSubscription(req, res));
+router.patch('/subscriptions/:subscriptionId', (req, res) => adminController.updateSubscription(req, res));
+router.patch('/subscriptions/:subscriptionId/status', (req, res) => adminController.updateSubscription(req, res));
 
 // Relatórios
 router.get('/reports/metrics', (req, res) => adminController.getMetricsReport(req, res));

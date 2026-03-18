@@ -1,346 +1,128 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import { adminService, AdminUser } from '../../services/admin.service';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function AdminUsers() {
+  const { isSuperAdmin } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
   const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
-  const [showRoleModal, setShowRoleModal] = useState(false);
-  const [showHoursModal, setShowHoursModal] = useState(false);
-  const [newRole, setNewRole] = useState('');
-  const [additionalHours, setAdditionalHours] = useState(0);
+  const [roleFilter, setRoleFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [msg, setMsg] = useState('');
+  const [hoursModal, setHoursModal] = useState<AdminUser | null>(null);
+  const [hours, setHours] = useState('1');
   const [hoursReason, setHoursReason] = useState('');
+  const [createModal, setCreateModal] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'admin' });
 
-  useEffect(() => {
-    loadUsers();
-  }, [page, search]);
-
-  async function loadUsers() {
+  const loadUsers = useCallback(async (page = 1) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await adminService.getUsers(page, 10, search || undefined);
+      const data = await adminService.getUsers(page, 20, search || undefined, roleFilter || undefined);
       setUsers(data.users);
-      setTotalPages(data.pages);
-    } catch (error) {
-      console.error('Erro ao carregar usuários:', error);
-    } finally {
-      setLoading(false);
-    }
+      setPagination({ page: data.pagination.page, totalPages: data.pagination.totalPages, total: data.pagination.total });
+    } catch (e) { console.error(e); } finally { setLoading(false); }
+  }, [search, roleFilter]);
+
+  useEffect(() => { const t = setTimeout(() => loadUsers(1), 300); return () => clearTimeout(t); }, [loadUsers]);
+
+  function flash(m: string) { setMsg(m); setTimeout(() => setMsg(''), 3000); }
+
+  async function handleToggleStatus(u: AdminUser) {
+    try { await adminService.toggleUserStatus(u.id); flash(`${u.isActive ? 'Desativado' : 'Ativado'}: ${u.name}`); loadUsers(pagination.page); } catch (e: any) { flash(e.message); }
   }
 
-  async function handleToggleStatus(user: AdminUser) {
-    if (!confirm(`Deseja ${user.isActive ? 'desativar' : 'ativar'} o usuário ${user.name}?`)) return;
-
-    try {
-      await adminService.toggleUserStatus(user.id);
-      loadUsers();
-    } catch (error) {
-      console.error('Erro ao alterar status:', error);
-      alert('Erro ao alterar status do usuário');
-    }
-  }
-
-  async function handleUpdateRole() {
-    if (!selectedUser || !newRole) return;
-
-    try {
-      await adminService.updateUserRole(selectedUser.id, newRole);
-      setShowRoleModal(false);
-      setSelectedUser(null);
-      setNewRole('');
-      loadUsers();
-    } catch (error) {
-      console.error('Erro ao alterar role:', error);
-      alert('Erro ao alterar permissão do usuário');
-    }
+  async function handleChangeRole(u: AdminUser, role: string) {
+    try { await adminService.updateUser(u.id, { role }); flash(`Role de ${u.name} → ${role}`); loadUsers(pagination.page); } catch (e: any) { flash(e.message); }
   }
 
   async function handleAddHours() {
-    if (!selectedUser || !additionalHours || !hoursReason) return;
-
-    try {
-      await adminService.addConsultationHours(selectedUser.id, additionalHours, hoursReason);
-      setShowHoursModal(false);
-      setSelectedUser(null);
-      setAdditionalHours(0);
-      setHoursReason('');
-      alert('Horas adicionadas com sucesso!');
-    } catch (error) {
-      console.error('Erro ao adicionar horas:', error);
-      alert('Erro ao adicionar horas');
-    }
+    if (!hoursModal) return;
+    try { await adminService.addConsultationHours(hoursModal.id, Number(hours), hoursReason); flash(`${hours}h adicionadas para ${hoursModal.name}`); setHoursModal(null); setHours('1'); setHoursReason(''); } catch (e: any) { flash(e.message); }
   }
 
-  const getRoleBadge = (role: string) => {
-    switch (role) {
-      case 'superadmin':
-        return 'bg-purple-100 text-purple-800';
-      case 'admin':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  async function handleCreateAdmin() {
+    try { await adminService.createAdmin(newAdmin); flash(`Admin ${newAdmin.email} criado`); setCreateModal(false); setNewAdmin({ name: '', email: '', password: '', role: 'admin' }); loadUsers(1); } catch (e: any) { flash(e.message); }
+  }
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'superadmin':
-        return 'Super Admin';
-      case 'admin':
-        return 'Admin';
-      default:
-        return 'Usuário';
-    }
-  };
+  const roleBadge = (r: string) => ({ superadmin: 'bg-purple-100 text-purple-800', admin: 'bg-blue-100 text-blue-800', user: 'bg-gray-100 text-gray-600' }[r] || 'bg-gray-100 text-gray-600');
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
-      {/* Header */}
-      <div className="text-white py-6 px-8" style={{ background: 'linear-gradient(135deg, #152F27 0%, #1a3d33 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/admin" className="hover:opacity-80">
-                <span className="text-2xl">←</span>
-              </Link>
-              <div>
-                <h1 className="text-3xl font-black">Gestão de Usuários</h1>
-                <p className="text-green-200 mt-1">Gerenciar usuários e permissões</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="p-8">
+      {msg && <div className="fixed top-4 right-4 bg-brand-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">{msg}</div>}
+      <div className="flex items-center justify-between mb-6">
+        <div><h1 className="text-2xl font-bold text-brand-900">Usuários</h1><p className="text-sm text-gray-400">{pagination.total} cadastrados</p></div>
+        {isSuperAdmin && <button onClick={() => setCreateModal(true)} className="px-4 py-2 bg-brand-900 text-white text-sm font-semibold rounded-lg hover:bg-brand-900/90">+ Criar Admin</button>}
       </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Search */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Buscar por nome, email ou empresa..."
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              className="flex-1 px-4 py-3 rounded-xl border-2 focus:outline-none"
-              style={{ borderColor: '#e5e5e5' }}
-            />
-            <button
-              onClick={() => loadUsers()}
-              className="px-6 py-3 text-white font-bold rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-            >
-              Buscar
-            </button>
-          </div>
-        </div>
-
-        {/* Users Table */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {loading ? (
-            <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-              <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando usuários...</p>
-            </div>
-          ) : (
-            <>
-              <table className="w-full">
-                <thead>
-                  <tr style={{ backgroundColor: '#f5f5f5' }}>
-                    <th className="px-6 py-4 text-left text-sm font-bold" style={{ color: '#152F27' }}>Usuário</th>
-                    <th className="px-6 py-4 text-left text-sm font-bold" style={{ color: '#152F27' }}>Empresa</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Permissão</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Status</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Atividade</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr key={user.id} className="border-t border-gray-100 hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <p className="font-bold" style={{ color: '#152F27' }}>{user.name}</p>
-                        <p className="text-sm" style={{ color: '#666' }}>{user.email}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p style={{ color: '#666' }}>{user.companyName || '-'}</p>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${getRoleBadge(user.role)}`}>
-                          {getRoleLabel(user.role)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                          {user.isActive ? 'Ativo' : 'Inativo'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <div className="text-xs" style={{ color: '#666' }}>
-                          <p>{user._count?.diagnoses || 0} diagnósticos</p>
-                          <p>{user._count?.consultations || 0} consultorias</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => { setSelectedUser(user); setNewRole(user.role); setShowRoleModal(true); }}
-                            className="p-2 rounded-lg hover:bg-blue-50 text-blue-600"
-                            title="Alterar permissão"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => { setSelectedUser(user); setShowHoursModal(true); }}
-                            className="p-2 rounded-lg hover:bg-green-50 text-green-600"
-                            title="Adicionar horas"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => handleToggleStatus(user)}
-                            className={`p-2 rounded-lg ${user.isActive ? 'hover:bg-red-50 text-red-600' : 'hover:bg-green-50 text-green-600'}`}
-                            title={user.isActive ? 'Desativar' : 'Ativar'}
-                          >
-                            {user.isActive ? (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                              </svg>
-                            ) : (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 py-4 border-t border-gray-100">
-                  <button
-                    onClick={() => setPage(Math.max(1, page - 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 rounded-lg font-bold disabled:opacity-50"
-                    style={{ color: '#152F27' }}
-                  >
-                    ← Anterior
-                  </button>
-                  <span className="px-4 py-2 font-bold" style={{ color: '#666' }}>
-                    Página {page} de {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage(Math.min(totalPages, page + 1))}
-                    disabled={page === totalPages}
-                    className="px-4 py-2 rounded-lg font-bold disabled:opacity-50"
-                    style={{ color: '#152F27' }}
-                  >
-                    Próxima →
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+      <div className="flex gap-3 mb-6">
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar nome, email ou empresa..." className="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700/30" />
+        <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="px-3 py-2 text-sm border border-gray-200 rounded-lg">
+          <option value="">Todos</option><option value="user">Usuário</option><option value="admin">Admin</option><option value="superadmin">Superadmin</option>
+        </select>
       </div>
-
-      {/* Role Modal */}
-      {showRoleModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-            <h3 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Alterar Permissão</h3>
-            <p className="mb-4" style={{ color: '#666' }}>Usuário: <strong>{selectedUser.name}</strong></p>
-
-            <select
-              value={newRole}
-              onChange={(e) => setNewRole(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border-2 mb-6"
-              style={{ borderColor: '#e5e5e5' }}
-            >
-              <option value="user">Usuário</option>
-              <option value="admin">Admin</option>
-              <option value="superadmin">Super Admin</option>
-            </select>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => { setShowRoleModal(false); setSelectedUser(null); }}
-                className="flex-1 px-6 py-3 border-2 rounded-xl font-bold"
-                style={{ borderColor: '#152F27', color: '#152F27' }}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleUpdateRole}
-                className="flex-1 px-6 py-3 text-white font-bold rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-              >
-                Salvar
-              </button>
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>
+              <th className="text-left px-4 py-3 font-semibold text-gray-500">Empresa</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Role</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Status</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Diag.</th>
+              <th className="text-right px-4 py-3 font-semibold text-gray-500">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Carregando...</td></tr> :
+             users.length === 0 ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Nenhum usuário</td></tr> :
+             users.map((u) => (
+              <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="px-4 py-3"><p className="font-semibold text-brand-900">{u.name}</p><p className="text-xs text-gray-400">{u.email}</p></td>
+                <td className="px-4 py-3 text-gray-600">{u.companyName || '—'}</td>
+                <td className="px-4 py-3 text-center"><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${roleBadge(u.role)}`}>{u.role}</span></td>
+                <td className="px-4 py-3 text-center"><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${u.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{u.isActive ? 'Ativo' : 'Inativo'}</span></td>
+                <td className="px-4 py-3 text-center text-gray-500">{u._count?.diagnoses || 0}</td>
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <button onClick={() => handleToggleStatus(u)} className="px-2 py-1 text-[10px] font-medium rounded bg-gray-100 hover:bg-gray-200 text-gray-600">{u.isActive ? 'Desativar' : 'Ativar'}</button>
+                    {u.role === 'user' && <button onClick={() => handleChangeRole(u, 'admin')} className="px-2 py-1 text-[10px] font-medium rounded bg-blue-50 hover:bg-blue-100 text-blue-700">→ Admin</button>}
+                    {u.role === 'admin' && <button onClick={() => handleChangeRole(u, 'user')} className="px-2 py-1 text-[10px] font-medium rounded bg-gray-100 hover:bg-gray-200 text-gray-600">→ User</button>}
+                    <button onClick={() => setHoursModal(u)} className="px-2 py-1 text-[10px] font-medium rounded bg-purple-50 hover:bg-purple-100 text-purple-700">+Horas</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {pagination.totalPages > 1 && <div className="flex justify-center gap-2 mt-4">{Array.from({ length: pagination.totalPages }, (_, i) => (<button key={i} onClick={() => loadUsers(i + 1)} className={`px-3 py-1 text-sm rounded ${pagination.page === i + 1 ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600'}`}>{i + 1}</button>))}</div>}
+      {hoursModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setHoursModal(null)}>
+          <div className="bg-white rounded-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-brand-900 mb-4">Adicionar Horas — {hoursModal.name}</h3>
+            <input type="number" min="1" value={hours} onChange={e => setHours(e.target.value)} className="w-full mb-3 px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Horas" />
+            <textarea value={hoursReason} onChange={e => setHoursReason(e.target.value)} className="w-full mb-4 px-3 py-2 border border-gray-200 rounded-lg text-sm" rows={2} placeholder="Motivo" />
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setHoursModal(null)} className="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100">Cancelar</button>
+              <button onClick={handleAddHours} className="px-4 py-2 text-sm bg-brand-900 text-white rounded-lg">Adicionar</button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Hours Modal */}
-      {showHoursModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-            <h3 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Adicionar Horas</h3>
-            <p className="mb-4" style={{ color: '#666' }}>Usuário: <strong>{selectedUser.name}</strong></p>
-
-            <div className="mb-4">
-              <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>Horas a adicionar</label>
-              <input
-                type="number"
-                min="0"
-                step="0.5"
-                value={additionalHours}
-                onChange={(e) => setAdditionalHours(Number(e.target.value))}
-                className="w-full px-4 py-3 rounded-xl border-2"
-                style={{ borderColor: '#e5e5e5' }}
-              />
+      {createModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setCreateModal(false)}>
+          <div className="bg-white rounded-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-brand-900 mb-4">Criar Admin</h3>
+            <div className="space-y-3">
+              <input placeholder="Nome" value={newAdmin.name} onChange={e => setNewAdmin({ ...newAdmin, name: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input placeholder="Email" type="email" value={newAdmin.email} onChange={e => setNewAdmin({ ...newAdmin, email: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <input placeholder="Senha" type="password" value={newAdmin.password} onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              <select value={newAdmin.role} onChange={e => setNewAdmin({ ...newAdmin, role: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="admin">Admin</option><option value="superadmin">Superadmin</option></select>
             </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>Motivo</label>
-              <textarea
-                value={hoursReason}
-                onChange={(e) => setHoursReason(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 resize-none"
-                style={{ borderColor: '#e5e5e5' }}
-                rows={3}
-                placeholder="Ex: Bonificação comercial, correção de erro..."
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => { setShowHoursModal(false); setSelectedUser(null); setAdditionalHours(0); setHoursReason(''); }}
-                className="flex-1 px-6 py-3 border-2 rounded-xl font-bold"
-                style={{ borderColor: '#152F27', color: '#152F27' }}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleAddHours}
-                disabled={!additionalHours || !hoursReason}
-                className="flex-1 px-6 py-3 text-white font-bold rounded-xl disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-              >
-                Adicionar
-              </button>
+            <div className="flex justify-end gap-2 mt-4">
+              <button onClick={() => setCreateModal(false)} className="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100">Cancelar</button>
+              <button onClick={handleCreateAdmin} className="px-4 py-2 text-sm bg-brand-900 text-white rounded-lg">Criar</button>
             </div>
           </div>
         </div>

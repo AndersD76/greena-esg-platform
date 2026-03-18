@@ -564,6 +564,42 @@ export class AdminService {
   // ==================== HORAS DE CONSULTORIA ====================
 
   /**
+   * Adiciona horas de consultoria a um usuário
+   */
+  async addConsultationHours(userId: string, hours: number, reason: string) {
+    const subscription = await prisma.userSubscription.findFirst({
+      where: { userId, status: 'active' },
+      include: { plan: true },
+    });
+
+    if (!subscription) {
+      throw new Error('Usuário não possui assinatura ativa');
+    }
+
+    const updated = await prisma.userSubscription.update({
+      where: { id: subscription.id },
+      data: {
+        consultationHoursUsed: Math.max(0, subscription.consultationHoursUsed - hours),
+      },
+      include: { plan: true, user: { select: { id: true, name: true, email: true } } },
+    });
+
+    await prisma.activityLog.create({
+      data: {
+        userId,
+        actionType: 'consultation_hours_added',
+        description: `${hours}h adicionadas. Motivo: ${reason}`,
+      },
+    });
+
+    return {
+      subscription: updated,
+      hoursAdded: hours,
+      hoursRemaining: updated.plan.consultationHours - updated.consultationHoursUsed,
+    };
+  }
+
+  /**
    * Relatório de horas de consultoria
    */
   async getConsultationHoursReport() {

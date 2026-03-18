@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { AdminLayout } from './components/layout/AdminLayout';
 import { AdminGuard } from './components/AdminGuard';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
@@ -114,7 +115,7 @@ function ScrollToTop() {
 function AppRoutes() {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  const hideMainLayout = pathname === '/checkout' || pathname.includes('/stakeholder-report') || pathname.startsWith('/empresa/');
+  const hideMainLayout = pathname === '/checkout' || pathname.includes('/stakeholder-report') || pathname.startsWith('/empresa/') || pathname.startsWith('/admin');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -251,55 +252,15 @@ function AppRoutes() {
               </PrivateRoute>
             }
           />
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <AdminGuard>
-                <AdminDashboard />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <AdminGuard>
-                <AdminUsers />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/consultations"
-            element={
-              <AdminGuard>
-                <AdminConsultations />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/subscriptions"
-            element={
-              <AdminGuard>
-                <AdminSubscriptions />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/diagnoses"
-            element={
-              <AdminGuard>
-                <AdminDiagnoses />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/reports"
-            element={
-              <AdminGuard>
-                <AdminReports />
-              </AdminGuard>
-            }
-          />
+          {/* Admin Routes with Sidebar Layout */}
+          <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="diagnoses" element={<AdminDiagnoses />} />
+            <Route path="subscriptions" element={<AdminSubscriptions />} />
+            <Route path="consultations" element={<AdminConsultations />} />
+            <Route path="reports" element={<AdminReports />} />
+          </Route>
         </Routes>
       </main>
       {user && !hideMainLayout && <Footer />}

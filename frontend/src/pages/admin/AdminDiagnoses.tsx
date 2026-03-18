@@ -1,76 +1,37 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { adminService } from '../../services/admin.service';
-
-interface AdminDiagnosis {
-  id: string;
-  userId: string;
-  status: string;
-  startedAt: string;
-  completedAt: string | null;
-  overallScore: number | null;
-  environmentalScore: number | null;
-  socialScore: number | null;
-  governanceScore: number | null;
-  user: {
-    name: string;
-    email: string;
-    companyName: string | null;
-  };
-}
+import { useState, useEffect, useCallback } from 'react';
+import { adminService, AdminDiagnosis } from '../../services/admin.service';
 
 export default function AdminDiagnoses() {
   const [diagnoses, setDiagnoses] = useState<AdminDiagnosis[]>([]);
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+  const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('');
 
-  useEffect(() => {
-    loadDiagnoses();
-  }, [filter]);
-
-  async function loadDiagnoses() {
+  const loadDiagnoses = useCallback(async (page = 1) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await adminService.getDiagnoses(filter || undefined);
-      setDiagnoses(data);
-    } catch (error) {
-      console.error('Erro ao carregar diagnósticos:', error);
-    } finally {
-      setLoading(false);
-    }
+      const data = await adminService.getDiagnoses(page, 20, statusFilter || undefined);
+      setDiagnoses(data.diagnoses);
+      setPagination({ page: data.pagination.page, totalPages: data.pagination.totalPages, total: data.pagination.total });
+    } catch (e) { console.error(e); } finally { setLoading(false); }
+  }, [statusFilter]);
+
+  useEffect(() => { loadDiagnoses(1); }, [loadDiagnoses]);
+
+  const statusBadge = (s: string) => ({
+    completed: 'bg-green-100 text-green-700',
+    in_progress: 'bg-yellow-100 text-yellow-800',
+  }[s] || 'bg-gray-100 text-gray-600');
+
+  function getStatusLabel(s: string) {
+    return { completed: 'Concluído', in_progress: 'Em andamento' }[s] || s;
   }
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'in_progress':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'Concluído';
-      case 'in_progress':
-        return 'Em andamento';
-      default:
-        return status;
-    }
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return '#7B9965';
-    if (score >= 60) return '#EFD4A8';
-    if (score >= 40) return '#924131';
-    return '#666';
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+  const scoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600';
+    if (score >= 60) return 'text-yellow-600';
+    if (score >= 40) return 'text-orange-600';
+    return 'text-red-600';
   };
 
   const completedCount = diagnoses.filter(d => d.status === 'completed').length;
@@ -79,165 +40,89 @@ export default function AdminDiagnoses() {
     : 0;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
-      {/* Header */}
-      <div className="text-white py-6 px-8" style={{ background: 'linear-gradient(135deg, #152F27 0%, #1a3d33 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/admin" className="hover:opacity-80">
-                <span className="text-2xl">←</span>
-              </Link>
-              <div>
-                <h1 className="text-3xl font-black">Gestão de Diagnósticos</h1>
-                <p className="text-green-200 mt-1">Visualizar todos os diagnósticos ESG</p>
-              </div>
-            </div>
-          </div>
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-brand-900">Diagnósticos</h1>
+          <p className="text-sm text-gray-400">{pagination.total} total — {completedCount} concluídos — Score médio: {avgScore.toFixed(0)}</p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black" style={{ color: '#152F27' }}>{diagnoses.length}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Total</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black text-green-600">{completedCount}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Concluídos</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black text-yellow-600">{diagnoses.filter(d => d.status === 'in_progress').length}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Em andamento</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black" style={{ color: getScoreColor(avgScore) }}>{avgScore.toFixed(0)}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Score Médio</p>
-          </div>
-        </div>
+      <div className="flex gap-2 mb-6">
+        {[
+          { value: '', label: 'Todos' },
+          { value: 'completed', label: 'Concluídos' },
+          { value: 'in_progress', label: 'Em andamento' },
+        ].map((f) => (
+          <button key={f.value} onClick={() => setStatusFilter(f.value)}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${statusFilter === f.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex gap-2">
-            {['', 'completed', 'in_progress'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilter(status)}
-                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                  filter === status ? 'text-white' : 'border-2'
-                }`}
-                style={
-                  filter === status
-                    ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }
-                    : { borderColor: '#e5e5e5', color: '#666' }
-                }
-              >
-                {status === '' ? 'Todos' : getStatusLabel(status)}
-              </button>
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Status</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Data</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Geral</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">E</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">S</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">G</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={7} className="text-center py-8 text-gray-400">Carregando...</td></tr> :
+             diagnoses.length === 0 ? <tr><td colSpan={7} className="text-center py-8 text-gray-400">Nenhum diagnóstico</td></tr> :
+             diagnoses.map((d) => (
+              <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="px-4 py-3">
+                  <p className="font-semibold text-brand-900">{d.user.name}</p>
+                  <p className="text-xs text-gray-400">{d.user.companyName || d.user.email}</p>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(d.status)}`}>{getStatusLabel(d.status)}</span>
+                </td>
+                <td className="px-4 py-3 text-center text-gray-600 text-xs">
+                  {d.completedAt ? new Date(d.completedAt).toLocaleDateString('pt-BR') : new Date(d.createdAt).toLocaleDateString('pt-BR')}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {d.overallScore !== null
+                    ? <span className={`font-bold text-lg ${scoreColor(Number(d.overallScore))}`}>{Number(d.overallScore).toFixed(0)}</span>
+                    : <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {d.environmentalScore !== null
+                    ? <span className={`font-semibold ${scoreColor(Number(d.environmentalScore))}`}>{Number(d.environmentalScore).toFixed(0)}</span>
+                    : <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {d.socialScore !== null
+                    ? <span className={`font-semibold ${scoreColor(Number(d.socialScore))}`}>{Number(d.socialScore).toFixed(0)}</span>
+                    : <span className="text-gray-300">—</span>}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  {d.governanceScore !== null
+                    ? <span className={`font-semibold ${scoreColor(Number(d.governanceScore))}`}>{Number(d.governanceScore).toFixed(0)}</span>
+                    : <span className="text-gray-300">—</span>}
+                </td>
+              </tr>
             ))}
-          </div>
-        </div>
-
-        {/* Diagnoses List */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {loading ? (
-            <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-              <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando diagnósticos...</p>
-            </div>
-          ) : diagnoses.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-xl" style={{ color: '#666' }}>Nenhum diagnóstico encontrado</p>
-            </div>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr style={{ backgroundColor: '#f5f5f5' }}>
-                  <th className="px-6 py-4 text-left text-sm font-bold" style={{ color: '#152F27' }}>Cliente</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Status</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Data</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Score Geral</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>E</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>S</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>G</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {diagnoses.map((diagnosis) => (
-                  <tr key={diagnosis.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <p className="font-bold" style={{ color: '#152F27' }}>{diagnosis.user.name}</p>
-                      <p className="text-sm" style={{ color: '#666' }}>{diagnosis.user.companyName || diagnosis.user.email}</p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusBadge(diagnosis.status)}`}>
-                        {getStatusLabel(diagnosis.status)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <p className="text-sm" style={{ color: '#152F27' }}>
-                        {diagnosis.status === 'completed' && diagnosis.completedAt
-                          ? formatDate(diagnosis.completedAt)
-                          : formatDate(diagnosis.startedAt)
-                        }
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {diagnosis.overallScore !== null ? (
-                        <span className="text-2xl font-black" style={{ color: getScoreColor(Number(diagnosis.overallScore)) }}>
-                          {Number(diagnosis.overallScore).toFixed(0)}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#666' }}>-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {diagnosis.environmentalScore !== null ? (
-                        <span className="font-bold" style={{ color: getScoreColor(Number(diagnosis.environmentalScore)) }}>
-                          {Number(diagnosis.environmentalScore).toFixed(0)}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#666' }}>-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {diagnosis.socialScore !== null ? (
-                        <span className="font-bold" style={{ color: getScoreColor(Number(diagnosis.socialScore)) }}>
-                          {Number(diagnosis.socialScore).toFixed(0)}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#666' }}>-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {diagnosis.governanceScore !== null ? (
-                        <span className="font-bold" style={{ color: getScoreColor(Number(diagnosis.governanceScore)) }}>
-                          {Number(diagnosis.governanceScore).toFixed(0)}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#666' }}>-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      {diagnosis.status === 'completed' && (
-                        <Link
-                          to="/reports"
-                          className="px-3 py-1 rounded-lg text-xs font-bold bg-green-50 text-green-600 hover:bg-green-100"
-                        >
-                          Ver Relatório
-                        </Link>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+          </tbody>
+        </table>
       </div>
+
+      {pagination.totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {Array.from({ length: pagination.totalPages }, (_, i) => (
+            <button key={i} onClick={() => loadDiagnoses(i + 1)}
+              className={`px-3 py-1 text-sm rounded ${pagination.page === i + 1 ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600'}`}>{i + 1}</button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

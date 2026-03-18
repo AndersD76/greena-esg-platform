@@ -5,27 +5,43 @@ export interface AdminUser {
   email: string;
   name: string;
   companyName: string | null;
+  cnpj: string | null;
+  city: string | null;
+  sector: string | null;
   role: string;
   isActive: boolean;
   createdAt: string;
   _count?: {
     diagnoses: number;
-    subscriptions: number;
     consultations: number;
+    certificates: number;
   };
 }
 
 export interface AdminDashboardStats {
-  totalUsers: number;
-  activeUsers: number;
-  totalDiagnoses: number;
-  completedDiagnoses: number;
-  totalConsultations: number;
-  scheduledConsultations: number;
-  totalSubscriptions: number;
-  activeSubscriptions: number;
-  recentUsers: AdminUser[];
-  recentDiagnoses: any[];
+  users: {
+    total: number;
+    active: number;
+    newThisMonth: number;
+    growth: number;
+  };
+  diagnoses: {
+    total: number;
+    completed: number;
+    thisMonth: number;
+    completionRate: number;
+  };
+  consultations: {
+    total: number;
+    scheduled: number;
+    completed: number;
+  };
+  certificates: {
+    total: number;
+  };
+  subscriptions: {
+    active: number;
+  };
 }
 
 export interface AdminConsultation {
@@ -35,9 +51,13 @@ export interface AdminConsultation {
   duration: number;
   status: string;
   topic: string | null;
+  notes: string | null;
   meetingUrl: string | null;
+  meetingId: string | null;
   consultantName: string | null;
+  createdAt: string;
   user: {
+    id: string;
     name: string;
     email: string;
     companyName: string | null;
@@ -53,21 +73,53 @@ export interface AdminSubscription {
   planId: string;
   status: string;
   startDate: string;
-  endDate: string | null;
+  expiresAt: string | null;
   consultationHoursUsed: number;
+  createdAt: string;
   user: {
+    id: string;
     name: string;
     email: string;
     companyName: string | null;
   };
   plan: {
+    id: string;
     name: string;
+    code: string;
     price: number;
     consultationHours: number;
   };
 }
 
-class AdminService {
+export interface AdminDiagnosis {
+  id: string;
+  userId: string;
+  status: string;
+  overallScore: number | null;
+  environmentalScore: number | null;
+  socialScore: number | null;
+  governanceScore: number | null;
+  completedAt: string | null;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    companyName: string | null;
+  };
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+class AdminServiceClass {
   // Dashboard
   async getDashboardStats(): Promise<AdminDashboardStats> {
     const response = await api.get('/admin/dashboard');
@@ -75,37 +127,45 @@ class AdminService {
   }
 
   // Users
-  async getUsers(page = 1, limit = 10, search?: string): Promise<{ users: AdminUser[]; total: number; pages: number }> {
+  async getUsers(page = 1, limit = 20, search?: string, role?: string): Promise<{ users: AdminUser[]; pagination: any }> {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) });
     if (search) params.append('search', search);
+    if (role) params.append('role', role);
     const response = await api.get(`/admin/users?${params}`);
     return response.data;
   }
 
-  async getUserById(userId: string): Promise<AdminUser & { diagnoses: any[]; subscriptions: any[]; consultations: any[] }> {
+  async getUserById(userId: string): Promise<any> {
     const response = await api.get(`/admin/users/${userId}`);
     return response.data;
   }
 
-  async updateUserRole(userId: string, role: string): Promise<AdminUser> {
-    const response = await api.patch(`/admin/users/${userId}/role`, { role });
+  async updateUser(userId: string, data: { name?: string; role?: string; isActive?: boolean; companyName?: string }): Promise<AdminUser> {
+    const response = await api.put(`/admin/users/${userId}`, data);
     return response.data;
   }
 
   async toggleUserStatus(userId: string): Promise<AdminUser> {
-    const response = await api.patch(`/admin/users/${userId}/toggle-status`);
+    const response = await api.post(`/admin/users/${userId}/toggle-status`);
+    return response.data;
+  }
+
+  // Admins
+  async createAdmin(data: { email: string; password: string; name: string; role: string }): Promise<any> {
+    const response = await api.post('/admin/admins', data);
     return response.data;
   }
 
   // Consultations
-  async getConsultations(status?: string): Promise<AdminConsultation[]> {
-    const params = status ? `?status=${status}` : '';
-    const response = await api.get(`/admin/consultations${params}`);
+  async getConsultations(page = 1, limit = 20, status?: string): Promise<{ consultations: AdminConsultation[]; pagination: any }> {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.append('status', status);
+    const response = await api.get(`/admin/consultations?${params}`);
     return response.data;
   }
 
-  async updateConsultationStatus(id: string, status: string, notes?: string): Promise<any> {
-    const response = await api.patch(`/admin/consultations/${id}/status`, { status, notes });
+  async updateConsultation(id: string, data: { status?: string; consultantName?: string; notes?: string }): Promise<any> {
+    const response = await api.put(`/admin/consultations/${id}`, data);
     return response.data;
   }
 
@@ -115,40 +175,42 @@ class AdminService {
   }
 
   // Subscriptions
-  async getSubscriptions(status?: string): Promise<AdminSubscription[]> {
-    const params = status ? `?status=${status}` : '';
-    const response = await api.get(`/admin/subscriptions${params}`);
+  async getSubscriptions(page = 1, limit = 20, status?: string): Promise<{ subscriptions: AdminSubscription[]; pagination: any }> {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.append('status', status);
+    const response = await api.get(`/admin/subscriptions?${params}`);
     return response.data;
   }
 
-  async updateSubscriptionStatus(id: string, status: string): Promise<any> {
-    const response = await api.patch(`/admin/subscriptions/${id}/status`, { status });
+  async updateSubscription(id: string, data: { status?: string; expiresAt?: string }): Promise<any> {
+    const response = await api.put(`/admin/subscriptions/${id}`, data);
     return response.data;
   }
 
   // Diagnoses
-  async getDiagnoses(status?: string): Promise<any[]> {
-    const params = status ? `?status=${status}` : '';
-    const response = await api.get(`/admin/diagnoses${params}`);
+  async getDiagnoses(page = 1, limit = 20, status?: string): Promise<{ diagnoses: AdminDiagnosis[]; pagination: any }> {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+    if (status) params.append('status', status);
+    const response = await api.get(`/admin/diagnoses?${params}`);
     return response.data;
   }
 
   // Reports
-  async getReports(startDate?: string, endDate?: string): Promise<any> {
-    const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate);
-    if (endDate) params.append('endDate', endDate);
-    const response = await api.get(`/admin/reports?${params}`);
+  async getMetricsReport(dateFrom: string, dateTo: string): Promise<any> {
+    const response = await api.get(`/admin/reports/metrics?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+    return response.data;
+  }
+
+  async getConsultationHoursReport(): Promise<any[]> {
+    const response = await api.get('/admin/reports/consultation-hours');
     return response.data;
   }
 
   // Activities
-  async getActivities(userId?: string, limit = 50): Promise<any[]> {
-    const params = new URLSearchParams({ limit: String(limit) });
-    if (userId) params.append('userId', userId);
-    const response = await api.get(`/admin/activities?${params}`);
+  async getActivities(limit = 50): Promise<any[]> {
+    const response = await api.get(`/admin/activities?limit=${limit}`);
     return response.data;
   }
 }
 
-export const adminService = new AdminService();
+export const adminService = new AdminServiceClass();

@@ -1,285 +1,144 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import { adminService, AdminConsultation } from '../../services/admin.service';
 
 export default function AdminConsultations() {
   const [consultations, setConsultations] = useState<AdminConsultation[]>([]);
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+  const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('');
-  const [selectedConsultation, setSelectedConsultation] = useState<AdminConsultation | null>(null);
-  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [modal, setModal] = useState<AdminConsultation | null>(null);
   const [newStatus, setNewStatus] = useState('');
   const [notes, setNotes] = useState('');
 
-  useEffect(() => {
-    loadConsultations();
-  }, [filter]);
-
-  async function loadConsultations() {
+  const loadConsultations = useCallback(async (page = 1) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await adminService.getConsultations(filter || undefined);
-      setConsultations(data);
-    } catch (error) {
-      console.error('Erro ao carregar consultorias:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
+      const data = await adminService.getConsultations(page, 20, statusFilter || undefined);
+      setConsultations(data.consultations);
+      setPagination({ page: data.pagination.page, totalPages: data.pagination.totalPages, total: data.pagination.total });
+    } catch (e) { console.error(e); } finally { setLoading(false); }
+  }, [statusFilter]);
+
+  useEffect(() => { loadConsultations(1); }, [loadConsultations]);
+
+  function flash(m: string) { setMsg(m); setTimeout(() => setMsg(''), 3000); }
 
   async function handleUpdateStatus() {
-    if (!selectedConsultation || !newStatus) return;
-
+    if (!modal || !newStatus) return;
     try {
-      await adminService.updateConsultationStatus(selectedConsultation.id, newStatus, notes || undefined);
-      setShowStatusModal(false);
-      setSelectedConsultation(null);
-      setNewStatus('');
-      setNotes('');
-      loadConsultations();
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-      alert('Erro ao atualizar status da consultoria');
-    }
+      await adminService.updateConsultation(modal.id, { status: newStatus, notes: notes || undefined });
+      flash(`Status atualizado para ${getStatusLabel(newStatus)}`);
+      setModal(null); setNewStatus(''); setNotes('');
+      loadConsultations(pagination.page);
+    } catch (e: any) { flash(e.message); }
   }
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'scheduled':
-        return 'bg-blue-100 text-blue-800';
-      case 'in_progress':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  const statusBadge = (s: string) => ({
+    scheduled: 'bg-blue-100 text-blue-800',
+    in_progress: 'bg-yellow-100 text-yellow-800',
+    completed: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+  }[s] || 'bg-gray-100 text-gray-600');
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'scheduled':
-        return 'Agendada';
-      case 'in_progress':
-        return 'Em andamento';
-      case 'completed':
-        return 'Concluída';
-      case 'cancelled':
-        return 'Cancelada';
-      default:
-        return status;
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return {
-      date: date.toLocaleDateString('pt-BR'),
-      time: date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-    };
-  };
-
-  const scheduledCount = consultations.filter(c => c.status === 'scheduled').length;
-  const inProgressCount = consultations.filter(c => c.status === 'in_progress').length;
-  const completedCount = consultations.filter(c => c.status === 'completed').length;
+  function getStatusLabel(s: string) {
+    return { scheduled: 'Agendada', in_progress: 'Em andamento', completed: 'Concluída', cancelled: 'Cancelada' }[s] || s;
+  }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
-      {/* Header */}
-      <div className="text-white py-6 px-8" style={{ background: 'linear-gradient(135deg, #152F27 0%, #1a3d33 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/admin" className="hover:opacity-80">
-                <span className="text-2xl">←</span>
-              </Link>
-              <div>
-                <h1 className="text-3xl font-black">Gestão de Consultorias</h1>
-                <p className="text-green-200 mt-1">Gerenciar agendamentos e reuniões</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="p-8">
+      {msg && <div className="fixed top-4 right-4 bg-brand-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">{msg}</div>}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-brand-900">Consultorias</h1>
+        <p className="text-sm text-gray-400">{pagination.total} registradas</p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black" style={{ color: '#152F27' }}>{consultations.length}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Total</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black text-blue-600">{scheduledCount}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Agendadas</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black text-yellow-600">{inProgressCount}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Em andamento</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black text-green-600">{completedCount}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Concluídas</p>
-          </div>
-        </div>
+      <div className="flex gap-2 mb-6">
+        {[
+          { value: '', label: 'Todas' },
+          { value: 'scheduled', label: 'Agendadas' },
+          { value: 'in_progress', label: 'Em andamento' },
+          { value: 'completed', label: 'Concluídas' },
+          { value: 'cancelled', label: 'Canceladas' },
+        ].map((f) => (
+          <button key={f.value} onClick={() => setStatusFilter(f.value)}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${statusFilter === f.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex gap-2">
-            {['', 'scheduled', 'in_progress', 'completed', 'cancelled'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilter(status)}
-                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                  filter === status ? 'text-white' : 'border-2'
-                }`}
-                style={
-                  filter === status
-                    ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }
-                    : { borderColor: '#e5e5e5', color: '#666' }
-                }
-              >
-                {status === '' ? 'Todas' : getStatusLabel(status)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Consultations List */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {loading ? (
-            <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-              <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando consultorias...</p>
-            </div>
-          ) : consultations.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-xl" style={{ color: '#666' }}>Nenhuma consultoria encontrada</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {consultations.map((consultation) => {
-                const { date, time } = formatDate(consultation.scheduledAt);
-                return (
-                  <div key={consultation.id} className="p-6 hover:bg-gray-50">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusBadge(consultation.status)}`}>
-                            {getStatusLabel(consultation.status)}
-                          </span>
-                          <span className="text-sm font-bold" style={{ color: '#152F27' }}>
-                            {date} às {time}
-                          </span>
-                          <span className="text-sm" style={{ color: '#666' }}>
-                            ({consultation.duration} min)
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-6">
-                          <div>
-                            <p className="font-bold" style={{ color: '#152F27' }}>{consultation.user.name}</p>
-                            <p className="text-sm" style={{ color: '#666' }}>{consultation.user.companyName || consultation.user.email}</p>
-                          </div>
-
-                          {consultation.topic && (
-                            <div>
-                              <p className="text-xs font-bold" style={{ color: '#666' }}>TÓPICO</p>
-                              <p className="text-sm" style={{ color: '#152F27' }}>{consultation.topic}</p>
-                            </div>
-                          )}
-
-                          {consultation._count.messages > 0 && (
-                            <div>
-                              <p className="text-xs font-bold" style={{ color: '#666' }}>MENSAGENS</p>
-                              <p className="text-sm" style={{ color: '#152F27' }}>{consultation._count.messages}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {consultation.meetingUrl && consultation.status === 'scheduled' && (
-                          <a
-                            href={consultation.meetingUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-4 py-2 rounded-lg font-bold text-sm text-white"
-                            style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-                          >
-                            Entrar na Sala
-                          </a>
-                        )}
-                        <button
-                          onClick={() => { setSelectedConsultation(consultation); setNewStatus(consultation.status); setShowStatusModal(true); }}
-                          className="px-4 py-2 rounded-lg font-bold text-sm border-2"
-                          style={{ borderColor: '#152F27', color: '#152F27' }}
-                        >
-                          Alterar Status
-                        </button>
-                      </div>
-                    </div>
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Status</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Data</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Duração</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Msgs</th>
+              <th className="text-right px-4 py-3 font-semibold text-gray-500">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Carregando...</td></tr> :
+             consultations.length === 0 ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Nenhuma consultoria</td></tr> :
+             consultations.map((c) => (
+              <tr key={c.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="px-4 py-3">
+                  <p className="font-semibold text-brand-900">{c.user.name}</p>
+                  <p className="text-xs text-gray-400">{c.user.companyName || c.user.email}</p>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(c.status)}`}>{getStatusLabel(c.status)}</span>
+                </td>
+                <td className="px-4 py-3 text-center text-gray-600">
+                  {new Date(c.scheduledAt).toLocaleDateString('pt-BR')}
+                  <p className="text-[10px] text-gray-400">{new Date(c.scheduledAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                </td>
+                <td className="px-4 py-3 text-center text-gray-600">{c.duration}min</td>
+                <td className="px-4 py-3 text-center text-gray-500">{c._count.messages}</td>
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    {c.meetingUrl && c.status === 'scheduled' && (
+                      <a href={c.meetingUrl} target="_blank" rel="noopener noreferrer"
+                        className="px-2 py-1 text-[10px] font-medium rounded bg-green-50 hover:bg-green-100 text-green-700">Entrar</a>
+                    )}
+                    <button onClick={() => { setModal(c); setNewStatus(c.status); }}
+                      className="px-2 py-1 text-[10px] font-medium rounded bg-blue-50 hover:bg-blue-100 text-blue-700">Alterar Status</button>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Status Modal */}
-      {showStatusModal && selectedConsultation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-            <h3 className="text-2xl font-black mb-4" style={{ color: '#152F27' }}>Alterar Status</h3>
-            <p className="mb-4" style={{ color: '#666' }}>
-              Consultoria de <strong>{selectedConsultation.user.name}</strong>
-            </p>
+      {pagination.totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {Array.from({ length: pagination.totalPages }, (_, i) => (
+            <button key={i} onClick={() => loadConsultations(i + 1)}
+              className={`px-3 py-1 text-sm rounded ${pagination.page === i + 1 ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600'}`}>{i + 1}</button>
+          ))}
+        </div>
+      )}
 
-            <div className="mb-4">
-              <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>Novo Status</label>
-              <select
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2"
-                style={{ borderColor: '#e5e5e5' }}
-              >
-                <option value="scheduled">Agendada</option>
-                <option value="in_progress">Em andamento</option>
-                <option value="completed">Concluída</option>
-                <option value="cancelled">Cancelada</option>
-              </select>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>Observações (opcional)</label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 resize-none"
-                style={{ borderColor: '#e5e5e5' }}
-                rows={3}
-                placeholder="Adicionar observações..."
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() => { setShowStatusModal(false); setSelectedConsultation(null); setNewStatus(''); setNotes(''); }}
-                className="flex-1 px-6 py-3 border-2 rounded-xl font-bold"
-                style={{ borderColor: '#152F27', color: '#152F27' }}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleUpdateStatus}
-                className="flex-1 px-6 py-3 text-white font-bold rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-              >
-                Salvar
-              </button>
+      {modal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setModal(null)}>
+          <div className="bg-white rounded-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-brand-900 mb-4">Alterar Status — {modal.user.name}</h3>
+            <select value={newStatus} onChange={e => setNewStatus(e.target.value)}
+              className="w-full mb-3 px-3 py-2 border border-gray-200 rounded-lg text-sm">
+              <option value="scheduled">Agendada</option>
+              <option value="in_progress">Em andamento</option>
+              <option value="completed">Concluída</option>
+              <option value="cancelled">Cancelada</option>
+            </select>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)}
+              className="w-full mb-4 px-3 py-2 border border-gray-200 rounded-lg text-sm" rows={2} placeholder="Observações (opcional)" />
+            <div className="flex justify-end gap-2">
+              <button onClick={() => { setModal(null); setNewStatus(''); setNotes(''); }} className="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100">Cancelar</button>
+              <button onClick={handleUpdateStatus} className="px-4 py-2 text-sm bg-brand-900 text-white rounded-lg">Salvar</button>
             </div>
           </div>
         </div>

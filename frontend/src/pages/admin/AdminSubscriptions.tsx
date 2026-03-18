@@ -1,253 +1,141 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import { adminService, AdminSubscription } from '../../services/admin.service';
 
 export default function AdminSubscriptions() {
   const [subscriptions, setSubscriptions] = useState<AdminSubscription[]>([]);
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+  const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('');
+  const [msg, setMsg] = useState('');
 
-  useEffect(() => {
-    loadSubscriptions();
-  }, [filter]);
-
-  async function loadSubscriptions() {
+  const loadSubscriptions = useCallback(async (page = 1) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await adminService.getSubscriptions(filter || undefined);
-      setSubscriptions(data);
-    } catch (error) {
-      console.error('Erro ao carregar assinaturas:', error);
-    } finally {
-      setLoading(false);
-    }
+      const data = await adminService.getSubscriptions(page, 20, statusFilter || undefined);
+      setSubscriptions(data.subscriptions);
+      setPagination({ page: data.pagination.page, totalPages: data.pagination.totalPages, total: data.pagination.total });
+    } catch (e) { console.error(e); } finally { setLoading(false); }
+  }, [statusFilter]);
+
+  useEffect(() => { loadSubscriptions(1); }, [loadSubscriptions]);
+
+  function flash(m: string) { setMsg(m); setTimeout(() => setMsg(''), 3000); }
+
+  async function handleUpdateStatus(sub: AdminSubscription, newStatus: string) {
+    try {
+      await adminService.updateSubscription(sub.id, { status: newStatus });
+      flash(`Assinatura de ${sub.user.name} → ${getStatusLabel(newStatus)}`);
+      loadSubscriptions(pagination.page);
+    } catch (e: any) { flash(e.message); }
   }
 
-  async function handleUpdateStatus(subscription: AdminSubscription, newStatus: string) {
-    if (!confirm(`Deseja alterar o status da assinatura para "${newStatus}"?`)) return;
+  const statusBadge = (s: string) => ({
+    active: 'bg-green-100 text-green-700',
+    cancelled: 'bg-red-100 text-red-700',
+    expired: 'bg-gray-100 text-gray-600',
+    pending: 'bg-yellow-100 text-yellow-800',
+  }[s] || 'bg-gray-100 text-gray-600');
 
-    try {
-      await adminService.updateSubscriptionStatus(subscription.id, newStatus);
-      loadSubscriptions();
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-      alert('Erro ao atualizar status da assinatura');
-    }
+  function getStatusLabel(s: string) {
+    return { active: 'Ativa', cancelled: 'Cancelada', expired: 'Expirada', pending: 'Pendente' }[s] || s;
   }
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      case 'expired':
-        return 'bg-gray-100 text-gray-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'Ativa';
-      case 'cancelled':
-        return 'Cancelada';
-      case 'expired':
-        return 'Expirada';
-      case 'pending':
-        return 'Pendente';
-      default:
-        return status;
-    }
-  };
-
-  const getPlanBadge = (planName: string) => {
-    if (planName.toLowerCase().includes('premium') || planName.toLowerCase().includes('avançado')) {
-      return 'bg-purple-100 text-purple-800';
-    }
-    if (planName.toLowerCase().includes('profissional')) {
-      return 'bg-blue-100 text-blue-800';
-    }
-    return 'bg-gray-100 text-gray-800';
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  };
+  const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   const activeCount = subscriptions.filter(s => s.status === 'active').length;
-  const totalRevenue = subscriptions
-    .filter(s => s.status === 'active')
-    .reduce((sum, s) => sum + Number(s.plan.price), 0);
+  const totalRevenue = subscriptions.filter(s => s.status === 'active').reduce((sum, s) => sum + Number(s.plan.price), 0);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
-      {/* Header */}
-      <div className="text-white py-6 px-8" style={{ background: 'linear-gradient(135deg, #152F27 0%, #1a3d33 100%)' }}>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/admin" className="hover:opacity-80">
-                <span className="text-2xl">←</span>
-              </Link>
-              <div>
-                <h1 className="text-3xl font-black">Gestão de Assinaturas</h1>
-                <p className="text-green-200 mt-1">Gerenciar planos e pagamentos</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="p-8">
+      {msg && <div className="fixed top-4 right-4 bg-brand-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">{msg}</div>}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-brand-900">Assinaturas</h1>
+        <p className="text-sm text-gray-400">{pagination.total} registradas — {activeCount} ativas — Receita: {fmt(totalRevenue)}/mês</p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black" style={{ color: '#152F27' }}>{subscriptions.length}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Total</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black text-green-600">{activeCount}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Ativas</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black" style={{ color: '#7B9965' }}>{formatCurrency(totalRevenue)}</p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Receita Mensal</p>
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <p className="text-3xl font-black" style={{ color: '#152F27' }}>
-              {subscriptions.reduce((sum, s) => sum + s.consultationHoursUsed, 0).toFixed(1)}h
-            </p>
-            <p className="text-sm font-bold" style={{ color: '#666' }}>Horas Utilizadas</p>
-          </div>
-        </div>
+      <div className="flex gap-2 mb-6">
+        {[
+          { value: '', label: 'Todas' },
+          { value: 'active', label: 'Ativas' },
+          { value: 'pending', label: 'Pendentes' },
+          { value: 'cancelled', label: 'Canceladas' },
+          { value: 'expired', label: 'Expiradas' },
+        ].map((f) => (
+          <button key={f.value} onClick={() => setStatusFilter(f.value)}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${statusFilter === f.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex gap-2">
-            {['', 'active', 'pending', 'cancelled', 'expired'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setFilter(status)}
-                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
-                  filter === status ? 'text-white' : 'border-2'
-                }`}
-                style={
-                  filter === status
-                    ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }
-                    : { borderColor: '#e5e5e5', color: '#666' }
-                }
-              >
-                {status === '' ? 'Todas' : getStatusLabel(status)}
-              </button>
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th className="text-left px-4 py-3 font-semibold text-gray-500">Cliente</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Plano</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Status</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Período</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Horas</th>
+              <th className="text-right px-4 py-3 font-semibold text-gray-500">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Carregando...</td></tr> :
+             subscriptions.length === 0 ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Nenhuma assinatura</td></tr> :
+             subscriptions.map((s) => (
+              <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <td className="px-4 py-3">
+                  <p className="font-semibold text-brand-900">{s.user.name}</p>
+                  <p className="text-xs text-gray-400">{s.user.companyName || s.user.email}</p>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <p className="font-semibold text-brand-900">{s.plan.name}</p>
+                  <p className="text-[10px] text-gray-400">{fmt(Number(s.plan.price))}/mês</p>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(s.status)}`}>{getStatusLabel(s.status)}</span>
+                </td>
+                <td className="px-4 py-3 text-center text-gray-600 text-xs">
+                  <p>{new Date(s.startDate).toLocaleDateString('pt-BR')}</p>
+                  {s.expiresAt && <p className="text-gray-400">até {new Date(s.expiresAt).toLocaleDateString('pt-BR')}</p>}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <p className="font-semibold text-brand-900">{s.consultationHoursUsed}h / {s.plan.consultationHours}h</p>
+                  <div className="w-full h-1.5 bg-gray-200 rounded-full mt-1">
+                    <div className="h-full rounded-full bg-brand-700" style={{ width: `${Math.min(100, s.plan.consultationHours > 0 ? (s.consultationHoursUsed / s.plan.consultationHours) * 100 : 0)}%` }} />
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    {s.status === 'active' && (
+                      <button onClick={() => handleUpdateStatus(s, 'cancelled')}
+                        className="px-2 py-1 text-[10px] font-medium rounded bg-red-50 hover:bg-red-100 text-red-700">Cancelar</button>
+                    )}
+                    {s.status === 'cancelled' && (
+                      <button onClick={() => handleUpdateStatus(s, 'active')}
+                        className="px-2 py-1 text-[10px] font-medium rounded bg-green-50 hover:bg-green-100 text-green-700">Reativar</button>
+                    )}
+                    {s.status === 'pending' && (
+                      <button onClick={() => handleUpdateStatus(s, 'active')}
+                        className="px-2 py-1 text-[10px] font-medium rounded bg-green-50 hover:bg-green-100 text-green-700">Aprovar</button>
+                    )}
+                  </div>
+                </td>
+              </tr>
             ))}
-          </div>
-        </div>
-
-        {/* Subscriptions List */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {loading ? (
-            <div className="p-12 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-              <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Carregando assinaturas...</p>
-            </div>
-          ) : subscriptions.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-xl" style={{ color: '#666' }}>Nenhuma assinatura encontrada</p>
-            </div>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr style={{ backgroundColor: '#f5f5f5' }}>
-                  <th className="px-6 py-4 text-left text-sm font-bold" style={{ color: '#152F27' }}>Cliente</th>
-                  <th className="px-6 py-4 text-left text-sm font-bold" style={{ color: '#152F27' }}>Plano</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Status</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Período</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Horas</th>
-                  <th className="px-6 py-4 text-center text-sm font-bold" style={{ color: '#152F27' }}>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {subscriptions.map((subscription) => (
-                  <tr key={subscription.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <p className="font-bold" style={{ color: '#152F27' }}>{subscription.user.name}</p>
-                      <p className="text-sm" style={{ color: '#666' }}>{subscription.user.companyName || subscription.user.email}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${getPlanBadge(subscription.plan.name)}`}>
-                        {subscription.plan.name}
-                      </span>
-                      <p className="text-sm mt-1" style={{ color: '#666' }}>{formatCurrency(Number(subscription.plan.price))}/mês</p>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusBadge(subscription.status)}`}>
-                        {getStatusLabel(subscription.status)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <p className="text-sm" style={{ color: '#152F27' }}>{formatDate(subscription.startDate)}</p>
-                      {subscription.endDate && (
-                        <p className="text-xs" style={{ color: '#666' }}>até {formatDate(subscription.endDate)}</p>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <p className="font-bold" style={{ color: '#152F27' }}>
-                        {subscription.consultationHoursUsed}h / {subscription.plan.consultationHours}h
-                      </p>
-                      <div className="w-full h-2 bg-gray-200 rounded-full mt-1">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${Math.min(100, (subscription.consultationHoursUsed / subscription.plan.consultationHours) * 100)}%`,
-                            backgroundColor: '#7B9965'
-                          }}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center gap-2">
-                        {subscription.status === 'active' && (
-                          <button
-                            onClick={() => handleUpdateStatus(subscription, 'cancelled')}
-                            className="px-3 py-1 rounded-lg text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100"
-                          >
-                            Cancelar
-                          </button>
-                        )}
-                        {subscription.status === 'cancelled' && (
-                          <button
-                            onClick={() => handleUpdateStatus(subscription, 'active')}
-                            className="px-3 py-1 rounded-lg text-xs font-bold bg-green-50 text-green-600 hover:bg-green-100"
-                          >
-                            Reativar
-                          </button>
-                        )}
-                        {subscription.status === 'pending' && (
-                          <button
-                            onClick={() => handleUpdateStatus(subscription, 'active')}
-                            className="px-3 py-1 rounded-lg text-xs font-bold bg-green-50 text-green-600 hover:bg-green-100"
-                          >
-                            Aprovar
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+          </tbody>
+        </table>
       </div>
+
+      {pagination.totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {Array.from({ length: pagination.totalPages }, (_, i) => (
+            <button key={i} onClick={() => loadSubscriptions(i + 1)}
+              className={`px-3 py-1 text-sm rounded ${pagination.page === i + 1 ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-600'}`}>{i + 1}</button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
