@@ -47,9 +47,6 @@ export default function Contact() {
               <Link to="/#sobre" className="text-sm font-semibold transition-colors" style={{ color: '#152F27' }}>
                 Sobre
               </Link>
-              <Link to="/#pilares" className="text-sm font-semibold transition-colors" style={{ color: '#152F27' }}>
-                Pilares ESG
-              </Link>
               <Link
                 to="/login"
                 className="px-6 py-2.5 text-sm font-bold text-white rounded-lg transition-all hover:opacity-90"
@@ -83,7 +80,7 @@ export default function Contact() {
                 Envie sua mensagem
               </h2>
               <p className="text-gray-600 mb-8">
-                Preencha o formulário abaixo e nossa equipe entrará em contato em até 24 horas.
+                Preencha o formulário abaixo e nossa equipe entrará em contato.
               </p>
 
               {success && (

@@ -119,7 +119,7 @@ export default function LandingPage() {
                 Diagnóstico<br/>ESG completo
               </h1>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg">
-                Avalie práticas ambientais, sociais e de governança em minutos. Receba insights personalizados e um plano de ação para tornar sua empresa mais sustentável.
+                Avalie práticas ambientais, sociais e de governança. Receba insights personalizados e um plano de ação para tornar sua empresa mais sustentável.
               </p>
               <div className="flex flex-wrap gap-3 mb-12">
                 <Link to="/register" className="px-8 py-3.5 text-sm font-semibold text-white rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
@@ -128,18 +128,6 @@ export default function LandingPage() {
                 <button onClick={() => setShowDemo(true)} className="px-8 py-3.5 text-sm font-semibold rounded-full border-2 transition-all hover:bg-white" style={{ borderColor: '#152F27', color: '#152F27' }}>
                   Ver demo
                 </button>
-              </div>
-              <div className="flex gap-4">
-                {[
-                  { value: '+500', label: 'Empresas avaliadas' },
-                  { value: '15 min', label: 'Tempo médio' },
-                  { value: '98%', label: 'Satisfação' }
-                ].map((stat, i) => (
-                  <div key={i} className="px-5 py-4 bg-white rounded-2xl border border-gray-100">
-                    <p className="text-2xl font-bold" style={{ color: '#152F27' }}>{stat.value}</p>
-                    <p className="text-xs text-gray-500 font-medium">{stat.label}</p>
-                  </div>
-                ))}
               </div>
             </div>
 
@@ -158,7 +146,6 @@ export default function LandingPage() {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold" style={{ color: card.color }}>{card.title}</h3>
                     <p className="text-sm text-gray-500">{card.subtitle}</p>
-                    <p className="text-xs font-medium mt-1" style={{ color: card.color }}>{card.detail}</p>
                   </div>
                 </div>
               ))}
@@ -172,14 +159,13 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Por que engreena</p>
-            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>A plataforma ESG mais completa do Brasil</h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">Tudo que sua empresa precisa para iniciar e evoluir na jornada ESG</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { title: '215 Perguntas ESG', description: 'Questionário completo cobrindo Environmental, Social e Governance com metodologia internacional.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
-              { title: 'Relatórios Inteligentes', description: 'Dashboards interativos com análises profundas, gráficos e insights acionáveis em tempo real.', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
-              { title: 'Certificação ESG engreena', description: 'Certificação que valida sua performance e compromisso ESG com metodologia própria reconhecida.', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' }
+              { title: '215 Perguntas ESG', description: 'Questionário completo cobrindo Environmental, Social e Governance.', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
+              { title: 'Relatórios Inteligentes', description: 'Dashboards com gráficos e insights acionáveis em tempo real.', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+              { title: 'Certificação ESG engreena', description: 'Certificação que valida sua performance e compromisso ESG.', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' }
             ].map((feature, i) => (
               <div key={i} className="p-8 rounded-2xl border border-gray-100 transition-all hover:shadow-md hover:-translate-y-1">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: '#e2f7d0' }}>
@@ -201,7 +187,6 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Metodologia</p>
             <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Avaliação completa dos 3 pilares ESG</h2>
-            <p className="text-lg text-gray-500">Metodologia estruturada e reconhecida globalmente</p>
           </div>
           <div className="grid lg:grid-cols-3 gap-8">
             {[
@@ -248,9 +233,9 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { level: 'Bronze', title: 'Compromisso ESG', score: '0-39 pontos', color: '#CD7F32', seal: '/images/assets/selo-bronze.png' },
+              { level: 'Ouro', title: 'Liderança ESG', score: '70-100 pontos', color: '#FFD700', seal: '/images/assets/selo-ouro.png' },
               { level: 'Prata', title: 'Integração ESG', score: '40-69 pontos', color: '#C0C0C0', seal: '/images/assets/selo-prata.png' },
-              { level: 'Ouro', title: 'Liderança ESG', score: '70-100 pontos', color: '#FFD700', seal: '/images/assets/selo-ouro.png' }
+              { level: 'Bronze', title: 'Compromisso ESG', score: '0-39 pontos', color: '#CD7F32', seal: '/images/assets/selo-bronze.png' }
             ].map((cert, i) => (
               <div key={i} className="text-center p-8 rounded-2xl border-2 transition-all hover:shadow-md hover:-translate-y-1" style={{ borderColor: cert.color + '60' }}>
                 <img src={cert.seal} alt={`Selo ${cert.level}`} className="w-28 h-28 object-contain mx-auto mb-5" />
@@ -273,10 +258,10 @@ export default function LandingPage() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { name: 'Demo', code: 'free', price: 'Grátis', period: '', highlight: false, features: [{ text: 'Diagnóstico rápido (6 perguntas)', included: true }, { text: 'Resultado simplificado', included: true }, { text: 'Relatório completo', included: false }, { text: 'Consultoria', included: false }, { text: 'Certificação', included: false }], cta: 'Começar Grátis', subtitle: 'Conheça a plataforma' },
-              { name: 'Start', code: 'start', price: 'R$ 49', period: '/mês', highlight: false, features: [{ text: 'Diagnóstico completo (215 perguntas)', included: true }, { text: 'Dashboard de indicadores', included: true }, { text: 'Relatório detalhado', included: true }, { text: 'Consultoria', included: false }, { text: 'Certificação', included: false }], cta: 'Assinar Start', subtitle: 'Para quem está começando' },
-              { name: 'Grow', code: 'grow', price: 'R$ 99', period: '/mês', highlight: true, features: [{ text: 'Tudo do Start', included: true }, { text: '2h/mês de consultoria ESG', included: true }, { text: 'Certificação ESG', included: true }, { text: 'Insights estratégicos', included: true }, { text: 'Planos de ação', included: false }], cta: 'Assinar Grow', badge: 'Recomendado', subtitle: 'Mais escolhido' },
-              { name: 'Impact', code: 'impact', price: 'R$ 159', period: '/mês', highlight: false, features: [{ text: 'Tudo do Grow', included: true }, { text: '4h/mês de consultoria ESG', included: true }, { text: 'Planos de ação personalizados', included: true }, { text: 'Benchmarking setorial', included: true }, { text: 'Suporte prioritário', included: true }], cta: 'Assinar Impact', subtitle: 'Máximo impacto' }
+              { name: 'Demo', code: 'free', price: 'Grátis', period: '', highlight: false, features: [{ text: 'Diagnóstico rápido (6 perguntas)', included: true }, { text: 'Resultado simplificado', included: true }, { text: 'Consultoria', included: false }, { text: 'Certificação', included: false }], cta: 'Começar Grátis', subtitle: 'Conheça a plataforma' },
+              { name: 'Start', code: 'start', price: 'R$ 49', period: '/mês', highlight: false, features: [{ text: 'Diagnóstico completo (215 perguntas)', included: true }, { text: 'Dashboard de indicadores', included: true }, { text: 'Consultoria', included: false }, { text: 'Certificação', included: false }], cta: 'Assinar Start', subtitle: 'Para quem está começando' },
+              { name: 'Grow', code: 'grow', price: 'R$ 99', period: '/mês', highlight: true, features: [{ text: 'Tudo do Start', included: true }, { text: '2h/mês de consultoria ESG', included: true }, { text: 'Certificação ESG', included: true }, { text: 'Planos de ação', included: false }], cta: 'Assinar Grow', badge: 'Recomendado', subtitle: 'Mais escolhido' },
+              { name: 'Impact', code: 'impact', price: 'R$ 159', period: '/mês', highlight: false, features: [{ text: 'Tudo do Grow', included: true }, { text: '4h/mês de consultoria ESG', included: true }, { text: 'Planos de ação personalizados', included: true }, { text: 'Suporte prioritário', included: true }], cta: 'Assinar Impact', subtitle: 'Máximo impacto' }
             ].map((plan, i) => (
               <div key={i} className={`relative rounded-2xl bg-white transition-all ${plan.highlight ? 'shadow-lg ring-2 scale-[1.02] z-10' : 'border border-gray-100 hover:shadow-md'}`} style={plan.highlight ? { '--tw-ring-color': '#7B9965' } as any : undefined}>
                 {plan.badge && (
@@ -326,7 +311,7 @@ export default function LandingPage() {
             <div className="p-8 rounded-2xl border border-white/10 bg-white/5">
               <h3 className="text-xl font-bold text-white mb-6">O que inclui?</h3>
               <ul className="space-y-4">
-                {['Orientação estratégica personalizada', 'Análise de resultados do diagnóstico', 'Plano de ação para melhorias', 'Acompanhamento de implementação', 'Benchmarking setorial', 'Preparação para auditorias'].map((item, i) => (
+                {['Análise de resultados do diagnóstico', 'Plano de ação para melhorias'].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-white/90">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e2f7d0" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                     <span className="text-sm font-medium">{item}</span>
@@ -351,9 +336,6 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-          <div className="text-center p-6 rounded-2xl bg-white/5 border border-white/10">
-            <p className="text-white text-sm"><strong style={{ color: '#e2f7d0' }}>Certificados ganham horas extras!</strong> Bronze: 1h extra · Prata: 3h extras · Ouro: 6h extras de consultoria gratuita</p>
-          </div>
         </div>
       </section>
 
@@ -361,10 +343,9 @@ export default function LandingPage() {
       <section className="py-24 px-6" style={{ backgroundColor: '#f5ffeb' }}>
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6" style={{ color: '#152F27' }}>Pronto para liderar a sustentabilidade?</h2>
-          <p className="text-lg text-gray-500 mb-10 max-w-xl mx-auto">Junte-se a mais de 500 empresas que já estão transformando seus negócios com práticas ESG de excelência.</p>
+          <p className="text-lg text-gray-500 mb-10 max-w-xl mx-auto">Junte-se a empresas que já estão transformando seus negócios com práticas ESG de excelência.</p>
           <Link to="/register" className="inline-flex items-center gap-3 px-10 py-4 text-white font-semibold rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
-            Começar agora — é grátis
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Começar agora
           </Link>
           <p className="mt-6 text-sm text-gray-400">Sem cartão de crédito · Suporte disponível · Certificação inclusa</p>
         </div>
@@ -376,8 +357,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
               <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14 mb-4 brightness-0 invert" />
-              <p className="text-sm text-white/60 leading-relaxed">Transformando negócios através de práticas ESG sustentáveis e responsáveis.</p>
-              <div className="flex gap-3 mt-6">
+                            <div className="flex gap-3 mt-6">
                 {[
                   { icon: 'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', url: 'https://br.linkedin.com/company/greena-solu%C3%A7%C3%B5es-em-sustentabilidade' },
                   { icon: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M6.5 2h11A4.5 4.5 0 0 1 22 6.5v11a4.5 4.5 0 0 1-4.5 4.5h-11A4.5 4.5 0 0 1 2 17.5v-11A4.5 4.5 0 0 1 6.5 2z', url: 'https://www.instagram.com/greena.solucoes/' },

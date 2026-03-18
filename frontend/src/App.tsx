@@ -14,7 +14,6 @@ import Profile from './pages/Profile';
 import Reports from './pages/Reports';
 import Insights from './pages/Insights';
 import Certificate from './pages/Certificate';
-import Report from './pages/Report';
 import Consultations from './pages/Consultations';
 import ConsultationRoom from './pages/ConsultationRoom';
 import Contact from './pages/Contact';
@@ -225,14 +224,6 @@ function AppRoutes() {
             element={
               <PrivateRoute>
                 <Certificate />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/diagnosis/:diagnosisId/report"
-            element={
-              <PrivateRoute>
-                <Report />
               </PrivateRoute>
             }
           />

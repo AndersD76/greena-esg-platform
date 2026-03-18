@@ -317,7 +317,7 @@ export default function Dashboard() {
                   <svg className="w-6 h-6 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-base font-bold text-brand-900">Diagnóstico em andamento</p>
+                  <p className="text-base font-bold text-brand-900">Diagnóstico ESG</p>
                   <p className="text-sm text-gray-400 mt-0.5">{partialScores.answeredCount}/{partialScores.totalCount} respostas — clique para continuar</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -333,35 +333,19 @@ export default function Dashboard() {
         )}
 
         {/* ═══════ ACTION CARDS (top row) ═══════ */}
-        {completed.length > 0 && (
-          <div className={`grid grid-cols-1 gap-4 ${currentDiagnosis ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
-            {!currentDiagnosis && (
-              <button onClick={handleStartNewDiagnosis} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all text-left group">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-brand-900 flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                  </div>
-                  <div>
-                    <p className="text-base font-bold text-brand-900">Novo Diagnóstico</p>
-                    <p className="text-sm text-gray-400">Iniciar nova avaliação ESG</p>
-                  </div>
+        {completed.length > 0 && !currentDiagnosis && (
+          <div className="grid grid-cols-1 gap-4">
+            <button onClick={handleStartNewDiagnosis} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all text-left group">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-brand-900 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                 </div>
-              </button>
-            )}
-            {selected && (
-              <Link to={`/diagnosis/${selected.id}/insights`} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform ${pendingActions > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                    <svg className={`w-6 h-6 ${pendingActions > 0 ? 'text-amber-700' : 'text-green-700'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-base font-bold text-brand-900">Plano de Ação</p>
-                    <p className="text-sm text-gray-400">{pendingActions > 0 ? `${pendingActions} ações pendentes` : actionPlans.length > 0 ? `${completedActionsCount} concluídas` : 'Nenhuma ação'}</p>
-                  </div>
-                  {actionPlans.length > 0 && <span className={`text-2xl font-bold ${pendingActions > 0 ? 'text-amber-600' : 'text-green-600'}`}>{pendingActions > 0 ? pendingActions : completedActionsCount}/{actionPlans.length}</span>}
+                <div>
+                  <p className="text-base font-bold text-brand-900">Novo Diagnóstico</p>
+                  <p className="text-sm text-gray-400">Iniciar nova avaliação ESG</p>
                 </div>
-              </Link>
-            )}
+              </div>
+            </button>
           </div>
         )}
 
@@ -478,42 +462,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* ROW 2, COL 2 — Navegação */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
-              <h3 className="text-xs font-bold text-brand-900 mb-4 uppercase tracking-wider">Ações Rápidas</h3>
-              <div className="space-y-3 flex-1">
-                <Link to={`/diagnosis/${selected.id}/insights`} className="flex items-center gap-4 p-4 rounded-xl bg-brand-900/5 hover:bg-brand-900/10 transition-all group">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${pendingActions > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                    <svg className={`w-5 h-5 ${pendingActions > 0 ? 'text-amber-700' : 'text-green-700'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-brand-900">Plano de Ação</p>
-                    <p className="text-xs text-gray-400">{pendingActions > 0 ? `${pendingActions} pendentes` : actionPlans.length > 0 ? `${completedActionsCount}/${actionPlans.length} concluídas` : 'Nenhuma ação'}</p>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                </Link>
-                <Link to={`/diagnosis/${selected.id}/results`} className="flex items-center gap-4 p-4 rounded-xl bg-brand-900/5 hover:bg-brand-900/10 transition-all group">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-brand-900">Resultados</p>
-                    <p className="text-xs text-gray-400">Detalhes do diagnóstico</p>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                </Link>
-                <Link to={`/diagnosis/${selected.id}/report`} className="flex items-center gap-4 p-4 rounded-xl bg-brand-900/5 hover:bg-brand-900/10 transition-all group">
-                  <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-brand-900">Relatório</p>
-                    <p className="text-xs text-gray-400">Relatório ESG completo</p>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-300 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                </Link>
-              </div>
-            </div>
           </div>
         )}
 
@@ -532,17 +480,13 @@ export default function Dashboard() {
                   <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>{env.toFixed(0)}</span>
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={makeBarData(envThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 60 }}>
+                  <BarChart data={makeBarData(envThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b7280' }} angle={-35} textAnchor="end" interval={0} height={80} />
+                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
                     <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
                     <Tooltip content={<ThemeTooltip />} />
                     <ReferenceLine y={env} stroke={PILLAR_COLORS.environmental} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${env.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.environmental }} />
-                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800}>
-                      {makeBarData(envThemes).map((entry, i) => (
-                        <Cell key={i} fill={PILLAR_COLORS.environmental} fillOpacity={0.85} />
-                      ))}
-                    </Bar>
+                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={PILLAR_COLORS.environmental} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -560,17 +504,13 @@ export default function Dashboard() {
                   <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.social }}>{soc.toFixed(0)}</span>
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={makeBarData(socThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 60 }}>
+                  <BarChart data={makeBarData(socThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b7280' }} angle={-35} textAnchor="end" interval={0} height={80} />
+                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
                     <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
                     <Tooltip content={<ThemeTooltip />} />
                     <ReferenceLine y={soc} stroke={PILLAR_COLORS.social} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${soc.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.social }} />
-                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800}>
-                      {makeBarData(socThemes).map((entry, i) => (
-                        <Cell key={i} fill={PILLAR_COLORS.social} fillOpacity={0.85} />
-                      ))}
-                    </Bar>
+                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={PILLAR_COLORS.social} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -588,17 +528,13 @@ export default function Dashboard() {
                   <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.governance }}>{gov.toFixed(0)}</span>
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={makeBarData(govThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 60 }}>
+                  <BarChart data={makeBarData(govThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b7280' }} angle={-35} textAnchor="end" interval={0} height={80} />
+                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
                     <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
                     <Tooltip content={<ThemeTooltip />} />
                     <ReferenceLine y={gov} stroke={PILLAR_COLORS.governance} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${gov.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.governance }} />
-                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800}>
-                      {makeBarData(govThemes).map((entry, i) => (
-                        <Cell key={i} fill={PILLAR_COLORS.governance} fillOpacity={0.85} />
-                      ))}
-                    </Bar>
+                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={PILLAR_COLORS.governance} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -696,12 +632,28 @@ export default function Dashboard() {
                       <button onClick={() => handleSelectDiagnosis(d.id)} className="px-4 py-1.5 text-xs font-semibold text-brand-900 border border-brand-700/30 rounded-full hover:bg-brand-100">Visualizar</button>
                     )}
                     <Link to={`/diagnosis/${d.id}/insights`}><button className="px-4 py-1.5 text-xs font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
-                    <Link to={`/diagnosis/${d.id}/report`}><button className="px-4 py-1.5 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-white">Relatório</button></Link>
+                    <Link to="/reports"><button className="px-4 py-1.5 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-white">Relatório</button></Link>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+        )}
+
+        {/* ═══════ PLANO DE AÇÃO (bottom) ═══════ */}
+        {selected && (
+          <Link to={`/diagnosis/${selected.id}/insights`} className="block bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all group">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform ${pendingActions > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
+                <svg className={`w-6 h-6 ${pendingActions > 0 ? 'text-amber-700' : 'text-green-700'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-base font-bold text-brand-900">Plano de Ação</p>
+                <p className="text-sm text-gray-400">{pendingActions > 0 ? `${pendingActions} ações pendentes` : actionPlans.length > 0 ? `${completedActionsCount} concluídas` : 'Nenhuma ação'}</p>
+              </div>
+              {actionPlans.length > 0 && <span className={`text-2xl font-bold ${pendingActions > 0 ? 'text-amber-600' : 'text-green-600'}`}>{pendingActions > 0 ? pendingActions : completedActionsCount}/{actionPlans.length}</span>}
+            </div>
+          </Link>
         )}
       </div>
     </div>

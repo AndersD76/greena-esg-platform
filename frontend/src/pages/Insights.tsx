@@ -22,8 +22,8 @@ interface DbActionPlan {
 }
 
 type FilterPillar = 'all' | 'E' | 'S' | 'G';
-type FilterPriority = 'all' | 'critical' | 'high' | 'medium';
-type FilterStatus = 'all' | 'pending' | 'in_progress' | 'completed';
+type FilterPriority = 'all' | 'critical' | 'high' | 'medium' | 'low';
+type FilterStatus = 'all' | 'pending' | 'not_started' | 'in_progress' | 'completed';
 
 export default function Insights() {
   const { diagnosisId } = useParams<{ diagnosisId: string }>();
@@ -102,13 +102,6 @@ export default function Insights() {
     }
   }
 
-  // Padrão de cores em todas as páginas
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return '#7B9965';
-    if (score >= 60) return '#b8963a';
-    if (score >= 40) return '#924131';
-    return '#9ca3af';
-  };
 
   const priorityConfig: Record<string, { bg: string; text: string; label: string }> = {
     critical: { bg: '#FEE2E2', text: '#991B1B', label: 'CRÍTICA' },
@@ -119,6 +112,7 @@ export default function Insights() {
 
   const statusConfig: Record<string, { bg: string; text: string; label: string; icon: string }> = {
     pending: { bg: '#FEF3C7', text: '#92400E', label: 'Pendente', icon: '○' },
+    not_started: { bg: '#F3F4F6', text: '#6B7280', label: 'Não Iniciada', icon: '○' },
     in_progress: { bg: '#DBEAFE', text: '#1E40AF', label: 'Em Andamento', icon: '◐' },
     completed: { bg: '#D1FAE5', text: '#065F46', label: 'Concluído', icon: '●' },
   };
@@ -179,7 +173,6 @@ export default function Insights() {
   const envScore = partialScores?.environmental ?? Number(diagnosis.environmentalScore || 0);
   const socScore = partialScores?.social ?? Number(diagnosis.socialScore || 0);
   const govScore = partialScores?.governance ?? Number(diagnosis.governanceScore || 0);
-  const overallScore = partialScores?.overall ?? Number(diagnosis.overallScore || 0);
 
   return (
     <div className="min-h-screen bg-brand-100">
@@ -188,7 +181,7 @@ export default function Insights() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-3xl font-bold text-brand-900">Insights & Plano de Ação</h1>
+              <h1 className="text-3xl font-bold text-brand-900">Planos de Ação</h1>
               {isPartial && (
                 <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>PARCIAL</span>
               )}
@@ -200,25 +193,6 @@ export default function Insights() {
           </Link>
         </div>
 
-        {/* Score Overview - Compact */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          {[
-            { label: 'Geral', score: overallScore, color: getScoreColor(overallScore) },
-            { label: 'Ambiental', score: envScore, color: PILLAR_COLORS.environmental },
-            { label: 'Social', score: socScore, color: PILLAR_COLORS.social },
-            { label: 'Governança', score: govScore, color: PILLAR_COLORS.governance },
-          ].map((item) => (
-            <div key={item.label} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">{item.label}</p>
-              <div className="flex items-end gap-2">
-                <span className="text-3xl font-bold" style={{ color: item.color }}>{item.score.toFixed(0)}</span>
-                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden mb-1.5">
-                  <div className="h-full rounded-full" style={{ width: `${item.score}%`, backgroundColor: item.color }} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* Certification */}
         {partialScores?.certification && (
@@ -333,56 +307,65 @@ export default function Insights() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="text-xs font-semibold text-gray-400 uppercase">Filtrar:</span>
-
+            <div className="flex flex-wrap items-center gap-3 mb-4">
               {/* Pillar filter */}
-              <div className="flex gap-1">
-                {[
-                  { value: 'all' as FilterPillar, label: 'Todos' },
-                  { value: 'E' as FilterPillar, label: 'Ambiental' },
-                  { value: 'S' as FilterPillar, label: 'Social' },
-                  { value: 'G' as FilterPillar, label: 'Governança' },
-                ].map((opt) => (
-                  <button key={opt.value} onClick={() => setFilterPillar(opt.value)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterPillar === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-                    {opt.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Eixo:</span>
+                <div className="flex gap-1">
+                  {[
+                    { value: 'all' as FilterPillar, label: 'Todos' },
+                    { value: 'E' as FilterPillar, label: 'Ambiental' },
+                    { value: 'S' as FilterPillar, label: 'Social' },
+                    { value: 'G' as FilterPillar, label: 'Governança' },
+                  ].map((opt) => (
+                    <button key={opt.value} onClick={() => setFilterPillar(opt.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterPillar === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <span className="text-gray-300">|</span>
 
               {/* Priority filter */}
-              <div className="flex gap-1">
-                {[
-                  { value: 'all' as FilterPriority, label: 'Todas' },
-                  { value: 'critical' as FilterPriority, label: 'Crítica' },
-                  { value: 'high' as FilterPriority, label: 'Alta' },
-                  { value: 'medium' as FilterPriority, label: 'Média' },
-                ].map((opt) => (
-                  <button key={opt.value} onClick={() => setFilterPriority(opt.value)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterPriority === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-                    {opt.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Prioridade:</span>
+                <div className="flex gap-1">
+                  {[
+                    { value: 'all' as FilterPriority, label: 'Todas' },
+                    { value: 'critical' as FilterPriority, label: 'Crítica' },
+                    { value: 'high' as FilterPriority, label: 'Alta' },
+                    { value: 'medium' as FilterPriority, label: 'Média' },
+                    { value: 'low' as FilterPriority, label: 'Baixa' },
+                  ].map((opt) => (
+                    <button key={opt.value} onClick={() => setFilterPriority(opt.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterPriority === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <span className="text-gray-300">|</span>
 
               {/* Status filter */}
-              <div className="flex gap-1">
-                {[
-                  { value: 'all' as FilterStatus, label: 'Todos' },
-                  { value: 'pending' as FilterStatus, label: 'Pendente' },
-                  { value: 'in_progress' as FilterStatus, label: 'Em Andamento' },
-                  { value: 'completed' as FilterStatus, label: 'Concluído' },
-                ].map((opt) => (
-                  <button key={opt.value} onClick={() => setFilterStatus(opt.value)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterStatus === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-                    {opt.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Status:</span>
+                <div className="flex gap-1">
+                  {[
+                    { value: 'all' as FilterStatus, label: 'Todos' },
+                    { value: 'pending' as FilterStatus, label: 'Pendente' },
+                    { value: 'not_started' as FilterStatus, label: 'Não Iniciada' },
+                    { value: 'in_progress' as FilterStatus, label: 'Em Andamento' },
+                    { value: 'completed' as FilterStatus, label: 'Concluído' },
+                  ].map((opt) => (
+                    <button key={opt.value} onClick={() => setFilterStatus(opt.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterStatus === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {(filterPillar !== 'all' || filterPriority !== 'all' || filterStatus !== 'all') && (
@@ -432,6 +415,9 @@ export default function Insights() {
                       <div className="flex-1 min-w-0">
                         <div className="mb-1">
                           <div className="flex items-center gap-1.5 mb-1">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ backgroundColor: pillarColor }}>
+                              {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'}
+                            </span>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ backgroundColor: pCfg.bg, color: pCfg.text }}>
                               {pCfg.label}
                             </span>
@@ -516,18 +502,6 @@ export default function Insights() {
           </div>
         )}
 
-        {/* Bottom actions */}
-        <div className="flex gap-3 justify-center mt-6">
-          <Link to={`/diagnosis/${diagnosis.id}/results`}>
-            <button className="px-6 py-2.5 text-sm font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ver Resultados</button>
-          </Link>
-          <Link to={`/diagnosis/${diagnosis.id}/report`}>
-            <button className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Relatório</button>
-          </Link>
-          <Link to="/dashboard">
-            <button className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-gray-50">Dashboard</button>
-          </Link>
-        </div>
       </div>
     </div>
   );

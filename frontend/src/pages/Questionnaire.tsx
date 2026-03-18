@@ -294,13 +294,33 @@ export default function Questionnaire() {
                   />
                 </div>
               </div>
-              <Button
-                variant="outline"
-                onClick={() => navigate('/dashboard')}
-                className="text-sm"
-              >
-                Salvar e Sair
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    if (currentQuestion && responses[currentQuestion.id]?.evaluation) {
+                      try {
+                        setSaving(true);
+                        await responseService.upsert(diagnosisId!, {
+                          assessmentItemId: currentQuestion.id,
+                          evaluation: responses[currentQuestion.id].evaluation,
+                          observations: responses[currentQuestion.id].observations,
+                        });
+                      } catch {} finally { setSaving(false); }
+                    }
+                  }}
+                  className="text-sm"
+                >
+                  Salvar
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/dashboard')}
+                  className="text-sm"
+                >
+                  Sair
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -320,8 +340,8 @@ export default function Questionnaire() {
                   className="w-full p-3 rounded-xl transition-all shadow-sm"
                   style={
                     pillarCode === 'E'
-                      ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)', color: 'white' }
-                      : { backgroundColor: '#f5f5f5' }
+                      ? { background: 'linear-gradient(135deg, #3D6B2E 0%, #7B9965 100%)', color: 'white' }
+                      : { backgroundColor: '#f0f7ed', borderLeft: '3px solid #7B9965' }
                   }
                 >
                   <div className="flex items-center gap-3">
@@ -337,8 +357,8 @@ export default function Questionnaire() {
                       </span>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'E' ? '#fff' : '#152F27' }}>Ambiental</p>
-                      <p className="text-xs" style={{ color: pillarCode === 'E' ? 'rgba(255,255,255,0.7)' : '#666' }}>
+                      <p className="text-sm font-bold" style={{ color: pillarCode === 'E' ? '#fff' : '#3D6B2E' }}>Ambiental</p>
+                      <p className="text-xs" style={{ color: pillarCode === 'E' ? 'rgba(255,255,255,0.7)' : '#7B9965' }}>
                         {pillarProgress.E.answered}/{pillarProgress.E.total} respostas
                       </p>
                     </div>
@@ -351,8 +371,8 @@ export default function Questionnaire() {
                   className="w-full p-3 rounded-xl transition-all shadow-sm"
                   style={
                     pillarCode === 'S'
-                      ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)', color: 'white' }
-                      : { backgroundColor: '#f5f5f5' }
+                      ? { background: 'linear-gradient(135deg, #6B2A1E 0%, #924131 100%)', color: 'white' }
+                      : { backgroundColor: '#fdf2f0', borderLeft: '3px solid #924131' }
                   }
                 >
                   <div className="flex items-center gap-3">
@@ -361,15 +381,15 @@ export default function Questionnaire() {
                         value={pillarProgress.S.total > 0 ? (pillarProgress.S.answered / pillarProgress.S.total) * 100 : 0}
                         size={44}
                         strokeWidth={4}
-                        color={pillarCode === 'S' ? '#fff' : '#152F27'}
+                        color={pillarCode === 'S' ? '#fff' : '#924131'}
                       />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'S' ? '#fff' : '#152F27' }}>
+                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'S' ? '#fff' : '#924131' }}>
                         {pillarProgress.S.answered}
                       </span>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'S' ? '#fff' : '#152F27' }}>Social</p>
-                      <p className="text-xs" style={{ color: pillarCode === 'S' ? 'rgba(255,255,255,0.7)' : '#666' }}>
+                      <p className="text-sm font-bold" style={{ color: pillarCode === 'S' ? '#fff' : '#6B2A1E' }}>Social</p>
+                      <p className="text-xs" style={{ color: pillarCode === 'S' ? 'rgba(255,255,255,0.7)' : '#924131' }}>
                         {pillarProgress.S.answered}/{pillarProgress.S.total} respostas
                       </p>
                     </div>
@@ -382,8 +402,8 @@ export default function Questionnaire() {
                   className="w-full p-3 rounded-xl transition-all shadow-sm"
                   style={
                     pillarCode === 'G'
-                      ? { background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)', color: 'white' }
-                      : { backgroundColor: '#f5f5f5' }
+                      ? { background: 'linear-gradient(135deg, #8B7332 0%, #b8963a 100%)', color: 'white' }
+                      : { backgroundColor: '#faf6ee', borderLeft: '3px solid #b8963a' }
                   }
                 >
                   <div className="flex items-center gap-3">
@@ -392,15 +412,15 @@ export default function Questionnaire() {
                         value={pillarProgress.G.total > 0 ? (pillarProgress.G.answered / pillarProgress.G.total) * 100 : 0}
                         size={44}
                         strokeWidth={4}
-                        color={pillarCode === 'G' ? '#fff' : '#EFD4A8'}
+                        color={pillarCode === 'G' ? '#fff' : '#b8963a'}
                       />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#B8965A' }}>
+                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#b8963a' }}>
                         {pillarProgress.G.answered}
                       </span>
                     </div>
                     <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#152F27' }}>Governança</p>
-                      <p className="text-xs" style={{ color: pillarCode === 'G' ? 'rgba(255,255,255,0.7)' : '#666' }}>
+                      <p className="text-sm font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#8B7332' }}>Governança</p>
+                      <p className="text-xs" style={{ color: pillarCode === 'G' ? 'rgba(255,255,255,0.7)' : '#b8963a' }}>
                         {pillarProgress.G.answered}/{pillarProgress.G.total} respostas
                       </p>
                     </div>
@@ -496,7 +516,7 @@ export default function Questionnaire() {
                     <option value="" disabled>Selecione o nível de maturidade...</option>
                     {evaluationOptions.map((option) => (
                       <option key={option.value} value={option.value}>
-                        {option.score === 0 ? 'N/A' : option.score} - {option.fullLabel} ({option.maturity})
+                        {option.score} - {option.fullLabel}
                       </option>
                     ))}
                   </select>
@@ -510,6 +530,15 @@ export default function Questionnaire() {
                         currentResponse.evaluation === 'Implementado parcialmente' ? '#D4E8C7' : '#C5E1B5'
                     }}>
                       <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold text-white" style={{
+                          backgroundColor: currentResponse.evaluation === 'Não se aplica' ? '#999' :
+                            currentResponse.evaluation === 'Não iniciado' ? '#991B1B' :
+                            currentResponse.evaluation === 'Planejado' ? '#92400E' :
+                            currentResponse.evaluation === 'Em andamento' ? '#B8965A' :
+                            currentResponse.evaluation === 'Implementado parcialmente' ? '#7B9965' : '#152F27'
+                        }}>
+                          {evaluationOptions.find(o => o.value === currentResponse.evaluation)?.score}
+                        </span>
                         <span className="text-sm font-bold" style={{
                           color: currentResponse.evaluation === 'Não se aplica' ? '#666' :
                             currentResponse.evaluation === 'Não iniciado' ? '#991B1B' :
@@ -517,7 +546,7 @@ export default function Questionnaire() {
                             currentResponse.evaluation === 'Em andamento' ? '#92400E' :
                             currentResponse.evaluation === 'Implementado parcialmente' ? '#3D6B2E' : '#152F27'
                         }}>
-                          {evaluationOptions.find(o => o.value === currentResponse.evaluation)?.maturity}
+                          {currentResponse.evaluation}
                         </span>
                         {currentResponse.evaluation === 'Não se aplica' && (
                           <span className="text-xs text-gray-500 italic">

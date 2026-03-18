@@ -8,8 +8,13 @@ interface UserProfile {
   name: string;
   companyName: string;
   cnpj?: string;
+  city?: string;
+  foundingYear?: number;
+  responsiblePerson?: string;
+  responsibleContact?: string;
+  companySize?: string;
   sector?: string;
-  employees?: string;
+  employeesRange?: string;
   slug?: string;
   isPublicProfile?: boolean;
   createdAt: string;
@@ -56,8 +61,13 @@ export default function Profile() {
     name: '',
     companyName: '',
     cnpj: '',
+    city: '',
+    foundingYear: '' as string | number,
+    responsiblePerson: '',
+    responsibleContact: '',
+    companySize: '',
     sector: '',
-    employees: '',
+    employeesRange: '',
   });
 
   useEffect(() => {
@@ -73,8 +83,13 @@ export default function Profile() {
         name: response.data.name || '',
         companyName: response.data.companyName || '',
         cnpj: response.data.cnpj || '',
+        city: response.data.city || '',
+        foundingYear: response.data.foundingYear || '',
+        responsiblePerson: response.data.responsiblePerson || '',
+        responsibleContact: response.data.responsibleContact || '',
+        companySize: response.data.companySize || '',
         sector: response.data.sector || '',
-        employees: response.data.employees || '',
+        employeesRange: response.data.employeesRange || '',
       });
     } catch (error) {
       console.error('Erro ao carregar perfil:', error);
@@ -115,7 +130,11 @@ export default function Profile() {
     e.preventDefault();
     try {
       setLoading(true);
-      await api.put('/auth/profile', formData);
+      const payload = {
+        ...formData,
+        foundingYear: formData.foundingYear ? Number(formData.foundingYear) : undefined,
+      };
+      await api.put('/auth/profile', payload);
       await loadProfile();
       setEditing(false);
       alert('Perfil atualizado com sucesso!');
@@ -193,13 +212,38 @@ export default function Profile() {
               </div>
 
               <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Setor</p>
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Cidade/UF</p>
+                <p className="text-sm font-bold text-brand-900">{profile?.city || '-'}</p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50">
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Ano de Fundação</p>
+                <p className="text-sm font-bold text-brand-900">{profile?.foundingYear || '-'}</p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50">
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Pessoa Responsável</p>
+                <p className="text-sm font-bold text-brand-900">{profile?.responsiblePerson || '-'}</p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50">
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Contato do Responsável</p>
+                <p className="text-sm font-bold text-brand-900">{profile?.responsibleContact || '-'}</p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50">
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Porte da Empresa</p>
+                <p className="text-sm font-bold text-brand-900">{profile?.companySize || '-'}</p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50">
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Segmento de Atuação</p>
                 <p className="text-sm font-bold text-brand-900">{profile?.sector || '-'}</p>
               </div>
 
               <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Funcionários</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.employees || '-'}</p>
+                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Número de Colaboradores</p>
+                <p className="text-sm font-bold text-brand-900">{profile?.employeesRange || '-'}</p>
               </div>
 
               <div className="p-4 rounded-xl bg-gray-50">
@@ -226,7 +270,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
-                    Empresa *
+                    Nome da Empresa *
                   </label>
                   <input
                     type="text"
@@ -238,35 +282,110 @@ export default function Profile() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
-                    CNPJ
+                    CNPJ *
                   </label>
                   <input
                     type="text"
                     value={formData.cnpj}
                     onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
+                    required
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
                     placeholder="00.000.000/0000-00"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
-                    Setor
+                    Cidade/UF *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
+                    placeholder="Ex: Passo Fundo/RS"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
+                    Ano de Fundação *
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.foundingYear}
+                    onChange={(e) => setFormData({ ...formData, foundingYear: e.target.value })}
+                    required
+                    min="1900"
+                    max={new Date().getFullYear()}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
+                    placeholder="Ex: 2020"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
+                    Pessoa Responsável (nome + cargo) *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.responsiblePerson}
+                    onChange={(e) => setFormData({ ...formData, responsiblePerson: e.target.value })}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
+                    placeholder="Ex: João Silva - Diretor de Sustentabilidade"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
+                    Contato do Responsável *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.responsibleContact}
+                    onChange={(e) => setFormData({ ...formData, responsibleContact: e.target.value })}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
+                    placeholder="Ex: (54) 99999-9999"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
+                    Porte da Empresa *
+                  </label>
+                  <select
+                    value={formData.companySize}
+                    onChange={(e) => setFormData({ ...formData, companySize: e.target.value })}
+                    required
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="MEI">MEI</option>
+                    <option value="ME">ME - Microempresa</option>
+                    <option value="EPP">EPP - Empresa de Pequeno Porte</option>
+                    <option value="Médio">Médio Porte</option>
+                    <option value="Grande">Grande Porte</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
+                    Segmento de Atuação *
                   </label>
                   <input
                     type="text"
                     value={formData.sector}
                     onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
+                    required
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
                     placeholder="Ex: Tecnologia, Indústria, Serviços..."
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
-                    Número de Funcionários
+                    Número de Colaboradores *
                   </label>
                   <select
-                    value={formData.employees}
-                    onChange={(e) => setFormData({ ...formData, employees: e.target.value })}
+                    value={formData.employeesRange}
+                    onChange={(e) => setFormData({ ...formData, employeesRange: e.target.value })}
+                    required
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
                   >
                     <option value="">Selecione...</option>

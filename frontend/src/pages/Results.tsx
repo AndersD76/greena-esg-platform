@@ -377,7 +377,7 @@ export default function Results() {
             Voltar ao Dashboard
           </button>
           <button
-            onClick={() => navigate(`/diagnosis/${diagnosisId}/report`)}
+            onClick={() => navigate('/reports')}
             className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50"
           >
             Ver Relatório Completo

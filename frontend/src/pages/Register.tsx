@@ -118,13 +118,14 @@ export default function Register() {
 
               <div>
                 <label className="block text-sm font-semibold text-brand-900 mb-2">
-                  Qual a maior dor no aspecto ESG que a sua empresa enfrenta?
+                  Qual a maior dor no aspecto ESG que a sua empresa enfrenta? *
                 </label>
                 <textarea
                   placeholder="Descreva brevemente o principal desafio ESG da sua empresa..."
                   value={formData.esgPainPoint}
                   onChange={(e) => setFormData({ ...formData, esgPainPoint: e.target.value })}
                   rows={3}
+                  required
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700 resize-none"
                 />
               </div>

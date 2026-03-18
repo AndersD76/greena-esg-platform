@@ -54,7 +54,7 @@ export function Header() {
               {!isFreePlan && (
                 <>
                   <Link to="/insights" className={navLinkClass('/insights', true)}>
-                    Insights
+                    Planos de Ação
                   </Link>
                   <Link to="/reports" className={navLinkClass('/reports', true)}>
                     Relatórios

@@ -224,7 +224,7 @@ export default function AdminDiagnoses() {
                     <td className="px-6 py-4 text-center">
                       {diagnosis.status === 'completed' && (
                         <Link
-                          to={`/diagnosis/${diagnosis.id}/report`}
+                          to="/reports"
                           className="px-3 py-1 rounded-lg text-xs font-bold bg-green-50 text-green-600 hover:bg-green-100"
                         >
                           Ver Relatório
