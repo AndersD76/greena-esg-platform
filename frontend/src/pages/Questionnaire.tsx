@@ -466,7 +466,7 @@ export default function Questionnaire() {
             {/* Card da questao */}
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               {/* Header do card com cor do pilar */}
-              <div className="px-6 py-4" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
+              <div className="px-6 py-4" style={{ background: pillarCode === 'E' ? 'linear-gradient(135deg, #3D6B2E 0%, #7B9965 100%)' : pillarCode === 'S' ? 'linear-gradient(135deg, #6B2A1E 0%, #924131 100%)' : 'linear-gradient(135deg, #8B7332 0%, #b8963a 100%)' }}>
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-white font-bold text-lg">
                     {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'}

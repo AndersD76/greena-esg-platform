@@ -84,7 +84,6 @@ export default function Dashboard() {
   const [currentDiagnosis, setCurrentDiagnosis] = useState<Diagnosis | null>(null);
   const [partialScores, setPartialScores] = useState<any>(null);
   const [userName, setUserName] = useState('');
-  const [actionPlans, setActionPlans] = useState<any[]>([]);
   const [certificate, setCertificate] = useState<any>(null);
   const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string | null>(null);
   const [selectedScores, setSelectedScores] = useState<any>(null);
@@ -118,10 +117,6 @@ export default function Dashboard() {
         const lastId = completed[0].id;
         setSelectedDiagnosisId(lastId);
         loadSelectedScores(lastId);
-        try {
-          const ap = await diagnosisService.getActionPlans(lastId);
-          setActionPlans(ap);
-        } catch {}
         try {
           const certRes = await api.get(`/certificates/diagnosis/${lastId}`);
           if (certRes.data) setCertificate(certRes.data);
@@ -160,14 +155,9 @@ export default function Dashboard() {
   async function handleSelectDiagnosis(id: string) {
     setSelectedDiagnosisId(id);
     setSelectedScores(null);
-    setActionPlans([]);
     setCertificate(null);
     setBenchmarking(null);
     loadSelectedScores(id);
-    try {
-      const ap = await diagnosisService.getActionPlans(id);
-      setActionPlans(ap);
-    } catch {}
     try {
       const certRes = await api.get(`/certificates/diagnosis/${id}`);
       if (certRes.data) setCertificate(certRes.data);
@@ -186,8 +176,7 @@ export default function Dashboard() {
   const completed = diagnoses.filter(d => d.status === 'completed');
   const selected = completed.find(d => d.id === selectedDiagnosisId) || null;
   const greeting = (() => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; })();
-  const pendingActions = actionPlans.filter(a => a.status === 'pending' || a.status === 'in_progress').length;
-  const completedActionsCount = actionPlans.filter(a => a.status === 'completed').length;
+
 
   const overall = selected ? Number(selected.overallScore) : 0;
   const env = selected ? Number(selected.environmentalScore) : 0;
@@ -638,22 +627,6 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-        )}
-
-        {/* ═══════ PLANO DE AÇÃO (bottom) ═══════ */}
-        {selected && (
-          <Link to={`/diagnosis/${selected.id}/insights`} className="block bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all group">
-            <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform ${pendingActions > 0 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                <svg className={`w-6 h-6 ${pendingActions > 0 ? 'text-amber-700' : 'text-green-700'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-              </div>
-              <div className="flex-1">
-                <p className="text-base font-bold text-brand-900">Plano de Ação</p>
-                <p className="text-sm text-gray-400">{pendingActions > 0 ? `${pendingActions} ações pendentes` : actionPlans.length > 0 ? `${completedActionsCount} concluídas` : 'Nenhuma ação'}</p>
-              </div>
-              {actionPlans.length > 0 && <span className={`text-2xl font-bold ${pendingActions > 0 ? 'text-amber-600' : 'text-green-600'}`}>{pendingActions > 0 ? pendingActions : completedActionsCount}/{actionPlans.length}</span>}
-            </div>
-          </Link>
         )}
       </div>
     </div>

@@ -23,7 +23,7 @@ interface DbActionPlan {
 
 type FilterPillar = 'all' | 'E' | 'S' | 'G';
 type FilterPriority = 'all' | 'critical' | 'high' | 'medium' | 'low';
-type FilterStatus = 'all' | 'pending' | 'not_started' | 'in_progress' | 'completed';
+type FilterStatus = 'all' | 'pending' | 'in_progress' | 'completed';
 
 export default function Insights() {
   const { diagnosisId } = useParams<{ diagnosisId: string }>();
@@ -112,7 +112,6 @@ export default function Insights() {
 
   const statusConfig: Record<string, { bg: string; text: string; label: string; icon: string }> = {
     pending: { bg: '#FEF3C7', text: '#92400E', label: 'Pendente', icon: '○' },
-    not_started: { bg: '#F3F4F6', text: '#6B7280', label: 'Não Iniciada', icon: '○' },
     in_progress: { bg: '#DBEAFE', text: '#1E40AF', label: 'Em Andamento', icon: '◐' },
     completed: { bg: '#D1FAE5', text: '#065F46', label: 'Concluído', icon: '●' },
   };
@@ -356,7 +355,6 @@ export default function Insights() {
                   {[
                     { value: 'all' as FilterStatus, label: 'Todos' },
                     { value: 'pending' as FilterStatus, label: 'Pendente' },
-                    { value: 'not_started' as FilterStatus, label: 'Não Iniciada' },
                     { value: 'in_progress' as FilterStatus, label: 'Em Andamento' },
                     { value: 'completed' as FilterStatus, label: 'Concluído' },
                   ].map((opt) => (

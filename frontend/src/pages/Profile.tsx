@@ -15,6 +15,7 @@ interface UserProfile {
   companySize?: string;
   sector?: string;
   employeesRange?: string;
+  esgPainPoint?: string;
   slug?: string;
   isPublicProfile?: boolean;
   createdAt: string;
@@ -68,6 +69,7 @@ export default function Profile() {
     companySize: '',
     sector: '',
     employeesRange: '',
+    esgPainPoint: '',
   });
 
   useEffect(() => {
@@ -90,6 +92,7 @@ export default function Profile() {
         companySize: response.data.companySize || '',
         sector: response.data.sector || '',
         employeesRange: response.data.employeesRange || '',
+        esgPainPoint: response.data.esgPainPoint || '',
       });
     } catch (error) {
       console.error('Erro ao carregar perfil:', error);
@@ -133,6 +136,7 @@ export default function Profile() {
       const payload = {
         ...formData,
         foundingYear: formData.foundingYear ? Number(formData.foundingYear) : undefined,
+        esgPainPoint: formData.esgPainPoint || undefined,
       };
       await api.put('/auth/profile', payload);
       await loadProfile();
@@ -197,60 +201,71 @@ export default function Profile() {
 
         {/* Profile Details Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
-          <h3 className="text-base font-bold text-brand-900 mb-5">Informações da Empresa</h3>
+          <h3 className="text-base font-bold text-brand-900 mb-2">Identificação da Empresa</h3>
+          <p className="text-xs text-gray-400 mb-5">Dados cadastrais e responsável pelo preenchimento</p>
 
           {!editing ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Empresa</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.companyName || '-'}</p>
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Nome da Empresa</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.companyName || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">CNPJ</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.cnpj || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Cidade/UF</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.city || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Ano de Fundação</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.foundingYear || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Pessoa Responsável</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.responsiblePerson || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Contato do Responsável</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.responsibleContact || '-'}</p>
+                </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">CNPJ</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.cnpj || '-'}</p>
+              <h4 className="text-sm font-bold text-brand-900 mb-3">Segmentação e Caracterização</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Porte da Empresa</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.companySize || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Segmento de Atuação</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.sector || '-'}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Número de Colaboradores</p>
+                  <p className="text-sm font-bold text-brand-900">{profile?.employeesRange || '-'}</p>
+                </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Cidade/UF</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.city || '-'}</p>
-              </div>
+              {profile?.esgPainPoint && (
+                <>
+                  <h4 className="text-sm font-bold text-brand-900 mb-3">Mapeamento de Dores</h4>
+                  <div className="p-4 rounded-xl bg-gray-50 mb-6">
+                    <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Maior dor no aspecto ESG</p>
+                    <p className="text-sm font-bold text-brand-900">{profile.esgPainPoint}</p>
+                  </div>
+                </>
+              )}
 
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Ano de Fundação</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.foundingYear || '-'}</p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Pessoa Responsável</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.responsiblePerson || '-'}</p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Contato do Responsável</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.responsibleContact || '-'}</p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Porte da Empresa</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.companySize || '-'}</p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Segmento de Atuação</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.sector || '-'}</p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Número de Colaboradores</p>
-                <p className="text-sm font-bold text-brand-900">{profile?.employeesRange || '-'}</p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gray-50">
-                <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Membro desde</p>
-                <p className="text-sm font-bold text-brand-900">
-                  {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('pt-BR') : '-'}
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-4 rounded-xl bg-gray-50">
+                  <p className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Membro desde</p>
+                  <p className="text-sm font-bold text-brand-900">
+                    {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('pt-BR') : '-'}
+                  </p>
+                </div>
               </div>
             </div>
           ) : (
@@ -349,7 +364,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
-                    Porte da Empresa *
+                    Porte da Empresa (Sebrae/IBGE) *
                   </label>
                   <select
                     value={formData.companySize}
@@ -358,25 +373,38 @@ export default function Profile() {
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
                   >
                     <option value="">Selecione...</option>
-                    <option value="MEI">MEI</option>
-                    <option value="ME">ME - Microempresa</option>
-                    <option value="EPP">EPP - Empresa de Pequeno Porte</option>
-                    <option value="Médio">Médio Porte</option>
-                    <option value="Grande">Grande Porte</option>
+                    <option value="Microempresa">Microempresa (faturamento até R$ 360.000,00)</option>
+                    <option value="Pequena empresa I">Pequena empresa I (faturamento até R$ 3.600.000,00)</option>
+                    <option value="Pequena empresa II">Pequena empresa II (faturamento até R$ 4.800.000,00)</option>
+                    <option value="Pequena empresa III">Pequena empresa III (faturamento até R$ 16.000.000,00)</option>
+                    <option value="Média empresa">Média empresa (faturamento até R$ 90.000.000,00)</option>
+                    <option value="Grande empresa I">Grande empresa I (faturamento até R$ 300.000.000,00)</option>
+                    <option value="Grande empresa II">Grande empresa II (faturamento acima R$ 300.000.000,00)</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
                     Segmento de Atuação *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.sector}
                     onChange={(e) => setFormData({ ...formData, sector: e.target.value })}
                     required
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
-                    placeholder="Ex: Tecnologia, Indústria, Serviços..."
-                  />
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="Agronegócio">Agronegócio</option>
+                    <option value="Indústria">Indústria</option>
+                    <option value="Construção Civil">Construção Civil</option>
+                    <option value="Comércio">Comércio</option>
+                    <option value="Serviços">Serviços</option>
+                    <option value="Tecnologia da Informação">Tecnologia da Informação</option>
+                    <option value="Saúde">Saúde</option>
+                    <option value="Educação">Educação</option>
+                    <option value="Logística/Transporte">Logística/Transporte</option>
+                    <option value="Energia">Energia</option>
+                    <option value="Outros">Outros</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
@@ -389,12 +417,24 @@ export default function Profile() {
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors"
                   >
                     <option value="">Selecione...</option>
-                    <option value="1-10">1-10</option>
-                    <option value="11-50">11-50</option>
-                    <option value="51-200">51-200</option>
-                    <option value="201-500">201-500</option>
-                    <option value="500+">500+</option>
+                    <option value="1 a 9">1 a 9</option>
+                    <option value="10 a 49">10 a 49</option>
+                    <option value="50 a 99">50 a 99</option>
+                    <option value="100 a 499">100 a 499</option>
+                    <option value="500 ou mais">500 ou mais</option>
                   </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide">
+                    Qual a maior dor no aspecto ESG que sua empresa enfrenta?
+                  </label>
+                  <textarea
+                    value={formData.esgPainPoint}
+                    onChange={(e) => setFormData({ ...formData, esgPainPoint: e.target.value })}
+                    rows={3}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-brand-900 focus:outline-none focus:border-brand-700 transition-colors resize-none"
+                    placeholder="Descreva brevemente a principal dificuldade da sua empresa em relação a práticas ESG..."
+                  />
                 </div>
               </div>
 
