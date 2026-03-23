@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { SEO } from '../components/SEO';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -85,6 +86,11 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Diagnóstico ESG para Empresas"
+        description="Plataforma completa de diagnóstico ESG com certificação, plano de ação e consultoria. Avalie práticas ambientais, sociais e de governança da sua empresa."
+        url="/"
+      />
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-6 py-3">

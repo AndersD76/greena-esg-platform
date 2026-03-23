@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { SEO } from '../components/SEO';
 
 export default function Login() {
   const { signIn } = useAuth();
@@ -29,6 +30,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-brand-100">
+      <SEO title="Entrar" description="Acesse sua conta na plataforma engreena ESG." url="/login" />
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4">

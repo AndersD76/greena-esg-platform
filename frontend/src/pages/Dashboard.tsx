@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 import api from '../services/api';
+import { SEO } from '../components/SEO';
 import {
   RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine,
@@ -233,6 +234,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Dashboard" noindex />
       {/* ═══════ HERO ═══════ */}
       <div className="bg-brand-900">
         <div className="max-w-7xl mx-auto px-6 py-6">

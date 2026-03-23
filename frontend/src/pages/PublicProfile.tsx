@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3000/api' : '/api');
 
@@ -58,6 +59,11 @@ export default function PublicProfile() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #152F27 0%, #1a3a30 40%, #f9fafb 40%)' }}>
+      <SEO
+        title={`${company.companyName || 'Empresa'} — Perfil ESG`}
+        description={`Confira o perfil ESG de ${company.companyName || 'empresa'}${scores ? `. Score geral: ${scores.overall.toFixed(0)} pontos` : ''}. Certificação verificada pela plataforma engreena.`}
+        url={`/empresa/${slug}`}
+      />
       <div className="max-w-3xl mx-auto px-6 py-10">
         {/* Logo */}
         <div className="text-center mb-8">

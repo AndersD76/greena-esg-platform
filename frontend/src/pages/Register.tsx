@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { SEO } from '../components/SEO';
 
 export default function Register() {
   const { signUp } = useAuth();
@@ -38,6 +39,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-brand-100">
+      <SEO title="Criar Conta" description="Crie sua conta gratuita na plataforma engreena e comece seu diagnóstico ESG." url="/register" />
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4">
