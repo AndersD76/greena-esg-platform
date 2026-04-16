@@ -1,0 +1,408 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+interface TourStep {
+  title: string;
+  description: string;
+  narration: string;
+  icon: string;
+  color: string;
+  image?: string;
+}
+
+const tourSteps: TourStep[] = [
+  {
+    title: 'Bem-vindo a engreena!',
+    description: 'A plataforma completa de diagnostico ESG para empresas que desejam liderar a sustentabilidade.',
+    narration: 'Bem-vindo a engreena! A plataforma completa de diagnostico ESG para empresas. Vamos conhecer todas as funcionalidades juntos neste tour guiado.',
+    icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    color: '#7B9965'
+  },
+  {
+    title: '1. Cadastro Rapido',
+    description: 'Crie sua conta em segundos. Informe nome, e-mail, senha e dados da empresa. Voce comeca no plano Demo gratuito com acesso a 6 perguntas do diagnostico.',
+    narration: 'O primeiro passo e criar sua conta. Informe seus dados e os dados da empresa. Voce ja comeca no plano gratuito com acesso imediato ao diagnostico simplificado.',
+    icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+    color: '#7B9965'
+  },
+  {
+    title: '2. Escolha seu Plano',
+    description: 'Temos 4 planos: Demo (gratis), Start (R$49/mes), Grow (R$99/mes, recomendado) e Impact (R$159/mes). Cada plano libera mais funcionalidades como consultoria e certificacao.',
+    narration: 'Escolha o plano ideal para sua empresa. O plano Grow e o mais popular, pois inclui certificacao ESG e duas horas mensais de consultoria com especialistas.',
+    icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
+    color: '#152F27'
+  },
+  {
+    title: '3. Diagnostico ESG',
+    description: 'Responda 215 perguntas divididas em 3 pilares: Ambiental (75 perguntas), Social (75 perguntas) e Governanca (65 perguntas). Use a escala de maturidade de 6 niveis para cada resposta.',
+    narration: 'O diagnostico ESG possui duzentas e quinze perguntas divididas em tres pilares. Cada pergunta usa uma escala de maturidade de seis niveis. Voce pode salvar o progresso e continuar depois.',
+    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+    color: '#7B9965'
+  },
+  {
+    title: '4. Dashboard Inteligente',
+    description: 'Visualize seu score ESG geral e por pilar em graficos interativos. Acompanhe a evolucao ao longo do tempo e compare com a media do setor no benchmarking.',
+    narration: 'O dashboard mostra seu score ESG em graficos interativos. Voce pode ver a performance por pilar, acompanhar a evolucao historica e comparar com empresas do mesmo setor.',
+    icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+    color: '#152F27'
+  },
+  {
+    title: '5. Relatorios e Insights',
+    description: 'Acesse relatorios detalhados com graficos de barras, radar e comparativos. Gere relatorios para stakeholders e exporte em PDF para apresentacoes.',
+    narration: 'Os relatorios mostram analises detalhadas da sua performance ESG. Voce pode gerar relatorios especiais para stakeholders e exportar tudo em PDF.',
+    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    color: '#924131'
+  },
+  {
+    title: '6. Planos de Acao',
+    description: 'O sistema gera automaticamente planos de acao priorizados. Filtre por pilar e prioridade, simule o impacto no score e acompanhe o status de implementacao.',
+    narration: 'Apos o diagnostico, voce recebe planos de acao automaticos e priorizados. Pode filtrar por pilar, simular o impacto de cada acao no score e acompanhar a implementacao.',
+    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    color: '#b8963a'
+  },
+  {
+    title: '7. Certificacao ESG',
+    description: 'Receba sua certificacao: Bronze (0-39 pontos), Prata (40-69 pontos) ou Ouro (70-100 pontos). Baixe o certificado digital e compartilhe com o mercado.',
+    narration: 'Ao concluir o diagnostico, voce recebe uma certificacao ESG. Pode ser Bronze, Prata ou Ouro, dependendo da sua pontuacao. O certificado digital pode ser baixado e compartilhado.',
+    icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
+    color: '#FFD700'
+  },
+  {
+    title: '8. Consultoria Especializada',
+    description: 'Agende sessoes de consultoria com especialistas ESG (disponivel nos planos Grow e Impact). Receba orientacao personalizada para acelerar sua jornada ESG.',
+    narration: 'Nos planos Grow e Impact, voce tem acesso a consultoria com especialistas ESG. Agende sessoes por video e receba orientacao personalizada para sua empresa.',
+    icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
+    color: '#152F27'
+  },
+  {
+    title: 'Comece sua jornada ESG!',
+    description: 'Voce conheceu todas as funcionalidades da plataforma engreena. Crie sua conta gratuita e faca seu primeiro diagnostico ESG agora mesmo!',
+    narration: 'Voce conheceu todas as funcionalidades da plataforma engreena! Agora e so criar sua conta gratuita e comecar seu primeiro diagnostico ESG. Estamos juntos nessa jornada rumo a sustentabilidade!',
+    icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
+    color: '#7B9965'
+  }
+];
+
+interface GuidedTourProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function GuidedTour({ isOpen, onClose }: GuidedTourProps) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isNarrating, setIsNarrating] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(false);
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+  const autoPlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const step = tourSteps[currentStep];
+  const progress = ((currentStep + 1) / tourSteps.length) * 100;
+
+  useEffect(() => {
+    setIsSpeechSupported('speechSynthesis' in window);
+  }, []);
+
+  const stopNarration = useCallback(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsNarrating(false);
+    utteranceRef.current = null;
+  }, []);
+
+  const narrate = useCallback((text: string) => {
+    if (!isSpeechSupported) return;
+
+    stopNarration();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'pt-BR';
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    // Try to find a Portuguese voice
+    const voices = window.speechSynthesis.getVoices();
+    const ptVoice = voices.find(v => v.lang.startsWith('pt')) || voices[0];
+    if (ptVoice) utterance.voice = ptVoice;
+
+    utterance.onstart = () => setIsNarrating(true);
+    utterance.onend = () => {
+      setIsNarrating(false);
+      utteranceRef.current = null;
+      if (autoPlay && currentStep < tourSteps.length - 1) {
+        autoPlayTimerRef.current = setTimeout(() => {
+          setCurrentStep(prev => prev + 1);
+        }, 1500);
+      }
+    };
+    utterance.onerror = () => {
+      setIsNarrating(false);
+      utteranceRef.current = null;
+    };
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  }, [isSpeechSupported, stopNarration, autoPlay, currentStep]);
+
+  // Auto-narrate on step change when autoPlay is on
+  useEffect(() => {
+    if (isOpen && autoPlay && isSpeechSupported) {
+      const timer = setTimeout(() => narrate(tourSteps[currentStep].narration), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep, autoPlay, isOpen, isSpeechSupported, narrate]);
+
+  // Load voices (they load async in some browsers)
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  }, []);
+
+  // Cleanup on close
+  useEffect(() => {
+    if (!isOpen) {
+      stopNarration();
+      setCurrentStep(0);
+      setAutoPlay(false);
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current);
+      }
+    }
+  }, [isOpen, stopNarration]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowRight' && currentStep < tourSteps.length - 1) {
+        stopNarration();
+        setCurrentStep(prev => prev + 1);
+      }
+      if (e.key === 'ArrowLeft' && currentStep > 0) {
+        stopNarration();
+        setCurrentStep(prev => prev - 1);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, currentStep, onClose, stopNarration]);
+
+  if (!isOpen) return null;
+
+  const goNext = () => {
+    if (currentStep < tourSteps.length - 1) {
+      stopNarration();
+      if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentStep > 0) {
+      stopNarration();
+      if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+
+  const toggleAutoPlay = () => {
+    if (autoPlay) {
+      stopNarration();
+      if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+    }
+    setAutoPlay(!autoPlay);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="p-6 border-b relative overflow-hidden" style={{ backgroundColor: '#152F27' }}>
+          {/* Animated background circles */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-10" style={{ backgroundColor: step.color }} />
+          <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-10" style={{ backgroundColor: '#7B9965' }} />
+
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-white">Tour Guiado</h2>
+                <p className="text-white/50 text-xs">{currentStep + 1} de {tourSteps.length}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Auto-play toggle */}
+              <button
+                onClick={toggleAutoPlay}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  autoPlay ? 'bg-green-500/20 text-green-300' : 'bg-white/10 text-white/60 hover:bg-white/20'
+                }`}
+                title={autoPlay ? 'Pausar apresentacao automatica' : 'Iniciar apresentacao automatica com narracao'}
+              >
+                {autoPlay ? (
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 9v6m4-6v6" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  </svg>
+                )}
+                {autoPlay ? 'Pausar' : 'Auto'}
+              </button>
+
+              {/* Close button */}
+              <button onClick={onClose} className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-4 h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${progress}%`, backgroundColor: '#e2f7d0' }}
+            />
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-8">
+          <div className="text-center">
+            {/* Icon */}
+            <div
+              className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center transition-all duration-500"
+              style={{ backgroundColor: step.color + '15' }}
+            >
+              <svg className="w-10 h-10 transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke={step.color} strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d={step.icon} />
+              </svg>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-2xl font-bold mb-4 transition-all duration-300" style={{ color: '#152F27' }}>
+              {step.title}
+            </h3>
+
+            {/* Description */}
+            <p className="text-gray-600 leading-relaxed max-w-md mx-auto text-base mb-6">
+              {step.description}
+            </p>
+
+            {/* Narration indicator */}
+            {isNarrating && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style={{ backgroundColor: '#e2f7d0', color: '#152F27' }}>
+                <div className="flex items-center gap-1">
+                  <span className="w-1.5 h-3 rounded-full animate-pulse" style={{ backgroundColor: '#7B9965' }} />
+                  <span className="w-1.5 h-4 rounded-full animate-pulse" style={{ backgroundColor: '#7B9965', animationDelay: '0.15s' }} />
+                  <span className="w-1.5 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#7B9965', animationDelay: '0.3s' }} />
+                  <span className="w-1.5 h-5 rounded-full animate-pulse" style={{ backgroundColor: '#7B9965', animationDelay: '0.45s' }} />
+                  <span className="w-1.5 h-3 rounded-full animate-pulse" style={{ backgroundColor: '#7B9965', animationDelay: '0.6s' }} />
+                </div>
+                Narrando...
+              </div>
+            )}
+
+            {/* Narrate button (manual) */}
+            {!isNarrating && isSpeechSupported && !autoPlay && (
+              <button
+                onClick={() => narrate(step.narration)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+                Ouvir narracao
+              </button>
+            )}
+          </div>
+
+          {/* Step dots */}
+          <div className="flex justify-center gap-1.5 mt-8">
+            {tourSteps.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  stopNarration();
+                  if (autoPlayTimerRef.current) clearTimeout(autoPlayTimerRef.current);
+                  setCurrentStep(index);
+                }}
+                className={`rounded-full transition-all duration-300 ${
+                  index === currentStep
+                    ? 'w-8 h-2'
+                    : index < currentStep
+                    ? 'w-2 h-2 opacity-60'
+                    : 'w-2 h-2 opacity-30'
+                }`}
+                style={{
+                  backgroundColor: index === currentStep ? step.color : '#152F27'
+                }}
+                title={tourSteps[index].title}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Footer navigation */}
+        <div className="p-6 border-t border-gray-100 bg-gray-50/50">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={goPrev}
+              disabled={currentStep === 0}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                currentStep === 0
+                  ? 'text-gray-300 cursor-not-allowed'
+                  : 'text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              Anterior
+            </button>
+
+            <p className="text-xs text-gray-400 hidden sm:block">
+              Use as setas do teclado para navegar
+            </p>
+
+            {currentStep < tourSteps.length - 1 ? (
+              <button
+                onClick={goNext}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+                style={{ backgroundColor: '#152F27' }}
+              >
+                Proximo
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            ) : (
+              <button
+                onClick={onClose}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+                style={{ backgroundColor: '#7B9965' }}
+              >
+                Comecar agora!
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

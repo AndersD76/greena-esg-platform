@@ -18,6 +18,7 @@ import Certificate from './pages/Certificate';
 import Consultations from './pages/Consultations';
 import ConsultationRoom from './pages/ConsultationRoom';
 import Contact from './pages/Contact';
+import UserManual from './pages/UserManual';
 import Checkout from './pages/Checkout';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
@@ -127,6 +128,7 @@ function AppRoutes() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/manual" element={<UserManual />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/privacy" element={<Privacy />} />

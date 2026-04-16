@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { SEO } from '../components/SEO';
+import GuidedTour from '../components/GuidedTour';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -8,6 +9,7 @@ export default function LandingPage() {
   const [demoStep, setDemoStep] = useState(0);
   const [demoAnswers, setDemoAnswers] = useState<number[]>([]);
   const [showDemoResult, setShowDemoResult] = useState(false);
+  const [showTour, setShowTour] = useState(false);
 
   const demoQuestions = [
     {
@@ -102,6 +104,8 @@ export default function LandingPage() {
               <a href="#sobre" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Sobre</a>
               <a href="#pilares" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Pilares ESG</a>
               <a href="#planos" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Planos</a>
+              <Link to="/manual" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Manual</Link>
+              <button onClick={() => setShowTour(true)} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Tour Guiado</button>
               <Link to="/contact" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Contato</Link>
             </div>
             <div className="flex items-center gap-3">
@@ -133,6 +137,13 @@ export default function LandingPage() {
                 </Link>
                 <button onClick={() => setShowDemo(true)} className="px-8 py-3.5 text-sm font-semibold rounded-full border-2 transition-all hover:bg-white" style={{ borderColor: '#152F27', color: '#152F27' }}>
                   Ver demo
+                </button>
+                <button onClick={() => setShowTour(true)} className="px-8 py-3.5 text-sm font-semibold rounded-full border-2 transition-all hover:bg-white flex items-center gap-2" style={{ borderColor: '#7B9965', color: '#7B9965' }}>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Tour guiado
                 </button>
               </div>
             </div>
@@ -381,6 +392,7 @@ export default function LandingPage() {
                 {['Avaliação ESG', 'Relatórios', 'Certificação', 'Dashboard', 'Indicadores'].map(label => (
                   <li key={label}><Link to="/login" className="text-sm text-white/60 hover:text-white transition-colors">{label}</Link></li>
                 ))}
+                <li><Link to="/manual" className="text-sm text-white/60 hover:text-white transition-colors">Manual do Usuário</Link></li>
               </ul>
             </div>
             <div>
@@ -406,6 +418,9 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Guided Tour Modal */}
+      <GuidedTour isOpen={showTour} onClose={() => setShowTour(false)} />
 
       {/* Demo Modal */}
       {showDemo && (
