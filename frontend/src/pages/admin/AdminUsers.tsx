@@ -11,6 +11,21 @@ interface EditForm {
   role: string;
 }
 
+interface Plan {
+  id: string;
+  name: string;
+  code: string;
+  price: number;
+  consultationHours: number;
+}
+
+interface UserSubscription {
+  id: string;
+  planId: string;
+  status: string;
+  plan: { name: string; code: string };
+}
+
 export default function AdminUsers() {
   const { isSuperAdmin } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -23,7 +38,7 @@ export default function AdminUsers() {
   const [hours, setHours] = useState('1');
   const [hoursReason, setHoursReason] = useState('');
   const [createModal, setCreateModal] = useState(false);
-  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'admin' });
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'admin', planId: '' });
   const [editModal, setEditModal] = useState<AdminUser | null>(null);
   const [editForm, setEditForm] = useState<EditForm>({ name: '', companyName: '', cnpj: '', city: '', sector: '', role: 'user' });
   const [editLoading, setEditLoading] = useState(false);
@@ -31,14 +46,40 @@ export default function AdminUsers() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
 
+  // Plano
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [userSubs, setUserSubs] = useState<Record<string, UserSubscription | null>>({});
+  const [planModal, setPlanModal] = useState<AdminUser | null>(null);
+  const [selectedPlanId, setSelectedPlanId] = useState('');
+  const [planLoading, setPlanLoading] = useState(false);
+
   const loadUsers = useCallback(async (page = 1) => {
     setLoading(true);
     try {
       const data = await adminService.getUsers(page, 20, search || undefined, roleFilter || undefined);
       setUsers(data.users);
       setPagination({ page: data.pagination.page, totalPages: data.pagination.totalPages, total: data.pagination.total });
+
+      // Carregar assinatura de cada usuário
+      const subs: Record<string, UserSubscription | null> = {};
+      const subsData = await adminService.getSubscriptions(1, 100);
+      for (const sub of subsData.subscriptions) {
+        if (sub.status === 'active' || sub.status === 'pending_payment') {
+          subs[sub.userId] = {
+            id: sub.id,
+            planId: sub.planId,
+            status: sub.status,
+            plan: { name: sub.plan.name, code: sub.plan.code },
+          };
+        }
+      }
+      setUserSubs(subs);
     } catch (e) { console.error(e); } finally { setLoading(false); }
   }, [search, roleFilter]);
+
+  useEffect(() => {
+    adminService.getPlans().then(setPlans).catch(console.error);
+  }, []);
 
   useEffect(() => { const t = setTimeout(() => loadUsers(1), 300); return () => clearTimeout(t); }, [loadUsers]);
 
@@ -68,10 +109,27 @@ export default function AdminUsers() {
     }
     setCreateLoading(true);
     try {
-      await adminService.createAdmin(newAdmin);
+      const result = await adminService.createAdmin({ name: newAdmin.name, email: newAdmin.email, password: newAdmin.password, role: newAdmin.role });
+
+      // Se um plano foi selecionado, atribuir ao usuário criado
+      if (newAdmin.planId && result?.id) {
+        try {
+          const expiresAt = new Date();
+          expiresAt.setMonth(expiresAt.getMonth() + 1);
+          await adminService.createSubscription({
+            userId: result.id,
+            planId: newAdmin.planId,
+            status: 'active',
+            expiresAt: expiresAt.toISOString(),
+          });
+        } catch (subErr: any) {
+          console.error('Erro ao atribuir plano:', subErr);
+        }
+      }
+
       flash(`Admin ${newAdmin.email} criado com sucesso`);
       setCreateModal(false);
-      setNewAdmin({ name: '', email: '', password: '', role: 'admin' });
+      setNewAdmin({ name: '', email: '', password: '', role: 'admin', planId: '' });
       loadUsers(1);
     } catch (e: any) { flash(e.message); } finally { setCreateLoading(false); }
   }
@@ -121,7 +179,49 @@ export default function AdminUsers() {
     } catch (e: any) { flash(e.message); } finally { setDeleteLoading(false); }
   }
 
+  function openPlanModal(u: AdminUser) {
+    const currentSub = userSubs[u.id];
+    setSelectedPlanId(currentSub?.planId || '');
+    setPlanModal(u);
+  }
+
+  async function handleAssignPlan() {
+    if (!planModal || !selectedPlanId) {
+      flash('Selecione um plano');
+      return;
+    }
+    setPlanLoading(true);
+    try {
+      // Se já tem assinatura ativa, deletar antes
+      const currentSub = userSubs[planModal.id];
+      if (currentSub) {
+        await adminService.deleteSubscription(currentSub.id);
+      }
+
+      const expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + 1);
+      await adminService.createSubscription({
+        userId: planModal.id,
+        planId: selectedPlanId,
+        status: 'active',
+        expiresAt: expiresAt.toISOString(),
+      });
+
+      const plan = plans.find(p => p.id === selectedPlanId);
+      flash(`Plano ${plan?.name || ''} atribuído para ${planModal.name}`);
+      setPlanModal(null);
+      loadUsers(pagination.page);
+    } catch (e: any) { flash(e.response?.data?.error || e.message); } finally { setPlanLoading(false); }
+  }
+
   const roleBadge = (r: string) => ({ superadmin: 'bg-purple-100 text-purple-800', admin: 'bg-blue-100 text-blue-800', user: 'bg-gray-100 text-gray-600' }[r] || 'bg-gray-100 text-gray-600');
+
+  const planBadge = (code: string) => ({
+    free: 'bg-gray-100 text-gray-500',
+    start: 'bg-blue-50 text-blue-700',
+    grow: 'bg-green-50 text-green-700',
+    impact: 'bg-amber-50 text-amber-700',
+  }[code] || 'bg-gray-100 text-gray-500');
 
   const inputClass = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-700/30 transition-colors';
   const labelClass = 'block text-xs font-semibold text-gray-500 mb-1';
@@ -159,15 +259,18 @@ export default function AdminUsers() {
               <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>
               <th className="text-left px-4 py-3 font-semibold text-gray-500">Empresa</th>
               <th className="text-center px-4 py-3 font-semibold text-gray-500">Role</th>
+              <th className="text-center px-4 py-3 font-semibold text-gray-500">Plano</th>
               <th className="text-center px-4 py-3 font-semibold text-gray-500">Status</th>
               <th className="text-center px-4 py-3 font-semibold text-gray-500">Diag.</th>
               <th className="text-right px-4 py-3 font-semibold text-gray-500">Ações</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Carregando...</td></tr> :
-             users.length === 0 ? <tr><td colSpan={6} className="text-center py-8 text-gray-400">Nenhum usuário</td></tr> :
-             users.map((u) => (
+            {loading ? <tr><td colSpan={7} className="text-center py-8 text-gray-400">Carregando...</td></tr> :
+             users.length === 0 ? <tr><td colSpan={7} className="text-center py-8 text-gray-400">Nenhum usuário</td></tr> :
+             users.map((u) => {
+              const sub = userSubs[u.id];
+              return (
               <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                 <td className="px-4 py-3">
                   <p className="font-semibold text-brand-900">{u.name}</p>
@@ -178,6 +281,17 @@ export default function AdminUsers() {
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${roleBadge(u.role)}`}>{u.role}</span>
                 </td>
                 <td className="px-4 py-3 text-center">
+                  {sub ? (
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${planBadge(sub.plan.code)}`}>
+                      {sub.plan.name}
+                    </span>
+                  ) : (
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-400">
+                      Demo
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-3 text-center">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${u.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {u.isActive ? 'Ativo' : 'Inativo'}
                   </span>
@@ -185,6 +299,9 @@ export default function AdminUsers() {
                 <td className="px-4 py-3 text-center text-gray-500">{u._count?.diagnoses || 0}</td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-1">
+                    <button onClick={() => openPlanModal(u)} className="px-2 py-1 text-[10px] font-medium rounded bg-green-50 hover:bg-green-100 text-green-700 transition-colors">
+                      Plano
+                    </button>
                     <button onClick={() => handleToggleStatus(u)} className={`px-2 py-1 text-[10px] font-medium rounded transition-colors ${u.isActive ? 'bg-red-50 hover:bg-red-100 text-red-600' : 'bg-green-50 hover:bg-green-100 text-green-700'}`}>
                       {u.isActive ? 'Desativar' : 'Ativar'}
                     </button>
@@ -200,7 +317,8 @@ export default function AdminUsers() {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -213,6 +331,66 @@ export default function AdminUsers() {
               {i + 1}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* ===== ASSIGN PLAN MODAL ===== */}
+      {planModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setPlanModal(null)}>
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-brand-900 mb-1">Atribuir Plano</h3>
+            <p className="text-xs text-gray-400 mb-5">{planModal.name} — {planModal.email}</p>
+
+            {userSubs[planModal.id] && (
+              <div className="mb-4 p-3 rounded-lg bg-blue-50 text-sm">
+                <span className="text-blue-700 font-medium">Plano atual: </span>
+                <span className="font-bold text-blue-900">{userSubs[planModal.id]?.plan.name}</span>
+              </div>
+            )}
+
+            <div className="space-y-2 mb-6">
+              {plans.map(plan => (
+                <button
+                  key={plan.id}
+                  onClick={() => setSelectedPlanId(plan.id)}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all ${
+                    selectedPlanId === plan.id
+                      ? 'border-brand-700 bg-brand-100/50 shadow-sm'
+                      : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
+                  <div>
+                    <p className="font-semibold text-brand-900">{plan.name}</p>
+                    <p className="text-xs text-gray-400">
+                      {plan.consultationHours > 0 ? `${plan.consultationHours}h consultoria/mês` : 'Sem consultoria'}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-brand-900">
+                      {plan.price > 0 ? `R$ ${plan.price}` : 'Grátis'}
+                    </p>
+                    <p className="text-[10px] text-gray-400">{plan.price > 0 ? '/mês' : ''}</p>
+                  </div>
+                </button>
+              ))}
+              {plans.length === 0 && (
+                <p className="text-sm text-gray-400 text-center py-4">Nenhum plano cadastrado no banco de dados.</p>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setPlanModal(null)} className="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                Cancelar
+              </button>
+              <button
+                onClick={handleAssignPlan}
+                disabled={planLoading || !selectedPlanId}
+                className="px-5 py-2 text-sm bg-brand-900 text-white rounded-lg hover:bg-brand-900/90 disabled:opacity-50 transition-colors"
+              >
+                {planLoading ? 'Salvando...' : 'Atribuir Plano'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -337,6 +515,15 @@ export default function AdminUsers() {
                 <select value={newAdmin.role} onChange={e => setNewAdmin({ ...newAdmin, role: e.target.value })} className={inputClass}>
                   <option value="admin">Admin</option>
                   <option value="superadmin">Superadmin</option>
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Plano (opcional)</label>
+                <select value={newAdmin.planId} onChange={e => setNewAdmin({ ...newAdmin, planId: e.target.value })} className={inputClass}>
+                  <option value="">Demo (gratuito)</option>
+                  {plans.map(p => (
+                    <option key={p.id} value={p.id}>{p.name} — R$ {p.price}/mês</option>
+                  ))}
                 </select>
               </div>
             </div>
