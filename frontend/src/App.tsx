@@ -39,7 +39,8 @@ import StakeholderReport from './pages/StakeholderReport';
 import { diagnosisService } from './services/diagnosis.service';
 import { subscriptionService } from './services/subscription.service';
 import { usePageTracking } from './hooks/usePageTracking';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import Onboarding from './components/Onboarding';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -114,10 +115,30 @@ function ScrollToTop() {
   return null;
 }
 
+function needsOnboarding(user: any) {
+  if (!user || user.role === 'admin' || user.role === 'superadmin') return false;
+  return !user.companyName || !user.sector || !user.companySize;
+}
+
 function AppRoutes() {
   const { user } = useAuth();
   const { pathname } = useLocation();
   const hideMainLayout = pathname === '/checkout' || pathname.includes('/stakeholder-report') || pathname.startsWith('/empresa/') || pathname.startsWith('/admin');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
+
+  useEffect(() => {
+    if (user && needsOnboarding(user) && !onboardingDismissed) {
+      setShowOnboarding(true);
+    } else {
+      setShowOnboarding(false);
+    }
+  }, [user, onboardingDismissed]);
+
+  const handleOnboardingComplete = useCallback(() => {
+    setShowOnboarding(false);
+    setOnboardingDismissed(true);
+  }, []);
 
   usePageTracking();
 
@@ -128,7 +149,7 @@ function AppRoutes() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/manual" element={<UserManual />} />
+          <Route path="/manual" element={<PrivateRoute><UserManual /></PrivateRoute>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/privacy" element={<Privacy />} />
@@ -269,6 +290,7 @@ function AppRoutes() {
         </Routes>
       </main>
       {user && !hideMainLayout && <Footer />}
+      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
     </div>
   );
 }

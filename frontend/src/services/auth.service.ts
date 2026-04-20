@@ -22,9 +22,16 @@ export interface User {
   name: string;
   companyName?: string;
   cnpj?: string;
+  city?: string;
+  foundingYear?: number;
+  responsiblePerson?: string;
+  responsibleContact?: string;
+  companySize?: string;
   sector?: string;
-  employees?: number;
+  employeesRange?: string;
+  esgPainPoint?: string;
   role?: string;
+  createdAt?: string;
 }
 
 export const authService = {

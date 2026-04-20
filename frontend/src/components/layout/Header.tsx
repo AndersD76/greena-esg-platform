@@ -2,12 +2,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { subscriptionService } from '../../services/subscription.service';
+import GuidedTour from '../GuidedTour';
 
 export function Header() {
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isFreePlan, setIsFreePlan] = useState(true);
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -77,6 +79,12 @@ export function Header() {
                   Admin
                 </Link>
               )}
+              <Link to="/manual" className={navLinkClass('/manual', true)}>
+                Manual
+              </Link>
+              <button onClick={() => setShowTour(true)} className="text-sm font-medium text-brand-900/70 hover:text-brand-900 transition-colors">
+                Tour
+              </button>
               <Link to="/profile" className={navLinkClass('/profile', true)}>
                 Perfil
               </Link>
@@ -116,6 +124,7 @@ export function Header() {
           </div>
         </div>
       </div>
+      <GuidedTour isOpen={showTour} onClose={() => setShowTour(false)} />
     </header>
   );
 }
