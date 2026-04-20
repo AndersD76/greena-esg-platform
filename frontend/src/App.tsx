@@ -116,7 +116,10 @@ function ScrollToTop() {
 }
 
 function needsOnboarding(user: any) {
-  if (!user || user.role === 'admin' || user.role === 'superadmin') return false;
+  if (!user) return false;
+  if (user.role === 'admin' || user.role === 'superadmin') return false;
+  const key = `@greena:onboarding_done:${user.id}`;
+  if (localStorage.getItem(key)) return false;
   return !user.companyName || !user.sector || !user.companySize;
 }
 
@@ -125,20 +128,21 @@ function AppRoutes() {
   const { pathname } = useLocation();
   const hideMainLayout = pathname === '/checkout' || pathname.includes('/stakeholder-report') || pathname.startsWith('/empresa/') || pathname.startsWith('/admin');
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
 
   useEffect(() => {
-    if (user && needsOnboarding(user) && !onboardingDismissed) {
+    if (user && needsOnboarding(user)) {
       setShowOnboarding(true);
     } else {
       setShowOnboarding(false);
     }
-  }, [user, onboardingDismissed]);
+  }, [user]);
 
   const handleOnboardingComplete = useCallback(() => {
     setShowOnboarding(false);
-    setOnboardingDismissed(true);
-  }, []);
+    if (user) {
+      localStorage.setItem(`@greena:onboarding_done:${user.id}`, 'true');
+    }
+  }, [user]);
 
   usePageTracking();
 
