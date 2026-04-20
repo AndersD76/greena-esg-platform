@@ -40,18 +40,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signIn({ email, password }: LoginData) {
     const response = await authService.login({ email, password });
-    const { user: userData, accessToken } = response;
+    const { accessToken } = response;
 
     localStorage.setItem('@greena:token', accessToken);
-    setUser(userData);
+    const fullProfile = await authService.getProfile();
+    setUser(fullProfile);
   }
 
   async function signUp(data: RegisterData) {
     const response = await authService.register(data);
-    const { user: userData, accessToken } = response;
+    const { accessToken } = response;
 
     localStorage.setItem('@greena:token', accessToken);
-    setUser(userData);
+    const fullProfile = await authService.getProfile();
+    setUser(fullProfile);
   }
 
   function signOut() {

@@ -20,7 +20,7 @@ router.patch('/users/:userId', (req, res) => adminController.updateUser(req, res
 router.patch('/users/:userId/role', (req, res) => adminController.updateUser(req, res));
 router.post('/users/:userId/toggle-status', (req, res) => adminController.toggleUserStatus(req, res));
 router.patch('/users/:userId/toggle-status', (req, res) => adminController.toggleUserStatus(req, res));
-router.delete('/users/:userId', superadminMiddleware, (req, res) => adminController.deleteUser(req, res));
+router.delete('/users/:userId', (req, res) => adminController.deleteUser(req, res));
 
 // Criar admin (apenas superadmin)
 router.post('/admins', superadminMiddleware, (req, res) => adminController.createAdmin(req, res));
