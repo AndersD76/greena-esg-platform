@@ -70,7 +70,7 @@ export class AdminController {
       if (!email || !password || !name || !role) {
         return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
       }
-      if (!['admin', 'superadmin'].includes(role)) {
+      if (!['user', 'admin', 'superadmin'].includes(role)) {
         return res.status(400).json({ error: 'Role inválida' });
       }
       const admin = await adminService.createAdmin({ email, password, name, role });
