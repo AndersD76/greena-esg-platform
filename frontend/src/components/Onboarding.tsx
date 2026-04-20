@@ -114,7 +114,7 @@ export default function Onboarding({ onComplete }: Props) {
 
           {/* Step indicator */}
           <div className="flex gap-2 mb-2">
-            {steps.map((s, i) => (
+            {steps.map((_, i) => (
               <div key={i} className="flex-1">
                 <div className={`h-1.5 rounded-full transition-all ${i <= step ? 'bg-[#7B9965]' : 'bg-gray-200'}`} />
               </div>
