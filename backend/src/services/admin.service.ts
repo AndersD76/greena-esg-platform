@@ -148,9 +148,10 @@ export class AdminService {
   }
 
   async deleteUser(userId: string) {
-    // Deletar em cascata: activity logs, responses, action plans, insights, diagnoses, subscriptions, consultations, certificates
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error('Usuário não encontrado');
+
     await prisma.$transaction(async (tx) => {
-      // Deletar dados relacionados dos diagnósticos
       const diagnoses = await tx.diagnosis.findMany({ where: { userId }, select: { id: true } });
       const diagnosisIds = diagnoses.map(d => d.id);
 
@@ -158,12 +159,11 @@ export class AdminService {
         await tx.response.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
         await tx.actionPlan.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
         await tx.strategicInsight.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
-        await tx.certificate.deleteMany({ where: { diagnosisId: { in: diagnosisIds } } });
       }
 
+      await tx.certificate.deleteMany({ where: { userId } });
       await tx.diagnosis.deleteMany({ where: { userId } });
 
-      // Consultorias
       const consultations = await tx.consultation.findMany({ where: { userId }, select: { id: true } });
       if (consultations.length > 0) {
         await tx.consultationMessage.deleteMany({ where: { consultationId: { in: consultations.map(c => c.id) } } });
