@@ -194,7 +194,7 @@ export class AdminService {
   /**
    * Cria um novo admin
    */
-  async createAdmin(data: { email: string; password: string; name: string; role: 'admin' | 'superadmin' }) {
+  async createAdmin(data: { email: string; password: string; name: string; role: 'user' | 'admin' | 'superadmin' }) {
     const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
     if (existingUser) throw new Error('Email já cadastrado');
 

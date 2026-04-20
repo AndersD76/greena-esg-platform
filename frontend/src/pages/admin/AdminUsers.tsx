@@ -38,7 +38,7 @@ export default function AdminUsers() {
   const [hours, setHours] = useState('1');
   const [hoursReason, setHoursReason] = useState('');
   const [createModal, setCreateModal] = useState(false);
-  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'admin', planId: '' });
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '', role: 'user', planId: '' });
   const [editModal, setEditModal] = useState<AdminUser | null>(null);
   const [editForm, setEditForm] = useState<EditForm>({ name: '', companyName: '', cnpj: '', city: '', sector: '', role: 'user' });
   const [editLoading, setEditLoading] = useState(false);
@@ -238,7 +238,7 @@ export default function AdminUsers() {
         </div>
         {isSuperAdmin && (
           <button onClick={() => setCreateModal(true)} className="px-4 py-2 bg-brand-900 text-white text-sm font-semibold rounded-lg hover:bg-brand-900/90 transition-colors">
-            + Novo Admin
+            + Novo Usuário
           </button>
         )}
       </div>
@@ -495,8 +495,8 @@ export default function AdminUsers() {
       {createModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setCreateModal(false)}>
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-brand-900 mb-1">Novo Admin</h3>
-            <p className="text-xs text-gray-400 mb-5">Criar uma nova conta de administrador</p>
+            <h3 className="text-lg font-bold text-brand-900 mb-1">Novo Usuário</h3>
+            <p className="text-xs text-gray-400 mb-5">Criar uma nova conta na plataforma</p>
             <div className="space-y-4">
               <div>
                 <label className={labelClass}>Nome *</label>
@@ -513,6 +513,7 @@ export default function AdminUsers() {
               <div>
                 <label className={labelClass}>Nível de acesso</label>
                 <select value={newAdmin.role} onChange={e => setNewAdmin({ ...newAdmin, role: e.target.value })} className={inputClass}>
+                  <option value="user">Usuário</option>
                   <option value="admin">Admin</option>
                   <option value="superadmin">Superadmin</option>
                 </select>
@@ -530,7 +531,7 @@ export default function AdminUsers() {
             <div className="flex justify-end gap-2 mt-6">
               <button onClick={() => setCreateModal(false)} className="px-4 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">Cancelar</button>
               <button onClick={handleCreateAdmin} disabled={createLoading} className="px-5 py-2 text-sm bg-brand-900 text-white rounded-lg hover:bg-brand-900/90 disabled:opacity-50 transition-colors">
-                {createLoading ? 'Criando...' : 'Criar Admin'}
+                {createLoading ? 'Criando...' : 'Criar Usuário'}
               </button>
             </div>
           </div>

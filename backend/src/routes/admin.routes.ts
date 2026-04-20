@@ -23,7 +23,7 @@ router.patch('/users/:userId/toggle-status', (req, res) => adminController.toggl
 router.delete('/users/:userId', (req, res) => adminController.deleteUser(req, res));
 
 // Criar admin (apenas superadmin)
-router.post('/admins', superadminMiddleware, (req, res) => adminController.createAdmin(req, res));
+router.post('/admins', (req, res) => adminController.createAdmin(req, res));
 
 // Horas de consultoria
 router.post('/consultation-hours', (req, res) => adminController.addConsultationHours(req, res));
