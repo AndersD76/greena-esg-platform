@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
+import { SEO } from '../components/SEO';
+import { conversions } from '../lib/analytics';
 
 interface Plan {
   code: string;
@@ -156,6 +158,7 @@ export default function Checkout() {
         const response = await api.get(`/subscriptions/payment-status/${paymentId}`);
         if (response.data.status === 'RECEIVED' || response.data.status === 'CONFIRMED') {
           if (pollingRef.current) clearInterval(pollingRef.current);
+          if (selectedPlan) conversions.purchase(selectedPlan.price, selectedPlan.code);
           setStep(4); // Sucesso
         }
       } catch {
@@ -174,6 +177,7 @@ export default function Checkout() {
 
   const handleSubmit = async () => {
     if (!selectedPlan) return;
+    conversions.beginCheckout(selectedPlan.code, selectedPlan.price);
     setError('');
     setLoading(true);
 
@@ -219,6 +223,7 @@ export default function Checkout() {
         setStep(3); // Mostra QR Code PIX
         startPixPolling(response.data.pixData.paymentId);
       } else {
+        if (selectedPlan) conversions.purchase(selectedPlan.price, selectedPlan.code);
         setStep(4); // Sucesso direto (cartão)
       }
     } catch (err: any) {
@@ -240,6 +245,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Checkout" noindex url="/checkout" />
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">

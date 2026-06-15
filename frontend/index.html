@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/images/assets/icone-engreena.png" />
+    <link rel="apple-touch-icon" href="/images/assets/icone-engreena.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="GMVGuPbHJ0sBvjeGfFuogFF2SZsmkp8Gtug1A9VPQSY" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
@@ -15,14 +18,16 @@
     <meta property="og:title" content="engreena - Plataforma ESG para Empresas" />
     <meta property="og:description" content="Diagnóstico ESG completo com certificação, plano de ação e consultoria especializada." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://www.engreena.com.br/images/assets/logo-engreena.png" />
+    <meta property="og:image" content="https://www.engreena.com.br/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://www.engreena.com.br" />
     <meta property="og:site_name" content="engreena" />
     <meta property="og:locale" content="pt_BR" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="engreena - Plataforma ESG para Empresas" />
     <meta name="twitter:description" content="Diagnóstico ESG completo com certificação, plano de ação e consultoria especializada." />
-    <meta name="twitter:image" content="https://www.engreena.com.br/images/assets/logo-engreena.png" />
+    <meta name="twitter:image" content="https://www.engreena.com.br/og-image.png" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.engreena.com.br" />
     <!-- JSON-LD Structured Data -->
@@ -65,13 +70,20 @@
       }
     }
     </script>
-    <!-- Google Analytics GA4 - Substitua G-XXXXXXXXXX pelo seu Measurement ID -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <!-- Consent Mode v2 (LGPD): tudo negado por padrão. O GA4 é carregado          -->
+    <!-- dinamicamente em src/lib/analytics.ts somente após consentimento de análise. -->
+    <!-- O Measurement ID vem da env VITE_GA_ID (ver .env.example).                  -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500
+      });
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
     </script>
   </head>
   <body>

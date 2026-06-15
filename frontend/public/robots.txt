@@ -5,8 +5,34 @@ Disallow: /dashboard
 Disallow: /diagnosis/
 Disallow: /profile
 Disallow: /reports
+Disallow: /insights
 Disallow: /consultations
+Disallow: /certificate/
 Disallow: /checkout
+Disallow: /manual
 Disallow: /admin/
 
+# Motores de IA — permitidos (citação da marca em ChatGPT/Perplexity/Claude/Gemini)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://www.engreena.com.br/sitemap.xml
+Sitemap: https://www.engreena.com.br/api/sitemap-empresas.xml

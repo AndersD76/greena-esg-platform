@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { SEO } from '../components/SEO';
+import { conversions } from '../lib/analytics';
 
 export default function Register() {
   const { signUp } = useAuth();
@@ -29,6 +30,7 @@ export default function Register() {
 
     try {
       await signUp(formData);
+      conversions.signUp();
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Erro ao criar conta');

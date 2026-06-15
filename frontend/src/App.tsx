@@ -41,6 +41,8 @@ import { subscriptionService } from './services/subscription.service';
 import { usePageTracking } from './hooks/usePageTracking';
 import { useEffect, useState, useCallback } from 'react';
 import Onboarding from './components/Onboarding';
+import CookieConsent from './components/CookieConsent';
+import { initAnalytics } from './lib/analytics';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -295,11 +297,16 @@ function AppRoutes() {
       </main>
       {user && !hideMainLayout && <Footer />}
       {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
+      <CookieConsent />
     </div>
   );
 }
 
 function App() {
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
   return (
     <BrowserRouter>
       <AuthProvider>

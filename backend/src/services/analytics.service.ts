@@ -16,6 +16,35 @@ export class AnalyticsService {
   }
 
   /**
+   * Registra um evento de usuário (funil/conversão) no ActivityLog
+   */
+  async trackEvent(data: { userId: string; actionType: string; description?: string }) {
+    return prisma.activityLog.create({
+      data: {
+        userId: data.userId,
+        actionType: data.actionType,
+        description: data.description || data.actionType,
+      },
+    });
+  }
+
+  /**
+   * Métricas de eventos (funil) para o admin
+   */
+  async getEventMetrics(dateFrom: Date, dateTo: Date) {
+    const byType = await prisma.$queryRaw<{ action_type: string; count: bigint }[]>`
+      SELECT action_type, COUNT(*)::bigint as count
+      FROM activity_logs
+      WHERE created_at >= ${dateFrom} AND created_at <= ${dateTo}
+      GROUP BY action_type
+      ORDER BY count DESC
+    `;
+    return {
+      byType: byType.map((e) => ({ actionType: e.action_type, count: Number(e.count) })),
+    };
+  }
+
+  /**
    * Métricas de acesso para o admin
    */
   async getAccessMetrics(dateFrom: Date, dateTo: Date) {

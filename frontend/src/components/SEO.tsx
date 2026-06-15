@@ -1,9 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://www.engreena.com.br';
+const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, '') || 'https://www.engreena.com.br';
 const DEFAULT_TITLE = 'engreena - Soluções em Sustentabilidade';
 const DEFAULT_DESCRIPTION = 'Plataforma de diagnóstico ESG completo para empresas. Avalie práticas ambientais, sociais e de governança com certificação, plano de ação e consultoria especializada.';
-const DEFAULT_IMAGE = `${SITE_URL}/images/assets/logo-engreena.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 interface SEOProps {
   title?: string;
@@ -12,9 +12,11 @@ interface SEOProps {
   url?: string;
   type?: string;
   noindex?: boolean;
+  /** JSON-LD opcional para schema por página. */
+  jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
-export function SEO({ title, description, image, url, type = 'website', noindex = false }: SEOProps) {
+export function SEO({ title, description, image, url, type = 'website', noindex = false, jsonLd }: SEOProps) {
   const fullTitle = title ? `${title} | engreena` : DEFAULT_TITLE;
   const desc = description || DEFAULT_DESCRIPTION;
   const img = image || DEFAULT_IMAGE;
@@ -41,6 +43,10 @@ export function SEO({ title, description, image, url, type = 'website', noindex 
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={desc} />
       <meta name="twitter:image" content={img} />
+
+      {jsonLd && (
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      )}
     </Helmet>
   );
 }

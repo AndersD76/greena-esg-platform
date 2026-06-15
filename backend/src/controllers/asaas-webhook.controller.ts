@@ -84,6 +84,19 @@ export class AsaasWebhookController {
       });
       console.log(`[Webhook Asaas] Assinatura ${subscription.id} ativada via pagamento ${payment.id}`);
     }
+
+    // Registra conversão (receita) para métricas internas de funil
+    try {
+      await prisma.activityLog.create({
+        data: {
+          userId: subscription.userId,
+          actionType: 'payment_confirmed',
+          description: `Pagamento confirmado: R$ ${payment?.value ?? '?'} (Asaas ${payment?.id ?? '-'})`,
+        },
+      });
+    } catch (e) {
+      console.error('[Webhook Asaas] Falha ao registrar ActivityLog de conversão:', e);
+    }
   }
 
   /**

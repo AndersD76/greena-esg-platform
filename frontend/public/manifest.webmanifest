@@ -1,0 +1,19 @@
+{
+  "name": "engreena - Soluções em Sustentabilidade",
+  "short_name": "engreena",
+  "description": "Plataforma de diagnóstico ESG completo para empresas, com certificação, plano de ação e consultoria.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#152F27",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/images/assets/icone-engreena.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

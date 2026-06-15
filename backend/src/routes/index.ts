@@ -11,9 +11,11 @@ import adminRoutes from './admin.routes';
 import asaasWebhookRoutes from './asaas-webhook.routes';
 import publicRoutes from './public.routes';
 import analyticsRoutes from './analytics.routes';
+import sitemapRoutes from './sitemap.routes';
 
 const router = Router();
 
+router.use('/sitemap-empresas.xml', sitemapRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/auth', authRoutes);
 router.use('/diagnoses', diagnosisRoutes);

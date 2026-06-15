@@ -5,6 +5,8 @@ import { responseService, ResponseData } from '../services/response.service';
 import { diagnosisService } from '../services/diagnosis.service';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
+import { conversions } from '../lib/analytics';
+import api from '../services/api';
 
 interface Response {
   [key: number]: {
@@ -146,6 +148,8 @@ export default function Questionnaire() {
     try {
       setSaving(true);
       await diagnosisService.finalize(diagnosisId);
+      conversions.diagnosisCompleted();
+      api.post('/analytics/event', { actionType: 'diagnosis_completed', description: `Diagnóstico ${diagnosisId} finalizado` }).catch(() => {});
       navigate(`/diagnosis/${diagnosisId}/results`);
     } catch (error) {
       console.error('Erro ao finalizar diagnóstico:', error);

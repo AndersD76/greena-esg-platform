@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import api from '../services/api';
+import { trackPageView } from '../lib/analytics';
 
 function getSessionId(): string {
   let sid = sessionStorage.getItem('_greena_sid');
@@ -30,12 +31,7 @@ export function usePageTracking() {
       userId: user?.id || undefined,
     }).catch(() => {});
 
-    // Google Analytics (se disponível)
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'page_view', {
-        page_path: path,
-        page_title: document.title,
-      });
-    }
+    // Google Analytics (consent-gated; só dispara se VITE_GA_ID e consentimento)
+    trackPageView(path);
   }, [location.pathname, user]);
 }

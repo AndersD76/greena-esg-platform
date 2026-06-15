@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { diagnosisService } from '../services/diagnosis.service';
+import { conversions } from '../lib/analytics';
+import api from '../services/api';
 
 const demoQuestions = [
   {
@@ -108,6 +110,8 @@ export default function SimplifiedQuestionnaire() {
     try {
       setSaving(true);
       const result = await diagnosisService.completeSimplified(diagnosisId, scores);
+      conversions.diagnosisCompleted();
+      api.post('/analytics/event', { actionType: 'diagnosis_completed', description: `Diagnóstico simplificado ${diagnosisId} finalizado` }).catch(() => {});
       setFinalScores(result.scores);
       setShowResults(true);
     } catch (error) {

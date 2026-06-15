@@ -1,0 +1,35 @@
+# engreena
+
+> Plataforma brasileira de diagnóstico ESG (Ambiental, Social e Governança) para empresas.
+> Avalia a maturidade ESG em 215 questões distribuídas nos 3 pilares, gera certificação,
+> plano de ação priorizado e relatório de sustentabilidade, com consultoria especializada.
+
+## O que a engreena faz
+- Diagnóstico ESG completo (pilares Ambiental, Social e Governança)
+- Escala de maturidade de 0 a 5 por critério
+- Certificação ESG com níveis por pontuação
+- Plano de ação priorizado (prioridade, investimento, prazo, impacto)
+- Relatório de sustentabilidade e insights estratégicos
+- Compatibilidade com o padrão GRI (Global Reporting Initiative)
+- Consultoria especializada em sustentabilidade
+
+## Público
+Micro, pequenas, médias e grandes empresas brasileiras que querem estruturar,
+medir e comunicar suas práticas de sustentabilidade.
+
+## Planos
+Plano gratuito disponível; planos pagos a partir de modelos por assinatura (BRL).
+
+## Páginas públicas
+- Home: https://www.engreena.com.br/
+- Cadastro: https://www.engreena.com.br/register
+- Contato: https://www.engreena.com.br/contact
+- Política de Privacidade: https://www.engreena.com.br/privacy
+- Termos de Uso: https://www.engreena.com.br/terms
+- LGPD: https://www.engreena.com.br/lgpd
+- Política de Cookies: https://www.engreena.com.br/cookies
+- Compliance: https://www.engreena.com.br/compliance
+
+## Contato
+- Site: https://www.engreena.com.br
+- E-mail (LGPD/DPO): lgpd@greenasolucoes.com.br

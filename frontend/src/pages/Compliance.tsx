@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 export default function Compliance() {
   return (
     <div className="min-h-screen bg-white">
+      <SEO title="Compliance" description="Práticas de compliance, integridade e conformidade da engreena." url="/compliance" />
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">

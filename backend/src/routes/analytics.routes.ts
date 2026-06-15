@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { AnalyticsService } from '../services/analytics.service';
-import { authMiddleware, adminMiddleware } from '../middlewares/auth.middleware';
+import { authMiddleware, adminMiddleware, AuthRequest } from '../middlewares/auth.middleware';
 
 const router = Router();
 const analyticsService = new AnalyticsService();
@@ -26,6 +26,41 @@ router.post('/track', async (req: Request, res: Response) => {
   } catch (error) {
     // Silencioso - não queremos que erros de tracking afetem o UX
     res.status(204).end();
+  }
+});
+
+// Event tracking endpoint (autenticado - registra eventos de funil/conversão)
+router.post('/event', authMiddleware, async (req: AuthRequest, res: Response) => {
+  try {
+    const { actionType, description } = req.body;
+    if (!actionType) {
+      return res.status(400).json({ error: 'actionType é obrigatório' });
+    }
+    await analyticsService.trackEvent({
+      userId: req.user!.userId,
+      actionType,
+      description,
+    });
+    res.status(204).end();
+  } catch (error) {
+    // Silencioso - não afeta o UX
+    res.status(204).end();
+  }
+});
+
+// Admin: métricas de eventos (funil)
+router.get('/events', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { dateFrom, dateTo } = req.query;
+    const from = dateFrom ? new Date(dateFrom as string) : (() => {
+      const d = new Date(); d.setDate(d.getDate() - 30); return d;
+    })();
+    const to = dateTo ? new Date(dateTo as string + 'T23:59:59.999Z') : new Date();
+    const metrics = await analyticsService.getEventMetrics(from, to);
+    res.json(metrics);
+  } catch (error) {
+    console.error('Erro ao buscar métricas de eventos:', error);
+    res.status(500).json({ error: 'Erro ao buscar métricas de eventos' });
   }
 });
 
