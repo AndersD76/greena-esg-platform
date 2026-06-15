@@ -73,7 +73,7 @@ export function getUTM(): Record<string, any> {
   }
 }
 
-/** Aplica o estado de consentimento ao Consent Mode v2 e carrega o GA se permitido. */
+/** Aplica o estado de consentimento atual ao Consent Mode v2. */
 export function applyConsent() {
   const c = getConsent();
   gtag('consent', 'update', {
@@ -82,12 +82,15 @@ export function applyConsent() {
     ad_user_data: c.marketing,
     ad_personalization: c.marketing,
   });
-  if (c.analytics === 'granted') loadGA();
 }
 
-/** Inicializa a medição no boot do app. */
+/** Inicializa a medição no boot do app.
+ *  Consent Mode v2: o gtag.js é carregado sempre, mas com consentimento negado
+ *  por padrão (definido em index.html) — sem cookies até o aceite do banner.
+ */
 export function initAnalytics() {
   captureUTM();
+  loadGA();
   applyConsent();
 }
 
