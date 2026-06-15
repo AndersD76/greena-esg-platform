@@ -35,6 +35,52 @@ const PAGE_LABELS: Record<string, string> = {
 
 const COLORS = ['#7B9965', '#924131', '#b8963a', '#3B82F6', '#8B5CF6', '#EF4444', '#10B981', '#F59E0B'];
 
+function DateFilter({ startDate, endDate, onStartChange, onEndChange, onApply }: {
+  startDate: string; endDate: string;
+  onStartChange: (v: string) => void; onEndChange: (v: string) => void;
+  onApply: () => void;
+}) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
+      <div className="flex gap-4 items-end">
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1">De</label>
+          <input type="date" value={startDate} onChange={e => onStartChange(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-1">Até</label>
+          <input type="date" value={endDate} onChange={e => onEndChange(e.target.value)}
+            className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
+        </div>
+        <button onClick={onApply}
+          className="px-4 py-2 text-sm font-semibold bg-brand-900 text-white rounded-lg hover:bg-brand-900/90">
+          Gerar Relatório
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-flex ml-1"
+      onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}
+      onClick={() => setShow(v => !v)}>
+      <svg className="w-3.5 h-3.5 text-gray-300 hover:text-gray-500 cursor-help transition-colors" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+      </svg>
+      {show && (
+        <span className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 text-xs text-white bg-gray-800 rounded-lg shadow-lg whitespace-normal w-52 text-center font-normal normal-case tracking-normal">
+          {text}
+          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800" />
+        </span>
+      )}
+    </span>
+  );
+}
+
 export default function AdminReports() {
   const today = new Date();
   const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
@@ -85,27 +131,6 @@ export default function AdminReports() {
     return path;
   }
 
-  const DateFilter = ({ onApply }: { onApply: () => void }) => (
-    <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
-      <div className="flex gap-4 items-end">
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1">De</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1">Até</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
-            className="px-3 py-2 text-sm border border-gray-200 rounded-lg" />
-        </div>
-        <button onClick={onApply}
-          className="px-4 py-2 text-sm font-semibold bg-brand-900 text-white rounded-lg hover:bg-brand-900/90">
-          Gerar Relatório
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="p-8">
       <div className="mb-6">
@@ -129,7 +154,7 @@ export default function AdminReports() {
       {/* ========== TAB: ACESSOS ========== */}
       {tab === 'access' && (
         <>
-          <DateFilter onApply={loadAccessMetrics} />
+          <DateFilter startDate={startDate} endDate={endDate} onStartChange={setStartDate} onEndChange={setEndDate} onApply={loadAccessMetrics} />
           {loading && <p className="text-center text-gray-400 py-8">Carregando...</p>}
 
           {accessMetrics && !loading && (
@@ -137,12 +162,12 @@ export default function AdminReports() {
               {/* Summary Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { label: 'Page Views', value: accessMetrics.summary.totalViews, color: '#3B82F6', bg: '#EFF6FF' },
-                  { label: 'Sessões Únicas', value: accessMetrics.summary.uniqueSessions, color: '#8B5CF6', bg: '#F5F3FF' },
-                  { label: 'Usuários Únicos', value: accessMetrics.summary.uniqueUsers, color: '#7B9965', bg: '#f0f7ed' },
-                  { label: 'Views Hoje', value: accessMetrics.summary.todayViews, color: '#10B981', bg: '#ECFDF5' },
-                  { label: 'Online Agora', value: accessMetrics.summary.activeNow, color: '#EF4444', bg: '#FEF2F2' },
-                  { label: 'Págs/Sessão', value: accessMetrics.summary.avgPagesPerSession, color: '#b8963a', bg: '#faf6ee' },
+                  { label: 'Page Views', value: accessMetrics.summary.totalViews, color: '#3B82F6', bg: '#EFF6FF', info: 'Total de páginas visualizadas no período selecionado, incluindo recarregamentos.' },
+                  { label: 'Sessões Únicas', value: accessMetrics.summary.uniqueSessions, color: '#8B5CF6', bg: '#F5F3FF', info: 'Número de sessões distintas. Cada visita de um navegador conta como uma sessão.' },
+                  { label: 'Usuários Únicos', value: accessMetrics.summary.uniqueUsers, color: '#7B9965', bg: '#f0f7ed', info: 'Quantidade de usuários logados diferentes que acessaram a plataforma.' },
+                  { label: 'Views Hoje', value: accessMetrics.summary.todayViews, color: '#10B981', bg: '#ECFDF5', info: 'Páginas visualizadas somente no dia de hoje (atualiza em tempo real).' },
+                  { label: 'Online Agora', value: accessMetrics.summary.activeNow, color: '#EF4444', bg: '#FEF2F2', info: 'Usuários com atividade nos últimos 5 minutos.' },
+                  { label: 'Págs/Sessão', value: accessMetrics.summary.avgPagesPerSession, color: '#b8963a', bg: '#faf6ee', info: 'Média de páginas visitadas por sessão. Quanto maior, mais engajamento.' },
                 ].map(c => (
                   <div key={c.label} className="bg-white rounded-xl border border-gray-100 p-5">
                     <div className="flex items-center gap-3 mb-3">
@@ -150,6 +175,7 @@ export default function AdminReports() {
                         <div className="w-4 h-4 rounded-full" style={{ backgroundColor: c.color }} />
                       </div>
                       <span className="text-xs font-semibold text-gray-400 uppercase">{c.label}</span>
+                      <InfoTooltip text={c.info} />
                     </div>
                     <p className="text-3xl font-bold text-brand-900">{c.value}</p>
                   </div>
@@ -246,7 +272,7 @@ export default function AdminReports() {
       {/* ========== TAB: MÉTRICAS ========== */}
       {tab === 'metrics' && (
         <>
-          <DateFilter onApply={loadMetrics} />
+          <DateFilter startDate={startDate} endDate={endDate} onStartChange={setStartDate} onEndChange={setEndDate} onApply={loadMetrics} />
           {loading && <p className="text-center text-gray-400 py-8">Carregando...</p>}
 
           {metrics && !loading && (
@@ -334,12 +360,12 @@ export default function AdminReports() {
               {/* Cards resumo */}
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { label: 'Novos Usuários', value: metrics.metrics.newUsers, color: '#3B82F6', bg: '#EFF6FF' },
-                  { label: 'Diagnósticos', value: metrics.metrics.diagnoses, color: '#7B9965', bg: '#f0f7ed' },
-                  { label: 'Diag. Concluídos', value: metrics.metrics.completedDiagnoses, color: '#10B981', bg: '#ECFDF5' },
-                  { label: 'Consultorias', value: metrics.metrics.consultations, color: '#8B5CF6', bg: '#F5F3FF' },
-                  { label: 'Certificados', value: metrics.metrics.certificates, color: '#b8963a', bg: '#faf6ee' },
-                  { label: 'Assinaturas', value: metrics.metrics.subscriptions, color: '#F59E0B', bg: '#FFFBEB' },
+                  { label: 'Novos Usuários', value: metrics.metrics.newUsers, color: '#3B82F6', bg: '#EFF6FF', info: 'Usuários que criaram conta no período selecionado.' },
+                  { label: 'Diagnósticos', value: metrics.metrics.diagnoses, color: '#7B9965', bg: '#f0f7ed', info: 'Total de diagnósticos ESG iniciados no período.' },
+                  { label: 'Diag. Concluídos', value: metrics.metrics.completedDiagnoses, color: '#10B981', bg: '#ECFDF5', info: 'Diagnósticos finalizados com score calculado.' },
+                  { label: 'Consultorias', value: metrics.metrics.consultations, color: '#8B5CF6', bg: '#F5F3FF', info: 'Sessões de consultoria agendadas no período.' },
+                  { label: 'Certificados', value: metrics.metrics.certificates, color: '#b8963a', bg: '#faf6ee', info: 'Certificados ESG emitidos para empresas.' },
+                  { label: 'Assinaturas', value: metrics.metrics.subscriptions, color: '#F59E0B', bg: '#FFFBEB', info: 'Novas assinaturas de planos pagos ativadas.' },
                 ].map(c => (
                   <div key={c.label} className="bg-white rounded-xl border border-gray-100 p-5">
                     <div className="flex items-center gap-3 mb-3">
@@ -347,6 +373,7 @@ export default function AdminReports() {
                         <div className="w-4 h-4 rounded-full" style={{ backgroundColor: c.color }} />
                       </div>
                       <span className="text-xs font-semibold text-gray-400 uppercase">{c.label}</span>
+                      <InfoTooltip text={c.info} />
                     </div>
                     <p className="text-3xl font-bold text-brand-900">{c.value}</p>
                   </div>
