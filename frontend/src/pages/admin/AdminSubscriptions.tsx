@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { adminService, AdminSubscription } from '../../services/admin.service';
+import { adminService, AdminSubscription, ExpiringSubscription } from '../../services/admin.service';
 
 interface Plan {
   id: string;
@@ -41,6 +41,10 @@ export default function AdminSubscriptions() {
   const [deleteTarget, setDeleteTarget] = useState<AdminSubscription | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Vencimentos próximos
+  const [expiring, setExpiring] = useState<ExpiringSubscription[]>([]);
+  const [renewing, setRenewing] = useState<string | null>(null);
+
   const loadSubscriptions = useCallback(async (page = 1) => {
     setLoading(true);
     try {
@@ -50,7 +54,14 @@ export default function AdminSubscriptions() {
     } catch (e) { console.error(e); } finally { setLoading(false); }
   }, [statusFilter]);
 
+  const loadExpiring = useCallback(async () => {
+    try {
+      setExpiring(await adminService.getExpiringSubscriptions(30));
+    } catch (e) { console.error(e); }
+  }, []);
+
   useEffect(() => { loadSubscriptions(1); }, [loadSubscriptions]);
+  useEffect(() => { loadExpiring(); }, [loadExpiring]);
 
   // Close user dropdown on outside click
   useEffect(() => {
@@ -71,6 +82,18 @@ export default function AdminSubscriptions() {
       flash(`Assinatura de ${sub.user.name} \u2192 ${getStatusLabel(newSt)}`);
       loadSubscriptions(pagination.page);
     } catch (e: any) { flash(e.message); }
+  }
+
+  async function handleRenew(sub: AdminSubscription) {
+    setRenewing(sub.id);
+    try {
+      const updated = await adminService.renewSubscription(sub.id);
+      const ate = updated.expiresAt ? new Date(updated.expiresAt).toLocaleDateString('pt-BR') : 'sem expira\u00e7\u00e3o';
+      flash(`Assinatura de ${sub.user.name} renovada at\u00e9 ${ate}`);
+      loadSubscriptions(pagination.page);
+      loadExpiring();
+    } catch (e: any) { flash(e?.response?.data?.error || e.message); }
+    finally { setRenewing(null); }
   }
 
   // --- Create subscription ---
@@ -198,6 +221,48 @@ export default function AdminSubscriptions() {
         ))}
       </div>
 
+      {/* Vencimentos próximos */}
+      {expiring.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M5.07 19H19a2 2 0 001.75-2.97l-6.93-12a2 2 0 00-3.46 0l-6.93 12A2 2 0 005.07 19z" />
+            </svg>
+            <div className="flex-1">
+              <p className="font-bold text-amber-900 text-sm">
+                {expiring.length} assinatura{expiring.length > 1 ? 's vencem' : ' vence'} nos pr&oacute;ximos 30 dias
+              </p>
+              <p className="text-xs text-amber-700/80 mt-0.5 mb-3">
+                Assinatura com cobran&ccedil;a manual n&atilde;o renova sozinha: vence e o cliente perde o acesso sem aviso.
+              </p>
+              <div className="space-y-2">
+                {expiring.map((s) => (
+                  <div key={s.id} className="flex items-center gap-3 bg-white/70 rounded-lg px-3 py-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-brand-900">{s.user.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {s.plan.name} &mdash; vence {s.expiresAt ? new Date(s.expiresAt).toLocaleDateString('pt-BR') : '-'}
+                        {s.daysUntilExpiry !== null && ` (${s.daysUntilExpiry} dia${s.daysUntilExpiry === 1 ? '' : 's'})`}
+                      </p>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${s.billingType === 'manual' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'}`}>
+                      {s.billingType === 'manual' ? 'Cobrança manual' : 'Asaas'}
+                    </span>
+                    <button
+                      onClick={() => handleRenew(s)}
+                      disabled={renewing === s.id}
+                      className="px-3 py-1.5 text-[11px] font-semibold rounded-full bg-brand-900 text-white hover:bg-brand-900/90 disabled:opacity-50"
+                    >
+                      {renewing === s.id ? 'Renovando...' : '+1 ciclo'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         <table className="w-full text-sm">
@@ -226,6 +291,9 @@ export default function AdminSubscriptions() {
                 </td>
                 <td className="px-4 py-3 text-center">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(s.status)}`}>{getStatusLabel(s.status)}</span>
+                  <p className={`text-[9px] font-semibold mt-1 ${s.asaasSubscriptionId ? 'text-blue-700' : 'text-orange-700'}`}>
+                    {s.asaasSubscriptionId ? 'Asaas' : 'Cobrança manual'}
+                  </p>
                 </td>
                 <td className="px-4 py-3 text-center text-gray-600 text-xs">
                   <p>{new Date(s.startedAt).toLocaleDateString('pt-BR')}</p>
@@ -250,6 +318,13 @@ export default function AdminSubscriptions() {
                     {s.status === 'pending' && (
                       <button onClick={() => handleUpdateStatus(s, 'active')}
                         className="px-2 py-1 text-[10px] font-medium rounded bg-green-50 hover:bg-green-100 text-green-700">Aprovar</button>
+                    )}
+                    {(s.status === 'active' || s.status === 'expired') && (
+                      <button onClick={() => handleRenew(s)} disabled={renewing === s.id}
+                        title="Estende a validade em um ciclo do plano"
+                        className="px-2 py-1 text-[10px] font-medium rounded bg-brand-100 hover:bg-brand-300 text-brand-900 disabled:opacity-50">
+                        {renewing === s.id ? '...' : '+1 ciclo'}
+                      </button>
                     )}
                     <button onClick={() => setDeleteTarget(s)}
                       className="px-2 py-1 text-[10px] font-medium rounded bg-red-50 hover:bg-red-100 text-red-700"

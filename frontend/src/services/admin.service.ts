@@ -76,6 +76,8 @@ export interface AdminSubscription {
   expiresAt: string | null;
   consultationHoursUsed: number;
   createdAt: string;
+  /** Nulo quando a assinatura foi criada pelo admin, sem cobrança recorrente */
+  asaasSubscriptionId: string | null;
   user: {
     id: string;
     name: string;
@@ -89,6 +91,11 @@ export interface AdminSubscription {
     price: number;
     consultationHours: number;
   };
+}
+
+export interface ExpiringSubscription extends AdminSubscription {
+  daysUntilExpiry: number | null;
+  billingType: 'asaas' | 'manual';
 }
 
 export interface AdminDiagnosis {
@@ -214,6 +221,16 @@ class AdminServiceClass {
 
   async updateSubscription(id: string, data: { status?: string; expiresAt?: string }): Promise<any> {
     const response = await api.put(`/admin/subscriptions/${id}`, data);
+    return response.data;
+  }
+
+  async getExpiringSubscriptions(days = 30): Promise<ExpiringSubscription[]> {
+    const response = await api.get(`/admin/subscriptions/expiring?days=${days}`);
+    return response.data;
+  }
+
+  async renewSubscription(id: string): Promise<AdminSubscription> {
+    const response = await api.post(`/admin/subscriptions/${id}/renew`);
     return response.data;
   }
 

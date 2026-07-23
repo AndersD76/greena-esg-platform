@@ -44,6 +44,8 @@ router.delete('/diagnoses/:diagnosisId', (req, res) => adminController.deleteDia
 // Assinaturas
 router.get('/plans', (req, res) => adminController.getPlans(req, res));
 router.get('/subscriptions', (req, res) => adminController.listSubscriptions(req, res));
+router.get('/subscriptions/expiring', (req, res) => adminController.getExpiringSubscriptions(req, res));
+router.post('/subscriptions/:subscriptionId/renew', (req, res) => adminController.renewSubscription(req, res));
 router.post('/subscriptions', (req, res) => adminController.createSubscription(req, res));
 router.put('/subscriptions/:subscriptionId', (req, res) => adminController.updateSubscription(req, res));
 router.patch('/subscriptions/:subscriptionId', (req, res) => adminController.updateSubscription(req, res));

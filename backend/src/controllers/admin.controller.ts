@@ -199,6 +199,26 @@ export class AdminController {
     }
   }
 
+  async getExpiringSubscriptions(req: AuthRequest, res: Response) {
+    try {
+      const { days } = req.query;
+      const result = await adminService.getExpiringSubscriptions(days ? parseInt(days as string) : undefined);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async renewSubscription(req: AuthRequest, res: Response) {
+    try {
+      const { subscriptionId } = req.params;
+      const subscription = await adminService.renewSubscription(subscriptionId);
+      res.json(subscription);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   async getPlans(req: AuthRequest, res: Response) {
     try {
       const plans = await adminService.getPlans();

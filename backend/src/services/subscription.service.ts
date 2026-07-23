@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AsaasService } from './asaas.service';
-import { addBillingCycle } from '../utils/billing';
+import { addBillingCycle, daysUntil } from '../utils/billing';
 
 const prisma = new PrismaClient();
 const asaasService = new AsaasService();
@@ -97,12 +97,29 @@ export class SubscriptionService {
         throw new Error('Plano gratuito não encontrado');
       }
 
+      // Distingue quem nunca assinou de quem assinou e deixou vencer, para a
+      // interface poder explicar o motivo do bloqueio em vez de só oferecer upgrade
+      const expired = await prisma.userSubscription.findFirst({
+        where: {
+          userId,
+          expiresAt: { not: null, lt: new Date() },
+          plan: { code: { not: 'free' } }
+        },
+        include: { plan: true },
+        orderBy: { expiresAt: 'desc' }
+      });
+
       return {
         plan: freePlan,
         subscription: null,
         isFreePlan: true,
         consultationHoursUsed: 0,
-        consultationHoursRemaining: 0
+        consultationHoursRemaining: 0,
+        expiresAt: null,
+        daysUntilExpiry: null,
+        expiredSubscription: expired
+          ? { planName: expired.plan.name, planCode: expired.plan.code, expiresAt: expired.expiresAt }
+          : null
       };
     }
 
@@ -114,7 +131,10 @@ export class SubscriptionService {
       subscription: subscription,
       isFreePlan: false,
       consultationHoursUsed: subscription.consultationHoursUsed,
-      consultationHoursRemaining: consultationHoursRemaining
+      consultationHoursRemaining: consultationHoursRemaining,
+      expiresAt: subscription.expiresAt,
+      daysUntilExpiry: daysUntil(subscription.expiresAt),
+      expiredSubscription: null
     };
   }
 

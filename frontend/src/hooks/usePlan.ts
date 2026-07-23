@@ -40,9 +40,16 @@ export function usePlan() {
     };
   }, [user]);
 
+  const daysUntilExpiry = plan?.daysUntilExpiry ?? null;
+
   return {
     plan,
     loading,
     isFreePlan: isAdmin ? false : plan?.isFreePlan ?? true,
+    daysUntilExpiry,
+    /** Assinatura paga que vence em até 7 dias */
+    isExpiringSoon: daysUntilExpiry !== null && daysUntilExpiry >= 0 && daysUntilExpiry <= 7,
+    /** Já teve plano pago e deixou vencer — diferente de nunca ter assinado */
+    expiredSubscription: plan?.expiredSubscription ?? null,
   };
 }

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { usePlan } from '../hooks/usePlan';
 
 interface UpgradeRequiredProps {
   title?: string;
@@ -7,11 +8,29 @@ interface UpgradeRequiredProps {
 
 /**
  * Tela exibida quando um usuário do plano gratuito tenta acessar um recurso pago.
+ *
+ * Quem já teve plano e deixou vencer vê o motivo real do bloqueio, e não um
+ * convite genérico de upgrade que não explica o que aconteceu.
  */
-export default function UpgradeRequired({
-  title = 'Recurso exclusivo dos planos pagos',
-  description = 'O teste gratuito inclui o diagnóstico rápido de 6 perguntas e o resultado simplificado. Para o diagnóstico completo, relatórios e planos de ação, escolha um plano.',
-}: UpgradeRequiredProps) {
+export default function UpgradeRequired({ title, description }: UpgradeRequiredProps) {
+  const { expiredSubscription } = usePlan();
+
+  if (!title && !description && expiredSubscription) {
+    const venceuEm = expiredSubscription.expiresAt
+      ? new Date(expiredSubscription.expiresAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+      : null;
+
+    title = `Seu plano ${expiredSubscription.planName} venceu`;
+    description = venceuEm
+      ? `A assinatura expirou em ${venceuEm}. Seus diagnósticos e relatórios continuam salvos e voltam a ficar disponíveis assim que você renovar.`
+      : 'A assinatura expirou. Seus diagnósticos e relatórios continuam salvos e voltam a ficar disponíveis assim que você renovar.';
+  }
+
+  title = title ?? 'Recurso exclusivo dos planos pagos';
+  description =
+    description ??
+    'O teste gratuito inclui o diagnóstico rápido de 6 perguntas e o resultado simplificado. Para o diagnóstico completo, relatórios e planos de ação, escolha um plano.';
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-16">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center">
@@ -29,7 +48,7 @@ export default function UpgradeRequired({
             to="/checkout"
             className="px-10 py-3 font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90 text-sm"
           >
-            Ver planos
+            {expiredSubscription ? 'Renovar assinatura' : 'Ver planos'}
           </Link>
           <Link
             to="/dashboard"

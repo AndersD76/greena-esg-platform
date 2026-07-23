@@ -1,4 +1,16 @@
 /**
+ * Dias inteiros até uma data. Negativo se já passou, null se não há data.
+ */
+export function daysUntil(date: Date | null, now: Date = new Date()): number | null {
+  if (!date) return null;
+
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+  const startOfDay = (d: Date) => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+
+  return Math.round((startOfDay(date) - startOfDay(now)) / MS_PER_DAY);
+}
+
+/**
  * Avança uma data de expiração em um ciclo de cobrança.
  *
  * Renovação parte da expiração atual quando ela ainda está no futuro (para não

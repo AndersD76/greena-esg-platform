@@ -21,6 +21,14 @@ export interface ActivePlan {
   isFreePlan: boolean;
   consultationHoursUsed: number;
   consultationHoursRemaining: number;
+  expiresAt: string | null;
+  daysUntilExpiry: number | null;
+  /** Preenchido quando o usuário já teve um plano pago que venceu */
+  expiredSubscription: {
+    planName: string;
+    planCode: string;
+    expiresAt: string | null;
+  } | null;
 }
 
 export const subscriptionService = {

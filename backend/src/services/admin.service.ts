@@ -1,5 +1,6 @@
 import prisma from '../config/database';
 import { hashPassword } from '../utils/bcrypt';
+import { addBillingCycle, daysUntil } from '../utils/billing';
 import { SubscriptionService } from './subscription.service';
 
 const subscriptionService = new SubscriptionService();
@@ -562,6 +563,62 @@ export class AdminService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  /**
+   * Assinaturas que vencem nos próximos N dias.
+   *
+   * Assinatura criada pelo admin não tem asaasSubscriptionId e portanto não tem
+   * cobrança recorrente: ela simplesmente vence e o cliente perde o acesso sem
+   * que ninguém seja avisado. Este relatório existe para esse caso não passar
+   * despercebido.
+   */
+  async getExpiringSubscriptions(days = 30) {
+    const now = new Date();
+    const limit = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+
+    const subscriptions = await prisma.userSubscription.findMany({
+      where: {
+        status: 'active',
+        expiresAt: { not: null, gte: now, lte: limit },
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true, companyName: true } },
+        plan: true,
+      },
+      orderBy: { expiresAt: 'asc' },
+    });
+
+    return subscriptions.map((sub) => ({
+      ...sub,
+      daysUntilExpiry: daysUntil(sub.expiresAt),
+      billingType: sub.asaasSubscriptionId ? 'asaas' : 'manual',
+    }));
+  }
+
+  /**
+   * Renova manualmente uma assinatura por mais um ciclo do plano
+   */
+  async renewSubscription(subscriptionId: string) {
+    const subscription = await prisma.userSubscription.findUnique({
+      where: { id: subscriptionId },
+      include: { plan: true },
+    });
+
+    if (!subscription) {
+      throw new Error('Assinatura não encontrada');
+    }
+
+    const expiresAt = addBillingCycle(subscription.expiresAt, subscription.plan.billingCycle);
+
+    return prisma.userSubscription.update({
+      where: { id: subscriptionId },
+      data: { status: 'active', expiresAt, updatedAt: new Date() },
+      include: {
+        user: { select: { id: true, name: true, email: true, companyName: true } },
+        plan: true,
+      },
+    });
   }
 
   async getPlans() {

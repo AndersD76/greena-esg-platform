@@ -4,6 +4,7 @@ import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 import api from '../services/api';
 import { SEO } from '../components/SEO';
 import { usePlan } from '../hooks/usePlan';
+import SubscriptionNotice from '../components/SubscriptionNotice';
 import {
   RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine,
@@ -272,6 +273,9 @@ export default function Dashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
+        {/* ═══════ AVISO DE ASSINATURA ═══════ */}
+        <SubscriptionNotice />
+
         {/* ═══════ ERROR ═══════ */}
         {loadError && !selected && !currentDiagnosis && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
