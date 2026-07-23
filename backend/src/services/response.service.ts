@@ -10,20 +10,35 @@ interface ResponseData {
 
 export class ResponseService {
   /**
-   * Cria ou atualiza uma resposta
+   * Garante que o diagnóstico pertence ao usuário autenticado
    */
-  async upsert(diagnosisId: string, data: ResponseData) {
-    // Verificar se diagnóstico existe e está em progresso
-    const diagnosis = await prisma.diagnosis.findUnique({
-      where: { id: diagnosisId },
+  private async getOwnedDiagnosis(diagnosisId: string, userId: string) {
+    const diagnosis = await prisma.diagnosis.findFirst({
+      where: { id: diagnosisId, userId },
     });
 
     if (!diagnosis) {
       throw new Error('Diagnóstico não encontrado');
     }
 
+    return diagnosis;
+  }
+
+  /**
+   * Cria ou atualiza uma resposta
+   */
+  async upsert(diagnosisId: string, userId: string, data: ResponseData) {
+    const diagnosis = await this.getOwnedDiagnosis(diagnosisId, userId);
+
     if (diagnosis.status === 'completed') {
       throw new Error('Não é possível modificar diagnóstico concluído');
+    }
+
+    // O demo do plano gratuito é respondido no frontend e finalizado via
+    // complete-simplified; nenhuma resposta do questionário completo pode
+    // ser gravada nele.
+    if (diagnosis.type === 'demo') {
+      throw new Error('O questionário completo está disponível apenas nos planos pagos');
     }
 
     // Calcular valor numérico da avaliação (escala de maturidade 0-5)
@@ -75,7 +90,9 @@ export class ResponseService {
   /**
    * Busca todas as respostas de um diagnóstico
    */
-  async getByDiagnosisId(diagnosisId: string) {
+  async getByDiagnosisId(diagnosisId: string, userId: string) {
+    await this.getOwnedDiagnosis(diagnosisId, userId);
+
     return prisma.response.findMany({
       where: { diagnosisId },
       include: {
@@ -104,7 +121,9 @@ export class ResponseService {
   /**
    * Busca respostas por pilar
    */
-  async getByPillar(diagnosisId: string, pillarCode: string) {
+  async getByPillar(diagnosisId: string, userId: string, pillarCode: string) {
+    await this.getOwnedDiagnosis(diagnosisId, userId);
+
     const pillar = await prisma.pillar.findUnique({
       where: { code: pillarCode },
       include: {

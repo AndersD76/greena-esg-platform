@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
 import api from '../services/api';
 import { SEO } from '../components/SEO';
+import { usePlan } from '../hooks/usePlan';
 import {
   RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine,
@@ -89,6 +90,7 @@ export default function Dashboard() {
   const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string | null>(null);
   const [selectedScores, setSelectedScores] = useState<any>(null);
   const [benchmarking, setBenchmarking] = useState<any>(null);
+  const { isFreePlan } = usePlan();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -165,13 +167,10 @@ export default function Dashboard() {
     } catch {}
   }
 
-  async function handleStartNewDiagnosis() {
-    try {
-      const d = await diagnosisService.create();
-      navigate(`/diagnosis/${d.id}/questionnaire`);
-    } catch (e) {
-      console.error('Erro ao criar diagnóstico:', e);
-    }
+  // Passa por /diagnosis/new para que o plano ativo decida entre o
+  // questionário completo e o demo, e para tratar o limite do plano
+  function handleStartNewDiagnosis() {
+    navigate('/diagnosis/new');
   }
 
   const completed = diagnoses.filter(d => d.status === 'completed');
@@ -301,7 +300,10 @@ export default function Dashboard() {
 
         {/* ═══════ IN-PROGRESS BANNER ═══════ */}
         {currentDiagnosis && partialScores && (
-          <Link to={`/diagnosis/${currentDiagnosis.id}/questionnaire`} className="block">
+          <Link
+            to={`/diagnosis/${currentDiagnosis.id}/${currentDiagnosis.type === 'demo' ? 'simplified-questionnaire' : 'questionnaire'}`}
+            className="block"
+          >
             <div className="bg-white rounded-2xl shadow-sm border-2 border-amber-200 p-5 hover:border-amber-300 transition-all">
               <div className="flex items-center gap-5">
                 <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
@@ -375,6 +377,12 @@ export default function Dashboard() {
                             <Link to={`/certificate/${certificate.id}`} className="block">
                               <button className="w-full py-2.5 text-sm font-semibold rounded-full transition-all" style={{ backgroundColor: medalColor + '20', color: medalColor === '#C0C0C0' ? '#6b7280' : '#92400E' }}>
                                 Ver Certificado
+                              </button>
+                            </Link>
+                          ) : isFreePlan ? (
+                            <Link to="/checkout" className="block">
+                              <button className="w-full py-2.5 text-sm font-semibold text-brand-900 border border-brand-700/30 rounded-full hover:bg-brand-100">
+                                Certificado no plano pago
                               </button>
                             </Link>
                           ) : (
@@ -622,8 +630,12 @@ export default function Dashboard() {
                     {selectedDiagnosisId !== d.id && (
                       <button onClick={() => handleSelectDiagnosis(d.id)} className="px-4 py-1.5 text-xs font-semibold text-brand-900 border border-brand-700/30 rounded-full hover:bg-brand-100">Visualizar</button>
                     )}
-                    <Link to={`/diagnosis/${d.id}/insights`}><button className="px-4 py-1.5 text-xs font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
-                    <Link to="/reports"><button className="px-4 py-1.5 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-white">Relatório</button></Link>
+                    {!isFreePlan && (
+                      <>
+                        <Link to={`/diagnosis/${d.id}/insights`}><button className="px-4 py-1.5 text-xs font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
+                        <Link to="/reports"><button className="px-4 py-1.5 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-white">Relatório</button></Link>
+                      </>
+                    )}
                   </div>
                 </div>
               ))}

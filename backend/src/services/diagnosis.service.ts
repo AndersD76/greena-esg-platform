@@ -16,18 +16,34 @@ export class DiagnosisService {
   }
 
   /**
-   * Cria novo diagnóstico
+   * Diagnóstico em andamento do usuário, se houver
    */
-  async create(userId: string) {
-    // Verificar se já existe diagnóstico em progresso
-    const existingDiagnosis = await prisma.diagnosis.findFirst({
+  async findInProgress(userId: string) {
+    return prisma.diagnosis.findFirst({
       where: {
         userId,
         status: 'in_progress',
       },
     });
+  }
+
+  /**
+   * Cria novo diagnóstico
+   */
+  async create(userId: string, type: 'full' | 'demo' = 'full') {
+    // Verificar se já existe diagnóstico em progresso
+    const existingDiagnosis = await this.findInProgress(userId);
 
     if (existingDiagnosis) {
+      // Realinha o tipo com o plano atual: quem faz upgrade passa a ter o
+      // questionário completo e quem está no gratuito volta para o demo.
+      if (existingDiagnosis.type !== type) {
+        return prisma.diagnosis.update({
+          where: { id: existingDiagnosis.id },
+          data: { type },
+        });
+      }
+
       return existingDiagnosis;
     }
 
@@ -35,6 +51,7 @@ export class DiagnosisService {
       data: {
         userId,
         status: 'in_progress',
+        type,
       },
     });
 

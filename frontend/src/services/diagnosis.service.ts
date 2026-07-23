@@ -4,6 +4,7 @@ export interface Diagnosis {
   id: string;
   userId: string;
   status: 'in_progress' | 'completed';
+  type: 'full' | 'demo';
   overallScore?: number;
   environmentalScore?: number;
   socialScore?: number;

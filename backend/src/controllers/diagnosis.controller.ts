@@ -1,14 +1,37 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { DiagnosisService } from '../services/diagnosis.service';
+import { SubscriptionService } from '../services/subscription.service';
 
 const diagnosisService = new DiagnosisService();
+const subscriptionService = new SubscriptionService();
 
 export class DiagnosisController {
   async create(req: AuthRequest, res: Response) {
     try {
       const userId = req.user!.userId;
-      const diagnosis = await diagnosisService.create(userId);
+      const isAdmin = req.user!.role === 'admin' || req.user!.role === 'superadmin';
+
+      // O tipo vem do plano, nunca do cliente
+      const activePlan = await subscriptionService.getActivePlan(userId);
+      const type = activePlan.isFreePlan && !isAdmin ? 'demo' : 'full';
+
+      // Retomar um diagnóstico em andamento não consome uma nova cota
+      const inProgress = await diagnosisService.findInProgress(userId);
+
+      if (!isAdmin && !inProgress) {
+        const limit = await subscriptionService.canCreateDiagnosis(userId);
+        if (!limit.allowed) {
+          return res.status(403).json({
+            error: limit.reason,
+            code: 'DIAGNOSIS_LIMIT_REACHED',
+            currentCount: limit.currentCount,
+            limit: limit.limit,
+          });
+        }
+      }
+
+      const diagnosis = await diagnosisService.create(userId, type);
 
       res.status(201).json(diagnosis);
     } catch (error: any) {

@@ -96,6 +96,7 @@ model Diagnosis {
   id                 String    @id @default(uuid())
   userId             String    @map("user_id")
   status             String    @default("in_progress") // 'in_progress', 'completed'
+  type               String    @default("full") // 'full' (questionário completo), 'demo' (6 perguntas do plano gratuito)
   overallScore       Decimal?  @map("overall_score") @db.Decimal(5, 2)
   environmentalScore Decimal?  @map("environmental_score") @db.Decimal(5, 2)
   socialScore        Decimal?  @map("social_score") @db.Decimal(5, 2)
@@ -208,6 +209,7 @@ model UserSubscription {
   trialEndsAt            DateTime? @map("trial_ends_at")
   consultationHoursUsed  Int       @default(0) @map("consultation_hours_used")
   asaasSubscriptionId    String?   @unique @map("asaas_subscription_id")
+  lastAsaasPaymentId     String?   @map("last_asaas_payment_id")
   paymentMethod          String?   @map("payment_method")
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")

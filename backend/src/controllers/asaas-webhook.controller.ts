@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { addBillingCycle } from '../utils/billing';
 
 const prisma = new PrismaClient();
 
@@ -56,7 +57,7 @@ export class AsaasWebhookController {
   }
 
   /**
-   * Pagamento confirmado/recebido - ativa a assinatura
+   * Pagamento confirmado/recebido - ativa a assinatura e estende a validade
    */
   private async handlePaymentConfirmed(payment: any) {
     if (!payment?.subscription) {
@@ -65,7 +66,8 @@ export class AsaasWebhookController {
     }
 
     const subscription = await prisma.userSubscription.findFirst({
-      where: { asaasSubscriptionId: payment.subscription }
+      where: { asaasSubscriptionId: payment.subscription },
+      include: { plan: true }
     });
 
     if (!subscription) {
@@ -73,17 +75,37 @@ export class AsaasWebhookController {
       return;
     }
 
-    // Ativar assinatura se estava pendente
-    if (subscription.status === 'pending_payment') {
-      await prisma.userSubscription.update({
-        where: { id: subscription.id },
-        data: {
-          status: 'active',
-          updatedAt: new Date(),
-        }
-      });
-      console.log(`[Webhook Asaas] Assinatura ${subscription.id} ativada via pagamento ${payment.id}`);
+    // O Asaas dispara PAYMENT_CONFIRMED e PAYMENT_RECEIVED para o mesmo
+    // pagamento (e reenvia webhooks em caso de falha). Processar duas vezes
+    // daria dois ciclos de acesso por uma única cobrança.
+    if (payment.id && subscription.lastAsaasPaymentId === payment.id) {
+      console.log(`[Webhook Asaas] Pagamento ${payment.id} já processado, ignorando`);
+      return;
     }
+
+    // Assinatura cancelada não volta a valer por um pagamento atrasado
+    if (subscription.status === 'cancelled') {
+      console.log(`[Webhook Asaas] Assinatura ${subscription.id} está cancelada, pagamento ${payment.id} não a reativa`);
+      return;
+    }
+
+    // Cada pagamento confirmado empurra a validade em um ciclo. Sem isso o
+    // cliente continua sendo cobrado pelo Asaas mas perde o acesso assim que
+    // o primeiro período vence.
+    const expiresAt = addBillingCycle(subscription.expiresAt, subscription.plan.billingCycle);
+
+    await prisma.userSubscription.update({
+      where: { id: subscription.id },
+      data: {
+        status: 'active',
+        expiresAt,
+        lastAsaasPaymentId: payment.id ?? subscription.lastAsaasPaymentId,
+        updatedAt: new Date(),
+      }
+    });
+    console.log(
+      `[Webhook Asaas] Assinatura ${subscription.id} ativa até ${expiresAt?.toISOString() ?? 'sem expiração'} (pagamento ${payment.id})`
+    );
 
     // Registra conversão (receita) para métricas internas de funil
     try {

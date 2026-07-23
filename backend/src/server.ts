@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import routes from './routes';
 import { errorHandler } from './middlewares/errorHandler.middleware';
+import { SubscriptionService } from './services/subscription.service';
 
 dotenv.config();
 
@@ -40,8 +41,21 @@ if (process.env.NODE_ENV === 'production') {
 // Error handler
 app.use(errorHandler);
 
+// Marca assinaturas vencidas como expiradas no boot e a cada hora
+const subscriptionService = new SubscriptionService();
+const EXPIRATION_SWEEP_INTERVAL_MS = 60 * 60 * 1000;
+
+function sweepExpiredSubscriptions() {
+  subscriptionService
+    .expireOverdueSubscriptions()
+    .catch((error) => console.error('[SUBSCRIPTION] Falha ao expirar assinaturas:', error.message));
+}
+
 // Start server
 app.listen(PORT, () => {
+  sweepExpiredSubscriptions();
+  setInterval(sweepExpiredSubscriptions, EXPIRATION_SWEEP_INTERVAL_MS).unref();
+
   console.log(`\n🌱 GREENA ESG Backend`);
   console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`📊 API available at http://localhost:${PORT}/api`);

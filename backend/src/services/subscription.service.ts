@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AsaasService } from './asaas.service';
+import { addBillingCycle } from '../utils/billing';
 
 const prisma = new PrismaClient();
 const asaasService = new AsaasService();
@@ -38,6 +39,33 @@ interface CreateSubscriptionInput {
 }
 
 export class SubscriptionService {
+  /**
+   * Marca como 'expired' assinaturas cuja validade já passou.
+   *
+   * O acesso em si nunca dependeu disso — getActivePlan sempre comparou a data
+   * na leitura. O que faltava era o registro refletir a realidade: sem esta
+   * varredura, uma assinatura vencida continua aparecendo como 'active' no
+   * painel admin e é contada na receita mensal.
+   */
+  async expireOverdueSubscriptions() {
+    const result = await prisma.userSubscription.updateMany({
+      where: {
+        status: { in: ['active', 'overdue', 'pending_payment'] },
+        expiresAt: { not: null, lt: new Date() }
+      },
+      data: {
+        status: 'expired',
+        updatedAt: new Date()
+      }
+    });
+
+    if (result.count > 0) {
+      console.log(`[SUBSCRIPTION] ${result.count} assinatura(s) marcada(s) como expirada(s)`);
+    }
+
+    return result.count;
+  }
+
   /**
    * Busca o plano ativo de um usuário
    */
@@ -306,15 +334,7 @@ export class SubscriptionService {
 
     // Calcular data de expiração
     const now = new Date();
-    let expiresAt: Date | null = null;
-
-    if (plan.billingCycle === 'monthly') {
-      expiresAt = new Date(now);
-      expiresAt.setMonth(expiresAt.getMonth() + 1);
-    } else if (plan.billingCycle === 'yearly') {
-      expiresAt = new Date(now);
-      expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-    }
+    const expiresAt = addBillingCycle(null, plan.billingCycle, now);
 
     // Status inicial: pending_payment para PIX, active para cartão (cobrado imediatamente)
     const initialStatus = paymentMethod === 'CREDIT_CARD' ? 'active' : 'pending_payment';

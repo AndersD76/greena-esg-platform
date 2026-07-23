@@ -37,8 +37,9 @@ import SimplifiedQuestionnaire from './pages/SimplifiedQuestionnaire';
 import PublicProfile from './pages/PublicProfile';
 import StakeholderReport from './pages/StakeholderReport';
 import { diagnosisService } from './services/diagnosis.service';
-import { subscriptionService } from './services/subscription.service';
 import { usePageTracking } from './hooks/usePageTracking';
+import { usePlan } from './hooks/usePlan';
+import UpgradeRequired from './components/UpgradeRequired';
 import { useEffect, useState, useCallback } from 'react';
 import Onboarding from './components/Onboarding';
 import CookieConsent from './components/CookieConsent';
@@ -58,26 +59,48 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   return user ? <>{children}</> : <Navigate to="/login" />;
 }
 
+/**
+ * Rota exclusiva de planos pagos. O bloqueio real é feito no backend
+ * (middleware requirePaidPlan); aqui evitamos que o usuário do plano gratuito
+ * chegue à tela por link direto, banner do dashboard ou URL digitada.
+ */
+function PaidRoute({ children }: { children: React.ReactNode }) {
+  const { isFreePlan, loading } = usePlan();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return isFreePlan ? <UpgradeRequired /> : <>{children}</>;
+}
+
 function NewDiagnosisRedirect() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState('Verificando plano...');
+  const [blocked, setBlocked] = useState<string | null>(null);
 
   useEffect(() => {
     async function createDiagnosis() {
       try {
-        // Verificar plano do usuário
-        const activePlan = await subscriptionService.getActivePlan();
-        const isFreePlan = activePlan.isFreePlan;
-
-        setStatus('Criando diagnóstico...');
+        // O backend decide o tipo a partir do plano ativo
         const diagnosis = await diagnosisService.create();
 
-        if (isFreePlan) {
+        if (diagnosis.type === 'demo') {
           navigate(`/diagnosis/${diagnosis.id}/simplified-questionnaire`);
         } else {
           navigate(`/diagnosis/${diagnosis.id}/questionnaire`);
         }
-      } catch (error) {
+      } catch (error: any) {
+        const data = error?.response?.data;
+
+        if (data?.code === 'UPGRADE_REQUIRED' || data?.code === 'DIAGNOSIS_LIMIT_REACHED') {
+          setBlocked(data.error);
+          return;
+        }
+
         console.error('Erro ao criar diagnóstico:', error);
         navigate('/dashboard');
       }
@@ -85,11 +108,15 @@ function NewDiagnosisRedirect() {
     createDiagnosis();
   }, [navigate]);
 
+  if (blocked) {
+    return <UpgradeRequired title="Limite do seu plano atingido" description={blocked} />;
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-        <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>{status}</p>
+        <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Criando diagnóstico...</p>
       </div>
     </div>
   );
@@ -200,7 +227,9 @@ function AppRoutes() {
             path="/diagnosis/:diagnosisId/questionnaire"
             element={
               <PrivateRoute>
-                <Questionnaire />
+                <PaidRoute>
+                  <Questionnaire />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -216,7 +245,9 @@ function AppRoutes() {
             path="/diagnosis/:diagnosisId/results"
             element={
               <PrivateRoute>
-                <Results />
+                <PaidRoute>
+                  <Results />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -232,7 +263,9 @@ function AppRoutes() {
             path="/reports"
             element={
               <PrivateRoute>
-                <Reports />
+                <PaidRoute>
+                  <Reports />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -240,7 +273,9 @@ function AppRoutes() {
             path="/insights"
             element={
               <PrivateRoute>
-                <Insights />
+                <PaidRoute>
+                  <Insights />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -248,7 +283,9 @@ function AppRoutes() {
             path="/diagnosis/:diagnosisId/insights"
             element={
               <PrivateRoute>
-                <Insights />
+                <PaidRoute>
+                  <Insights />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -264,7 +301,9 @@ function AppRoutes() {
             path="/diagnosis/:diagnosisId/stakeholder-report"
             element={
               <PrivateRoute>
-                <StakeholderReport />
+                <PaidRoute>
+                  <StakeholderReport />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -272,7 +311,9 @@ function AppRoutes() {
             path="/consultations"
             element={
               <PrivateRoute>
-                <Consultations />
+                <PaidRoute>
+                  <Consultations />
+                </PaidRoute>
               </PrivateRoute>
             }
           />
@@ -280,7 +321,9 @@ function AppRoutes() {
             path="/consultations/:id"
             element={
               <PrivateRoute>
-                <ConsultationRoom />
+                <PaidRoute>
+                  <ConsultationRoom />
+                </PaidRoute>
               </PrivateRoute>
             }
           />

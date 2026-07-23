@@ -1,5 +1,8 @@
 import prisma from '../config/database';
 import { hashPassword } from '../utils/bcrypt';
+import { SubscriptionService } from './subscription.service';
+
+const subscriptionService = new SubscriptionService();
 
 export class AdminService {
   // ==================== USUÁRIOS ====================
@@ -515,6 +518,9 @@ export class AdminService {
   }) {
     const { page = 1, limit = 20, status, planCode } = params;
     const skip = (page - 1) * limit;
+
+    // Garante que vencidas não apareçam como ativas no painel
+    await subscriptionService.expireOverdueSubscriptions();
 
     const where: any = {};
 

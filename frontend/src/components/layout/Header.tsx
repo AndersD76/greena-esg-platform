@@ -1,23 +1,15 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { useEffect, useState } from 'react';
-import { subscriptionService } from '../../services/subscription.service';
+import { useState } from 'react';
+import { usePlan } from '../../hooks/usePlan';
 import GuidedTour from '../GuidedTour';
 
 export function Header() {
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isFreePlan, setIsFreePlan] = useState(true);
+  const { isFreePlan } = usePlan();
   const [showTour, setShowTour] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      subscriptionService.getActivePlan()
-        .then((plan) => setIsFreePlan(plan.isFreePlan))
-        .catch(() => setIsFreePlan(true));
-    }
-  }, [user]);
 
   function handleSignOut() {
     signOut();
