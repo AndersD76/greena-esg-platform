@@ -8,7 +8,6 @@ const FRAMEWORKS = [
     title: 'ESG',
     subtitle: '215 perguntas',
     description: 'Avaliação Environmental, Social e Governança — o diagnóstico padrão para medir a maturidade ESG da sua organização.',
-    icon: '🌍',
     color: '#2E7D4F',
     pillars: ['Ambiental', 'Social', 'Governança'],
     requiresPaid: false,
@@ -18,7 +17,6 @@ const FRAMEWORKS = [
     title: 'GRI Standards',
     subtitle: '84 divulgações',
     description: 'Avaliação baseada nos Standards do Global Reporting Initiative — indicadores reconhecidos internacionalmente para relato de sustentabilidade.',
-    icon: '📊',
     color: '#5B6ABF',
     pillars: ['Universais', 'Ambiental', 'Social', 'Econômico'],
     requiresPaid: true,
@@ -28,7 +26,6 @@ const FRAMEWORKS = [
     title: 'ESG + GRI',
     subtitle: '~232 perguntas',
     description: 'Avaliação integrada combinando ESG e GRI — perguntas compatíveis são unificadas, com sinalização clara de cada framework.',
-    icon: '🔗',
     color: '#D4A017',
     pillars: ['Ambiental', 'Social', 'Governança', 'Universais', 'Econômico'],
     requiresPaid: true,
@@ -103,7 +100,7 @@ export default function FrameworkSelector({ isFreePlan }: FrameworkSelectorProps
                 style={disabled ? {} : { borderColor: fw.color + '40' }}
                 onClick={() => !disabled && !loading && handleSelect(fw.key)}
               >
-                {fw.requiresPaid && (
+                {fw.requiresPaid && isFreePlan && (
                   <span
                     className="absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full text-white"
                     style={{ backgroundColor: fw.color }}
@@ -111,8 +108,6 @@ export default function FrameworkSelector({ isFreePlan }: FrameworkSelectorProps
                     Plano Pago
                   </span>
                 )}
-
-                <div className="text-4xl mb-4">{fw.icon}</div>
 
                 <h2 className="text-xl font-bold mb-1" style={{ color: '#152F27' }}>
                   {fw.title}
