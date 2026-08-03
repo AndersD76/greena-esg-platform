@@ -7,12 +7,17 @@ export interface Pillar {
   description?: string;
   icon?: string;
   color?: string;
+  framework: string;
+  sortOrder: number;
+  macroCategory?: string;
 }
 
 export interface AssessmentItem {
   id: number;
   question: string;
   order: number;
+  griCode?: string;
+  frameworkTag: string;
   criteria: {
     id: number;
     name: string;
@@ -25,8 +30,9 @@ export interface AssessmentItem {
 }
 
 export const pillarService = {
-  async list() {
-    const response = await api.get<Pillar[]>('/pillars');
+  async list(framework?: string) {
+    const params = framework ? { framework } : {};
+    const response = await api.get<Pillar[]>('/pillars', { params });
     return response.data;
   },
 
@@ -35,8 +41,9 @@ export const pillarService = {
     return response.data;
   },
 
-  async getAllQuestions() {
-    const response = await api.get<AssessmentItem[]>('/pillars/questions/all');
+  async getAllQuestions(framework?: string) {
+    const params = framework ? { framework } : {};
+    const response = await api.get<AssessmentItem[]>('/pillars/questions/all', { params });
     return response.data;
   },
 };

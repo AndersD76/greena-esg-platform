@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import { Header } from './components/layout/Header';
@@ -36,10 +36,10 @@ import {
 import SimplifiedQuestionnaire from './pages/SimplifiedQuestionnaire';
 import PublicProfile from './pages/PublicProfile';
 import StakeholderReport from './pages/StakeholderReport';
-import { diagnosisService } from './services/diagnosis.service';
 import { usePageTracking } from './hooks/usePageTracking';
 import { usePlan } from './hooks/usePlan';
 import UpgradeRequired from './components/UpgradeRequired';
+import FrameworkSelector from './components/FrameworkSelector';
 import { useEffect, useState, useCallback } from 'react';
 import Onboarding from './components/Onboarding';
 import CookieConsent from './components/CookieConsent';
@@ -79,47 +79,17 @@ function PaidRoute({ children }: { children: React.ReactNode }) {
 }
 
 function NewDiagnosisRedirect() {
-  const navigate = useNavigate();
-  const [blocked, setBlocked] = useState<string | null>(null);
+  const { isFreePlan, loading: planLoading } = usePlan();
 
-  useEffect(() => {
-    async function createDiagnosis() {
-      try {
-        // O backend decide o tipo a partir do plano ativo
-        const diagnosis = await diagnosisService.create();
-
-        if (diagnosis.type === 'demo') {
-          navigate(`/diagnosis/${diagnosis.id}/simplified-questionnaire`);
-        } else {
-          navigate(`/diagnosis/${diagnosis.id}/questionnaire`);
-        }
-      } catch (error: any) {
-        const data = error?.response?.data;
-
-        if (data?.code === 'UPGRADE_REQUIRED' || data?.code === 'DIAGNOSIS_LIMIT_REACHED') {
-          setBlocked(data.error);
-          return;
-        }
-
-        console.error('Erro ao criar diagnóstico:', error);
-        navigate('/dashboard');
-      }
-    }
-    createDiagnosis();
-  }, [navigate]);
-
-  if (blocked) {
-    return <UpgradeRequired title="Limite do seu plano atingido" description={blocked} />;
+  if (planLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
+      </div>
+    );
   }
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 mx-auto" style={{ borderColor: '#7B9965', borderTopColor: 'transparent' }}></div>
-        <p className="mt-4 font-semibold" style={{ color: '#152F27' }}>Criando diagnóstico...</p>
-      </div>
-    </div>
-  );
+  return <FrameworkSelector isFreePlan={isFreePlan} />;
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {

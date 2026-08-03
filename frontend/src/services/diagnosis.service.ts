@@ -1,10 +1,18 @@
 import api from './api';
 
+export interface PillarScore {
+  code: string;
+  name: string;
+  color: string | null;
+  score: number;
+}
+
 export interface Diagnosis {
   id: string;
   userId: string;
   status: 'in_progress' | 'completed';
   type: 'full' | 'demo';
+  framework: string;
   overallScore?: number;
   environmentalScore?: number;
   socialScore?: number;
@@ -23,12 +31,14 @@ export interface DiagnosisResults {
     social: number;
     governance: number;
   };
+  pillarScores: PillarScore[];
   insights: Array<{
     id: number;
     category: string;
     categoryLabel: string;
     title: string;
     description: string;
+    pillar?: { id: number; code: string; name: string; color: string | null };
   }>;
   actionPlan: Array<{
     id: number;
@@ -45,8 +55,8 @@ export interface DiagnosisResults {
 }
 
 export const diagnosisService = {
-  async create() {
-    const response = await api.post<Diagnosis>('/diagnoses');
+  async create(framework: string = 'ESG') {
+    const response = await api.post<Diagnosis>('/diagnoses', { framework });
     return response.data;
   },
 
@@ -110,7 +120,7 @@ export const diagnosisService = {
     return response.data;
   },
 
-  async completeSimplified(id: string, scores: { environmental: number; social: number; governance: number }) {
+  async completeSimplified(id: string, scores: Record<string, number>) {
     const response = await api.post(`/diagnoses/${id}/complete-simplified`, { scores });
     return response.data;
   },

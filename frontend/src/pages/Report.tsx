@@ -19,12 +19,20 @@ const pillarColors: Record<string, string> = {
   E: COLORS.environmental,
   S: COLORS.social,
   G: COLORS.governance,
+  'GRI-U': '#5B6ABF',
+  'GRI-E': '#2E7D4F',
+  'GRI-S': '#C0392B',
+  'GRI-EC': '#D4A017',
 };
 
 const pillarBgColors: Record<string, string> = {
   E: COLORS.bgEnv,
   S: COLORS.bgSoc,
   G: COLORS.bgGov,
+  'GRI-U': '#eef0fa',
+  'GRI-E': '#e8f5ed',
+  'GRI-S': '#fbe8e8',
+  'GRI-EC': '#faf5e6',
 };
 
 function getScoreColor(score: number) {

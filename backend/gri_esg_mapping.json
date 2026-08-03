@@ -1,0 +1,1189 @@
+[
+  {
+    "esgId": "E.1",
+    "griCodes": [
+      "102-5",
+      "102-6",
+      "102-7"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.2",
+    "griCodes": [
+      "102-5",
+      "102-6",
+      "102-7"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.3",
+    "griCodes": [
+      "102-5",
+      "102-6",
+      "102-7"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.4",
+    "griCodes": [
+      "2-28"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.5",
+    "griCodes": [
+      "102-5",
+      "102-6",
+      "102-7"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.7",
+    "griCodes": [
+      "102-5",
+      "102-6",
+      "102-7"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.9",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.11",
+    "griCodes": [
+      "103-1",
+      "103-4"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.12",
+    "griCodes": [
+      "103-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.13",
+    "griCodes": [
+      "103-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.14",
+    "griCodes": [
+      "103-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.15",
+    "griCodes": [
+      "103-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.16",
+    "griCodes": [
+      "303-1",
+      "303-5"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.17",
+    "griCodes": [
+      "303-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.18",
+    "griCodes": [
+      "303-3"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.19",
+    "griCodes": [
+      "303-5"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.20",
+    "griCodes": [
+      "303-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.21",
+    "griCodes": [
+      "2-27",
+      "303-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.22",
+    "griCodes": [
+      "303-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.23",
+    "griCodes": [
+      "303-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.24",
+    "griCodes": [
+      "303-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.25",
+    "griCodes": [
+      "303-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.26",
+    "griCodes": [
+      "101-4",
+      "101-5"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.27",
+    "griCodes": [
+      "101-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.28",
+    "griCodes": [
+      "101-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.29",
+    "griCodes": [
+      "101-2",
+      "101-7"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.30",
+    "griCodes": [
+      "101-8"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.33",
+    "griCodes": [
+      "101-4",
+      "101-5"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.35",
+    "griCodes": [
+      "101-2"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.36",
+    "griCodes": [
+      "101-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.37",
+    "griCodes": [
+      "308-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.38",
+    "griCodes": [
+      "101-4"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.41",
+    "griCodes": [
+      "306-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.42",
+    "griCodes": [
+      "306-2",
+      "306-4"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.43",
+    "griCodes": [
+      "306-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.44",
+    "griCodes": [
+      "306-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.46",
+    "griCodes": [
+      "306-1",
+      "306-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.47",
+    "griCodes": [
+      "306-2",
+      "306-3"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.48",
+    "griCodes": [
+      "306-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.49",
+    "griCodes": [
+      "306-3",
+      "306-4",
+      "306-5"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.50",
+    "griCodes": [
+      "306-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.51",
+    "griCodes": [
+      "3-3"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.52",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "E.53",
+    "griCodes": [
+      "306-3"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.56",
+    "griCodes": [
+      "403-1"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.62",
+    "griCodes": [
+      "103-2"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.63",
+    "griCodes": [
+      "103-2"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.64",
+    "griCodes": [
+      "102-5"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.65",
+    "griCodes": [
+      "102-5"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "E.66",
+    "griCodes": [
+      "101-5"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "E.74",
+    "griCodes": [
+      "403-7"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "S.1",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.2",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.3",
+    "griCodes": [
+      "413-1",
+      "203-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.4",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.5",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.6",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.7",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.8",
+    "griCodes": [
+      "2-29",
+      "3-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.9",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.10",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.11",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.12",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.13",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.14",
+    "griCodes": [
+      "413-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.15",
+    "griCodes": [
+      "204-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.16",
+    "griCodes": [
+      "2-26"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.17",
+    "griCodes": [
+      "403-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.18",
+    "griCodes": [
+      "414-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.19",
+    "griCodes": [
+      "2-25"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.20",
+    "griCodes": [
+      "2-28"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.21",
+    "griCodes": [
+      "2-25"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.22",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.23",
+    "griCodes": [
+      "414-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.24",
+    "griCodes": [
+      "403-5"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "S.25",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "S.31",
+    "griCodes": [
+      "406-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.32",
+    "griCodes": [
+      "406-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.33",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.34",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.35",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.36",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.37",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.38",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.39",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.40",
+    "griCodes": [
+      "405-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.43",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.45",
+    "griCodes": [
+      "2-28"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.46",
+    "griCodes": [
+      "308-1",
+      "414-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.47",
+    "griCodes": [
+      "308-1",
+      "414-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.48",
+    "griCodes": [
+      "308-1",
+      "414-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.50",
+    "griCodes": [
+      "308-1",
+      "414-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.51",
+    "griCodes": [
+      "404-2",
+      "404-3"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.52",
+    "griCodes": [
+      "404-2",
+      "404-3"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.53",
+    "griCodes": [
+      "404-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.54",
+    "griCodes": [
+      "404-1",
+      "404-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.55",
+    "griCodes": [
+      "404-2"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.56",
+    "griCodes": [
+      "403-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.57",
+    "griCodes": [
+      "403-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.58",
+    "griCodes": [
+      "403-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.59",
+    "griCodes": [
+      "403-1",
+      "403-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.60",
+    "griCodes": [
+      "403-3"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.61",
+    "griCodes": [
+      "403-6"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "S.63",
+    "griCodes": [
+      "403-6"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.64",
+    "griCodes": [
+      "403-6"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.66",
+    "griCodes": [
+      "2-30"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.67",
+    "griCodes": [
+      "2-30"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.68",
+    "griCodes": [
+      "2-30"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.69",
+    "griCodes": [
+      "2-30"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.70",
+    "griCodes": [
+      "2-30"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "S.71",
+    "griCodes": [
+      "405-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.72",
+    "griCodes": [
+      "202-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.73",
+    "griCodes": [
+      "401-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.74",
+    "griCodes": [
+      "401-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "S.75",
+    "griCodes": [
+      "401-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.1",
+    "griCodes": [
+      "2-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.2",
+    "griCodes": [
+      "2-1",
+      "2-15"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.3",
+    "griCodes": [
+      "2-9"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.4",
+    "griCodes": [
+      "2-19",
+      "2-20"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.5",
+    "griCodes": [
+      "2-9"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.6",
+    "griCodes": [
+      "2-9",
+      "2-14"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.7",
+    "griCodes": [
+      "2-22"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.8",
+    "griCodes": [
+      "2-22"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.9",
+    "griCodes": [
+      "2-28"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.10",
+    "griCodes": [
+      "2-22",
+      "3-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.11",
+    "griCodes": [
+      "2-23",
+      "2-24"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.12",
+    "griCodes": [
+      "205-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.13",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.14",
+    "griCodes": [
+      "2-26"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.15",
+    "griCodes": [
+      "2-10"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.20",
+    "griCodes": [
+      "2-28"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "G.21",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.22",
+    "griCodes": [
+      "3-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.23",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.24",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.25",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.26",
+    "griCodes": [
+      "2-22"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.27",
+    "griCodes": [
+      "2-13"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.28",
+    "griCodes": [
+      "201-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.29",
+    "griCodes": [
+      "2-12"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.30",
+    "griCodes": [
+      "2-14"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.31",
+    "griCodes": [
+      "3-1",
+      "3-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.32",
+    "griCodes": [
+      "3-3",
+      "2-14"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.33",
+    "griCodes": [
+      "2-5"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.34",
+    "griCodes": [
+      "2-5"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.35",
+    "griCodes": [
+      "2-29"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.37",
+    "griCodes": [
+      "3-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.41",
+    "griCodes": [
+      "2-9"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.42",
+    "griCodes": [
+      "2-9"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.46",
+    "griCodes": [
+      "2-9"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.47",
+    "griCodes": [
+      "2-5"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.48",
+    "griCodes": [
+      "2-5"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.50",
+    "griCodes": [
+      "2-16"
+    ],
+    "compatibilityLevel": "baixa"
+  },
+  {
+    "esgId": "G.51",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.52",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.53",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.54",
+    "griCodes": [
+      "2-27"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.55",
+    "griCodes": [
+      "205-1",
+      "205-2"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.56",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "media"
+  },
+  {
+    "esgId": "G.61",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.62",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.63",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.64",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "alta"
+  },
+  {
+    "esgId": "G.65",
+    "griCodes": [
+      "418-1"
+    ],
+    "compatibilityLevel": "alta"
+  }
+]

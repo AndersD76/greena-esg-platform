@@ -12,9 +12,19 @@ export class DiagnosisController {
       const userId = req.user!.userId;
       const isAdmin = req.user!.role === 'admin' || req.user!.role === 'superadmin';
 
+      const { framework = 'ESG' } = req.body || {};
+
       // O tipo vem do plano, nunca do cliente
       const activePlan = await subscriptionService.getActivePlan(userId);
       const type = activePlan.isFreePlan && !isAdmin ? 'demo' : 'full';
+
+      // GRI e ESG_GRI exigem plano pago
+      if ((framework === 'GRI' || framework === 'ESG_GRI') && activePlan.isFreePlan && !isAdmin) {
+        return res.status(403).json({
+          error: 'O framework GRI está disponível apenas para planos pagos.',
+          code: 'GRI_REQUIRES_PAID_PLAN',
+        });
+      }
 
       // Retomar um diagnóstico em andamento não consome uma nova cota
       const inProgress = await diagnosisService.findInProgress(userId);
@@ -31,7 +41,7 @@ export class DiagnosisController {
         }
       }
 
-      const diagnosis = await diagnosisService.create(userId, type);
+      const diagnosis = await diagnosisService.create(userId, type, framework);
 
       res.status(201).json(diagnosis);
     } catch (error: any) {

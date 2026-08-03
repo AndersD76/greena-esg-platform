@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
+import { diagnosisService, Diagnosis, PillarScore } from '../services/diagnosis.service';
 
-const PILLAR_COLORS: Record<string, string> = {
-  environmental: '#7B9965',
-  social: '#924131',
-  governance: '#b8963a',
-};
+interface Insight {
+  id: number;
+  category: string;
+  categoryLabel: string;
+  title: string;
+  description: string;
+  pillar?: { id: number; code: string; name: string; color: string | null };
+}
 
 interface DbActionPlan {
   id: number;
@@ -21,7 +24,7 @@ interface DbActionPlan {
   impactScore: number;
 }
 
-type FilterPillar = 'all' | 'E' | 'S' | 'G';
+type FilterPillar = string;
 type FilterPriority = 'all' | 'critical' | 'high' | 'medium' | 'low';
 type FilterStatus = 'all' | 'pending' | 'in_progress' | 'completed';
 
@@ -33,6 +36,7 @@ export default function Insights() {
   const [isPartial, setIsPartial] = useState(false);
   const [actions, setActions] = useState<DbActionPlan[]>([]);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [insights, setInsights] = useState<Insight[]>([]);
   const [simulations, setSimulations] = useState<Map<number, { actionId: number; pillarCode: string; scoreDelta: number; simulatedPillarScore: number; simulatedOverall: number; currentLevel: string; simulatedLevel: string }>>(new Map());
 
   // Filters
@@ -63,8 +67,12 @@ export default function Insights() {
         setDiagnosis(targetDiagnosis);
         await loadPartialScores(targetDiagnosis.id);
         if (targetDiagnosis.status === 'completed') {
-          const ap = await diagnosisService.getActionPlans(targetDiagnosis.id);
+          const [ap, ins] = await Promise.all([
+            diagnosisService.getActionPlans(targetDiagnosis.id),
+            diagnosisService.getInsights(targetDiagnosis.id),
+          ]);
           setActions(ap);
+          setInsights(ins);
           try {
             const sims = await diagnosisService.getSimulatedActions(targetDiagnosis.id);
             const simMap = new Map<number, any>();
@@ -103,6 +111,29 @@ export default function Insights() {
   }
 
 
+  const pillarMap = useMemo(() => {
+    const map = new Map<string, { code: string; name: string; color: string }>();
+    for (const insight of insights) {
+      if (insight.pillar && !map.has(insight.pillar.code)) {
+        map.set(insight.pillar.code, {
+          code: insight.pillar.code,
+          name: insight.pillar.name,
+          color: insight.pillar.color || '#6B7280',
+        });
+      }
+    }
+    if (partialScores?.pillarScores) {
+      for (const ps of partialScores.pillarScores as PillarScore[]) {
+        if (!map.has(ps.code)) {
+          map.set(ps.code, { code: ps.code, name: ps.name, color: ps.color || '#6B7280' });
+        }
+      }
+    }
+    return map;
+  }, [insights, partialScores]);
+
+  const availablePillars = useMemo(() => Array.from(pillarMap.values()), [pillarMap]);
+
   const priorityConfig: Record<string, { bg: string; text: string; label: string }> = {
     critical: { bg: '#FEE2E2', text: '#991B1B', label: 'CRÍTICA' },
     high: { bg: '#FEF3C7', text: '#92400E', label: 'ALTA' },
@@ -116,17 +147,15 @@ export default function Insights() {
     completed: { bg: '#D1FAE5', text: '#065F46', label: 'Concluído', icon: '●' },
   };
 
-  // Parse pillar from description (format: "[E] Ambiental > Tema — ...")
   const getPillarFromAction = (action: DbActionPlan): string => {
     const desc = action.description || '';
-    if (desc.startsWith('[E]')) return 'E';
-    if (desc.startsWith('[S]')) return 'S';
-    if (desc.startsWith('[G]')) return 'G';
-    // Fallback para formato antigo
-    if (desc.startsWith('Ambiental') || desc.includes('Ambiental')) return 'E';
-    if (desc.startsWith('Social') || desc.includes('Social')) return 'S';
-    if (desc.startsWith('Governança') || desc.includes('Governança')) return 'G';
-    return 'E';
+    const match = desc.match(/^\[([^\]]+)\]/);
+    if (match) return match[1];
+    for (const code of pillarMap.keys()) {
+      const p = pillarMap.get(code)!;
+      if (desc.includes(p.name)) return code;
+    }
+    return availablePillars[0]?.code || '';
   };
 
   // Filter actions
@@ -169,9 +198,7 @@ export default function Insights() {
     );
   }
 
-  const envScore = partialScores?.environmental ?? Number(diagnosis.environmentalScore || 0);
-  const socScore = partialScores?.social ?? Number(diagnosis.socialScore || 0);
-  const govScore = partialScores?.governance ?? Number(diagnosis.governanceScore || 0);
+  const frameworkLabel = diagnosis.framework ? ` (${diagnosis.framework})` : '';
 
   return (
     <div className="min-h-screen bg-brand-100">
@@ -180,7 +207,7 @@ export default function Insights() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-3xl font-bold text-brand-900">Planos de Ação</h1>
+              <h1 className="text-3xl font-bold text-brand-900">Planos de Ação{frameworkLabel}</h1>
               {isPartial && (
                 <span className="px-3 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: '#EFD4A8', color: '#152F27' }}>PARCIAL</span>
               )}
@@ -217,47 +244,29 @@ export default function Insights() {
         )}
 
         {/* Insights por Pilar */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-          <h2 className="text-lg font-bold text-brand-900 mb-4">Insights por Pilar</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { label: 'Ambiental', score: envScore, color: PILLAR_COLORS.environmental, code: 'E' },
-              { label: 'Social', score: socScore, color: PILLAR_COLORS.social, code: 'S' },
-              { label: 'Governança', score: govScore, color: PILLAR_COLORS.governance, code: 'G' },
-            ].map((pillar) => {
-              const level = pillar.score >= 80 ? 'excellent' : pillar.score >= 60 ? 'attention' : 'critical';
-              const messages: Record<string, Record<string, string>> = {
-                E: {
-                  critical: 'Práticas ambientais precisam de atenção urgente. Priorize políticas de redução de emissões e gestão de resíduos.',
-                  attention: 'Desempenho ambiental no caminho certo. Continue melhorando eficiência energética e uso de recursos.',
-                  excellent: 'Excelente desempenho ambiental! Mantenha as boas práticas e considere certificações.',
-                },
-                S: {
-                  critical: 'Fortaleça práticas sociais: diversidade, inclusão e bem-estar dos colaboradores.',
-                  attention: 'Boas práticas sociais. Expanda capacitação e engajamento comunitário.',
-                  excellent: 'Destaque nas práticas sociais! Continue investindo no desenvolvimento das pessoas.',
-                },
-                G: {
-                  critical: 'Governança requer melhorias em transparência, ética e conformidade.',
-                  attention: 'Governança adequada. Reforce controle interno e comunicação com stakeholders.',
-                  excellent: 'Governança exemplar! Alto padrão de ética e transparência.',
-                },
-              };
-              return (
-                <div key={pillar.code} className="p-4 rounded-xl border-l-4" style={{ borderColor: pillar.color, backgroundColor: pillar.score >= 80 ? '#f0fdf4' : pillar.score >= 60 ? '#fefce8' : '#fef2f2' }}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: pillar.color }}>{pillar.code}</div>
-                    <div>
-                      <span className="text-sm font-bold text-brand-900">{pillar.label}</span>
-                      <span className="ml-2 text-lg font-bold" style={{ color: pillar.color }}>{pillar.score.toFixed(0)}</span>
+        {(partialScores?.pillarScores as PillarScore[] | undefined)?.length ? (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h2 className="text-lg font-bold text-brand-900 mb-4">Insights por Pilar</h2>
+            <div className={`grid grid-cols-1 gap-3 ${(partialScores.pillarScores as PillarScore[]).length <= 3 ? 'md:grid-cols-3' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+              {(partialScores.pillarScores as PillarScore[]).map((ps: PillarScore) => {
+                const color = ps.color || '#6B7280';
+                const insight = insights.find((i) => i.pillar?.code === ps.code);
+                return (
+                  <div key={ps.code} className="p-4 rounded-xl border-l-4" style={{ borderColor: color, backgroundColor: ps.score >= 80 ? '#f0fdf4' : ps.score >= 60 ? '#fefce8' : '#fef2f2' }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: color }}>{ps.code}</div>
+                      <div>
+                        <span className="text-sm font-bold text-brand-900">{ps.name}</span>
+                        <span className="ml-2 text-lg font-bold" style={{ color }}>{ps.score.toFixed(0)}</span>
+                      </div>
                     </div>
+                    {insight && <p className="text-xs text-gray-600 leading-relaxed">{insight.description}</p>}
                   </div>
-                  <p className="text-xs text-gray-600 leading-relaxed">{messages[pillar.code][level]}</p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         {/* === PLANO DE AÇÃO COM TRACKING === */}
         {actions.length > 0 && (
@@ -311,15 +320,17 @@ export default function Insights() {
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Eixo:</span>
                 <div className="flex gap-1">
-                  {[
-                    { value: 'all' as FilterPillar, label: 'Todos' },
-                    { value: 'E' as FilterPillar, label: 'Ambiental' },
-                    { value: 'S' as FilterPillar, label: 'Social' },
-                    { value: 'G' as FilterPillar, label: 'Governança' },
-                  ].map((opt) => (
-                    <button key={opt.value} onClick={() => setFilterPillar(opt.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterPillar === opt.value ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-                      {opt.label}
+                  <button onClick={() => setFilterPillar('all')}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${filterPillar === 'all' ? 'bg-brand-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
+                    Todos
+                  </button>
+                  {availablePillars.map((p) => (
+                    <button key={p.code} onClick={() => setFilterPillar(p.code)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-all`}
+                      style={filterPillar === p.code
+                        ? { backgroundColor: p.color, color: '#fff' }
+                        : { backgroundColor: '#F3F4F6', color: '#6B7280' }}>
+                      {p.name}
                     </button>
                   ))}
                 </div>
@@ -384,7 +395,8 @@ export default function Insights() {
                 const pCfg = priorityConfig[action.priority] || priorityConfig.medium;
                 const sCfg = statusConfig[action.status] || statusConfig.pending;
                 const pillarCode = getPillarFromAction(action);
-                const pillarColor = pillarCode === 'E' ? PILLAR_COLORS.environmental : pillarCode === 'S' ? PILLAR_COLORS.social : PILLAR_COLORS.governance;
+                const pillarInfo = pillarMap.get(pillarCode);
+                const pillarColor = pillarInfo?.color || '#6B7280';
                 const isUpdating = updatingId === action.id;
 
                 return (
@@ -414,7 +426,7 @@ export default function Insights() {
                         <div className="mb-1">
                           <div className="flex items-center gap-1.5 mb-1">
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ backgroundColor: pillarColor }}>
-                              {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'}
+                              {pillarInfo?.name || pillarCode}
                             </span>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ backgroundColor: pCfg.bg, color: pCfg.text }}>
                               {pCfg.label}
@@ -450,7 +462,7 @@ export default function Insights() {
                         {/* Simulador "E se?" */}
                         {action.status !== 'completed' && simulations.has(action.id) && (() => {
                           const sim = simulations.get(action.id)!;
-                          const pillarLabel = sim.pillarCode === 'E' ? 'Ambiental' : sim.pillarCode === 'S' ? 'Social' : 'Governança';
+                          const pillarLabel = pillarMap.get(sim.pillarCode)?.name || sim.pillarCode;
                           const levelChanged = sim.currentLevel !== sim.simulatedLevel;
                           const levelPt = (l: string) => l === 'gold' ? 'Ouro' : l === 'silver' ? 'Prata' : 'Bronze';
                           return (

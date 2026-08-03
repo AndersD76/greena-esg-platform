@@ -14,8 +14,14 @@ const COLORS = {
   bgGov: '#faf6ee',
 };
 
-const pillarColors: Record<string, string> = { E: COLORS.environmental, S: COLORS.social, G: COLORS.governance };
-const pillarBgColors: Record<string, string> = { E: COLORS.bgEnv, S: COLORS.bgSoc, G: COLORS.bgGov };
+const pillarColors: Record<string, string> = {
+  E: COLORS.environmental, S: COLORS.social, G: COLORS.governance,
+  'GRI-U': '#5B6ABF', 'GRI-E': '#2E7D4F', 'GRI-S': '#C0392B', 'GRI-EC': '#D4A017',
+};
+const pillarBgColors: Record<string, string> = {
+  E: COLORS.bgEnv, S: COLORS.bgSoc, G: COLORS.bgGov,
+  'GRI-U': '#EDEEF7', 'GRI-E': '#EDF5F0', 'GRI-S': '#FBEAE8', 'GRI-EC': '#FBF6E8',
+};
 
 function getScoreColor(score: number) {
   if (score >= 80) return '#7B9965';
@@ -31,16 +37,20 @@ function getScoreLabel(score: number) {
   return 'Em Desenvolvimento';
 }
 
-// Radar Chart SVG
-function RadarChart({ scores }: { scores: { environmental: number; social: number; governance: number } }) {
+// Radar Chart SVG — dinâmico para N pilares
+function RadarChart({ pillarScores }: { pillarScores: Array<{ code: string; name: string; color: string | null; score: number }> }) {
   const size = 260;
   const center = size / 2;
   const radius = 95;
-  const points = [
-    { label: 'Ambiental', short: 'E', value: scores.environmental, angle: -90, color: COLORS.environmental },
-    { label: 'Social', short: 'S', value: scores.social, angle: 30, color: COLORS.social },
-    { label: 'Governança', short: 'G', value: scores.governance, angle: 150, color: COLORS.governance },
-  ];
+  const n = pillarScores.length;
+  const angleStep = 360 / n;
+  const points = pillarScores.map((p, i) => ({
+    label: p.name,
+    short: p.code,
+    value: p.score,
+    angle: -90 + i * angleStep,
+    color: p.color || pillarColors[p.code] || '#6b7280',
+  }));
   const getPoint = (value: number, angle: number, r: number = radius) => {
     const rad = (angle * Math.PI) / 180;
     const scaledR = (value / 100) * r;
@@ -100,8 +110,8 @@ function ThemeBar({ name, score, maxScore, color }: { name: string; score: numbe
 
 // Pillar section — NO weaknesses, strengths reframed as "Destaques"
 function PillarSection({ breakdown }: { breakdown: PillarBreakdown }) {
-  const color = pillarColors[breakdown.pillarCode];
-  const bgColor = pillarBgColors[breakdown.pillarCode];
+  const color = pillarColors[breakdown.pillarCode] || '#6b7280';
+  const bgColor = pillarBgColors[breakdown.pillarCode] || '#f5f5f5';
 
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden print:shadow-none print:border">
@@ -219,6 +229,14 @@ export default function StakeholderReport() {
   }
 
   const { companyInfo, scores, certification, pillarBreakdowns, summary } = report;
+  const frameworkLabel = report.frameworkLabel || 'ESG';
+  const effectivePillarScores = report.pillarScores && report.pillarScores.length > 0
+    ? report.pillarScores
+    : [
+        { code: 'E', name: 'Ambiental', color: COLORS.environmental, score: scores.environmental },
+        { code: 'S', name: 'Social', color: COLORS.social, score: scores.social },
+        { code: 'G', name: 'Governança', color: COLORS.governance, score: scores.governance },
+      ];
   const medalColor = certification.level === 'gold' ? '#FFD700' : certification.level === 'silver' ? '#C0C0C0' : '#CD7F32';
   const levelPt = certification.level === 'gold' ? 'Ouro' : certification.level === 'silver' ? 'Prata' : 'Bronze';
   const publicUrl = slug ? `${window.location.origin}/empresa/${slug}` : null;
@@ -262,7 +280,7 @@ export default function StakeholderReport() {
               <div className="flex justify-between items-start">
                 <div>
                   <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-16 mb-4 print:h-12" style={{ filter: 'brightness(10)' }} />
-                  <h1 className="text-3xl font-black text-white mb-1">Relatório ESG — Stakeholders</h1>
+                  <h1 className="text-3xl font-black text-white mb-1">Relatório {frameworkLabel} — Stakeholders</h1>
                   <p className="text-white/60 text-sm">Avaliação concluída em {new Date(report.completedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div className="text-right">
@@ -315,32 +333,31 @@ export default function StakeholderReport() {
 
               {/* Radar */}
               <div className="flex flex-col items-center text-center">
-                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Visão Geral ESG</h4>
-                <RadarChart scores={scores} />
+                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Visão Geral {frameworkLabel}</h4>
+                <RadarChart pillarScores={effectivePillarScores} />
               </div>
 
               {/* Pilares */}
               <div>
                 <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Pilares</h4>
                 <div className="space-y-4">
-                  {[
-                    { label: 'Ambiental', code: 'E', score: scores.environmental, color: COLORS.environmental },
-                    { label: 'Social', code: 'S', score: scores.social, color: COLORS.social },
-                    { label: 'Governança', code: 'G', score: scores.governance, color: COLORS.governance },
-                  ].map((p) => (
-                    <div key={p.code}>
-                      <div className="flex justify-between items-center mb-1">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: p.color }}>{p.code}</div>
-                          <span className="text-sm font-bold" style={{ color: COLORS.primary }}>{p.label}</span>
+                  {effectivePillarScores.map((p) => {
+                    const color = p.color || pillarColors[p.code] || '#6b7280';
+                    return (
+                      <div key={p.code}>
+                        <div className="flex justify-between items-center mb-1">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs text-white" style={{ backgroundColor: color }}>{p.code}</div>
+                            <span className="text-sm font-bold" style={{ color: COLORS.primary }}>{p.name}</span>
+                          </div>
+                          <span className="text-lg font-black" style={{ color }}>{p.score.toFixed(1)}</span>
                         </div>
-                        <span className="text-lg font-black" style={{ color: p.color }}>{p.score.toFixed(1)}</span>
+                        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full" style={{ width: `${Math.min(p.score, 100)}%`, backgroundColor: color }} />
+                        </div>
                       </div>
-                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${Math.min(p.score, 100)}%`, backgroundColor: p.color }} />
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -390,7 +407,7 @@ export default function StakeholderReport() {
           {/* ═══ CERTIFICAÇÃO ESG + QR CODE ═══ */}
           <div className="rounded-2xl shadow-md overflow-hidden mb-6 print:shadow-none print:rounded-none print-break" style={{ border: `3px solid ${medalColor}` }}>
             <div className="p-8 bg-white">
-              <h2 className="text-xl font-black mb-6" style={{ color: COLORS.primary }}>Certificação ESG</h2>
+              <h2 className="text-xl font-black mb-6" style={{ color: COLORS.primary }}>Certificação {frameworkLabel}</h2>
               <div className="flex flex-col md:flex-row items-center gap-8">
                 {/* Selo */}
                 <div className="flex flex-col items-center flex-shrink-0">

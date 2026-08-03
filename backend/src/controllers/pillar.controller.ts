@@ -6,7 +6,8 @@ const pillarService = new PillarService();
 export class PillarController {
   async list(req: Request, res: Response) {
     try {
-      const pillars = await pillarService.list();
+      const framework = req.query.framework as string | undefined;
+      const pillars = await pillarService.list(framework);
       res.json(pillars);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -25,7 +26,8 @@ export class PillarController {
 
   async getAllQuestions(req: Request, res: Response) {
     try {
-      const questions = await pillarService.getAllQuestions();
+      const framework = req.query.framework as string | undefined;
+      const questions = await pillarService.getAllQuestions(framework);
       res.json(questions);
     } catch (error: any) {
       res.status(400).json({ error: error.message });

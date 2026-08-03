@@ -102,6 +102,7 @@ export interface AdminDiagnosis {
   id: string;
   userId: string;
   status: string;
+  framework?: string;
   overallScore: number | null;
   environmentalScore: number | null;
   socialScore: number | null;

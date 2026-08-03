@@ -1,0 +1,694 @@
+{
+  "GRI-U": {
+    "name": "Universais",
+    "questions": [
+      {
+        "id": "GRI-U.1",
+        "pillar": "GRI-U",
+        "theme": "Organização e Estratégia",
+        "criteria": "Detalhes organizacionais",
+        "question": "A organização relata seu nome jurídico, estrutura societária, localização da sede e países em que opera?",
+        "griCode": "2-1"
+      },
+      {
+        "id": "GRI-U.2",
+        "pillar": "GRI-U",
+        "theme": "Organização e Estratégia",
+        "criteria": "Entidades incluídas no relatório de sustentabilidade",
+        "question": "A organização lista todas as entidades incluídas no seu relatório de sustentabilidade e justifica eventuais exclusões?",
+        "griCode": "2-2"
+      },
+      {
+        "id": "GRI-U.3",
+        "pillar": "GRI-U",
+        "theme": "Organização e Estratégia",
+        "criteria": "Período do relatório, frequência e ponto de contato",
+        "question": "A organização informa o período coberto pelo relatório, a frequência de publicação e o ponto de contato para dúvidas?",
+        "griCode": "2-3"
+      },
+      {
+        "id": "GRI-U.4",
+        "pillar": "GRI-U",
+        "theme": "Organização e Estratégia",
+        "criteria": "Garantia externa",
+        "question": "A organização submete seu relatório de sustentabilidade a processos de garantia ou verificação externa?",
+        "griCode": "2-5"
+      },
+      {
+        "id": "GRI-U.5",
+        "pillar": "GRI-U",
+        "theme": "Organização e Estratégia",
+        "criteria": "Atividades, cadeia de valor e outras relações comerciais",
+        "question": "A organização descreve suas atividades, cadeia de valor e outras relações comerciais relevantes?",
+        "griCode": "2-6"
+      },
+      {
+        "id": "GRI-U.6",
+        "pillar": "GRI-U",
+        "theme": "Organização e Estratégia",
+        "criteria": "Declaração sobre a estratégia de desenvolvimento sustentável",
+        "question": "A organização publica uma declaração formal sobre sua estratégia de desenvolvimento sustentável?",
+        "griCode": "2-22"
+      },
+      {
+        "id": "GRI-U.7",
+        "pillar": "GRI-U",
+        "theme": "Força de Trabalho",
+        "criteria": "Empregados",
+        "question": "A organização reporta o número total de empregados, discriminando por tipo de contrato, jornada, gênero e região?",
+        "griCode": "2-7"
+      },
+      {
+        "id": "GRI-U.8",
+        "pillar": "GRI-U",
+        "theme": "Força de Trabalho",
+        "criteria": "Trabalhadores que não são empregados",
+        "question": "A organização reporta o número e o tipo de trabalhadores que não são empregados, mas cuja atuação é controlada pela organização?",
+        "griCode": "2-8"
+      },
+      {
+        "id": "GRI-U.9",
+        "pillar": "GRI-U",
+        "theme": "Força de Trabalho",
+        "criteria": "Acordos de negociação coletiva",
+        "question": "A organização reporta o percentual de empregados cobertos por acordos de negociação coletiva?",
+        "griCode": "2-30"
+      },
+      {
+        "id": "GRI-U.10",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Estrutura e composição da governança",
+        "question": "A organização descreve a estrutura e a composição do seu órgão máximo de governança, incluindo comitês?",
+        "griCode": "2-9"
+      },
+      {
+        "id": "GRI-U.11",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Nomeação e seleção do órgão máximo de governança",
+        "question": "A organização descreve os processos de nomeação e seleção dos membros do órgão máximo de governança?",
+        "griCode": "2-10"
+      },
+      {
+        "id": "GRI-U.12",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Presidente do órgão máximo de governança",
+        "question": "A organização informa se o presidente do órgão máximo de governança também é um executivo sênior e como conflitos de interesse são geridos?",
+        "griCode": "2-11"
+      },
+      {
+        "id": "GRI-U.13",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Papel do órgão máximo de governança na supervisão da gestão de impactos",
+        "question": "A organização descreve o papel do órgão máximo de governança na supervisão da gestão de impactos na economia, meio ambiente e pessoas?",
+        "griCode": "2-12"
+      },
+      {
+        "id": "GRI-U.14",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Delegação de responsabilidades para a gestão de impactos",
+        "question": "A organização descreve como delega responsabilidades para a gestão de impactos na economia, meio ambiente e pessoas?",
+        "griCode": "2-13"
+      },
+      {
+        "id": "GRI-U.15",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Papel do órgão máximo de governança no relato de sustentabilidade",
+        "question": "A organização descreve o papel do órgão máximo de governança na revisão e aprovação do relato de sustentabilidade?",
+        "griCode": "2-14"
+      },
+      {
+        "id": "GRI-U.16",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Conflitos de interesse",
+        "question": "A organização descreve os processos para prevenir e mitigar conflitos de interesse no órgão máximo de governança?",
+        "griCode": "2-15"
+      },
+      {
+        "id": "GRI-U.17",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Comunicação de preocupações críticas",
+        "question": "A organização descreve como preocupações críticas são comunicadas ao órgão máximo de governança?",
+        "griCode": "2-16"
+      },
+      {
+        "id": "GRI-U.18",
+        "pillar": "GRI-U",
+        "theme": "Governança",
+        "criteria": "Conhecimento coletivo do órgão máximo de governança",
+        "question": "A organização adota medidas para garantir o conhecimento coletivo do órgão máximo de governança sobre desenvolvimento sustentável?",
+        "griCode": "2-17"
+      },
+      {
+        "id": "GRI-U.19",
+        "pillar": "GRI-U",
+        "theme": "Remuneração",
+        "criteria": "Políticas de remuneração",
+        "question": "A organização descreve suas políticas de remuneração para os membros do órgão máximo de governança e da diretoria executiva?",
+        "griCode": "2-19"
+      },
+      {
+        "id": "GRI-U.20",
+        "pillar": "GRI-U",
+        "theme": "Remuneração",
+        "criteria": "Processo para a definição da remuneração",
+        "question": "A organização descreve o processo para definir a remuneração, incluindo consultores independentes e voto dos stakeholders?",
+        "griCode": "2-20"
+      },
+      {
+        "id": "GRI-U.21",
+        "pillar": "GRI-U",
+        "theme": "Remuneração",
+        "criteria": "Rácio da remuneração total anual",
+        "question": "A organização divulga o rácio entre a remuneração total anual do indivíduo mais bem pago e a mediana dos demais empregados?",
+        "griCode": "2-21"
+      },
+      {
+        "id": "GRI-U.22",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Compromissos de política",
+        "question": "A organização descreve seus compromissos de política em relação a direitos humanos e conduta empresarial responsável?",
+        "griCode": "2-23"
+      },
+      {
+        "id": "GRI-U.23",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Incorporação dos compromissos de política",
+        "question": "A organização descreve como incorpora seus compromissos de política nas atividades e relações comerciais?",
+        "griCode": "2-24"
+      },
+      {
+        "id": "GRI-U.24",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Processos para reparar impactos negativos",
+        "question": "A organização possui processos para identificar e reparar impactos negativos que causou ou para os quais contribuiu?",
+        "griCode": "2-25"
+      },
+      {
+        "id": "GRI-U.25",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Mecanismos para obter aconselhamento e apresentar preocupações",
+        "question": "A organização disponibiliza mecanismos para que partes interessadas obtenham aconselhamento e apresentem preocupações sobre conduta empresarial?",
+        "griCode": "2-26"
+      },
+      {
+        "id": "GRI-U.26",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Conformidade com leis e regulamentos",
+        "question": "A organização reporta casos significativos de não conformidade com leis e regulamentos e as medidas tomadas?",
+        "griCode": "2-27"
+      },
+      {
+        "id": "GRI-U.27",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Participação em associações",
+        "question": "A organização reporta suas participações em associações setoriais e organizações nacionais ou internacionais relevantes?",
+        "griCode": "2-28"
+      },
+      {
+        "id": "GRI-U.28",
+        "pillar": "GRI-U",
+        "theme": "Políticas e Conformidade",
+        "criteria": "Envolvimento das partes interessadas (stakeholders)",
+        "question": "A organização descreve como identifica e se envolve com suas partes interessadas (stakeholders) e os resultados desse engajamento?",
+        "griCode": "2-29"
+      },
+      {
+        "id": "GRI-U.29",
+        "pillar": "GRI-U",
+        "theme": "Tópicos Materiais",
+        "criteria": "Processo para determinar os temas materiais",
+        "question": "A organização descreve o processo utilizado para determinar seus temas materiais, incluindo os stakeholders envolvidos?",
+        "griCode": "3-1"
+      },
+      {
+        "id": "GRI-U.30",
+        "pillar": "GRI-U",
+        "theme": "Tópicos Materiais",
+        "criteria": "Lista de temas materiais",
+        "question": "A organização publica sua lista de temas materiais e explica como foram priorizados?",
+        "griCode": "3-2"
+      },
+      {
+        "id": "GRI-U.31",
+        "pillar": "GRI-U",
+        "theme": "Tópicos Materiais",
+        "criteria": "Gestão de temas materiais",
+        "question": "A organização descreve como gerencia cada um dos temas materiais identificados, incluindo políticas, ações e metas?",
+        "griCode": "3-3"
+      }
+    ]
+  },
+  "GRI-E": {
+    "name": "Ambiental",
+    "questions": [
+      {
+        "id": "GRI-E.1",
+        "pillar": "GRI-E",
+        "theme": "Biodiversidade",
+        "criteria": "Gestão de impactos na biodiversidade",
+        "question": "A organização possui processos para gerir seus impactos na biodiversidade ao longo de suas operações e cadeia de valor?",
+        "griCode": "101-2"
+      },
+      {
+        "id": "GRI-E.2",
+        "pillar": "GRI-E",
+        "theme": "Biodiversidade",
+        "criteria": "Identificação de impactos na biodiversidade",
+        "question": "A organização identifica e avalia seus impactos reais e potenciais na biodiversidade?",
+        "griCode": "101-4"
+      },
+      {
+        "id": "GRI-E.3",
+        "pillar": "GRI-E",
+        "theme": "Biodiversidade",
+        "criteria": "Locais com impactos na biodiversidade",
+        "question": "A organização identifica e reporta locais de operação com impactos significativos na biodiversidade, incluindo áreas protegidas?",
+        "griCode": "101-5"
+      },
+      {
+        "id": "GRI-E.4",
+        "pillar": "GRI-E",
+        "theme": "Biodiversidade",
+        "criteria": "Mudanças no estado da biodiversidade",
+        "question": "A organização monitora e reporta mudanças no estado da biodiversidade nas áreas afetadas por suas operações?",
+        "griCode": "101-7"
+      },
+      {
+        "id": "GRI-E.5",
+        "pillar": "GRI-E",
+        "theme": "Biodiversidade",
+        "criteria": "Serviços ecossistêmicos",
+        "question": "A organização identifica e avalia sua dependência e seus impactos nos serviços ecossistêmicos?",
+        "griCode": "101-8"
+      },
+      {
+        "id": "GRI-E.6",
+        "pillar": "GRI-E",
+        "theme": "Mudanças Climáticas",
+        "criteria": "Emissões de GEE de Escopo 1",
+        "question": "A organização mensura e reporta suas emissões de gases de efeito estufa (GEE) de Escopo 1 (emissões diretas)?",
+        "griCode": "102-5"
+      },
+      {
+        "id": "GRI-E.7",
+        "pillar": "GRI-E",
+        "theme": "Mudanças Climáticas",
+        "criteria": "Emissões de GEE de Escopo 2",
+        "question": "A organização mensura e reporta suas emissões de gases de efeito estufa (GEE) de Escopo 2 (energia adquirida)?",
+        "griCode": "102-6"
+      },
+      {
+        "id": "GRI-E.8",
+        "pillar": "GRI-E",
+        "theme": "Mudanças Climáticas",
+        "criteria": "Emissões de GEE de Escopo 3",
+        "question": "A organização mensura e reporta suas emissões de gases de efeito estufa (GEE) de Escopo 3 (cadeia de valor)?",
+        "griCode": "102-7"
+      },
+      {
+        "id": "GRI-E.9",
+        "pillar": "GRI-E",
+        "theme": "Energia",
+        "criteria": "Políticas e compromissos energéticos",
+        "question": "A organização possui políticas e compromissos formais para a gestão e redução do consumo de energia?",
+        "griCode": "103-1"
+      },
+      {
+        "id": "GRI-E.10",
+        "pillar": "GRI-E",
+        "theme": "Energia",
+        "criteria": "Consumo de energia e autogeração dentro da organização",
+        "question": "A organização mensura e reporta o consumo total de energia e a autogeração dentro de suas operações?",
+        "griCode": "103-2"
+      },
+      {
+        "id": "GRI-E.11",
+        "pillar": "GRI-E",
+        "theme": "Energia",
+        "criteria": "Consumo de energia a montante e a jusante",
+        "question": "A organização mensura e reporta o consumo de energia a montante e a jusante de sua cadeia de valor?",
+        "griCode": "103-3"
+      },
+      {
+        "id": "GRI-E.12",
+        "pillar": "GRI-E",
+        "theme": "Energia",
+        "criteria": "Intensidade energética",
+        "question": "A organização calcula e reporta sua intensidade energética por unidade de produto, receita ou outra métrica relevante?",
+        "griCode": "103-4"
+      },
+      {
+        "id": "GRI-E.13",
+        "pillar": "GRI-E",
+        "theme": "Água e Efluentes",
+        "criteria": "Interações com a água como um recurso compartilhado",
+        "question": "A organização descreve como interage com a água como um recurso compartilhado, incluindo avaliação de riscos hídricos?",
+        "griCode": "303-1"
+      },
+      {
+        "id": "GRI-E.14",
+        "pillar": "GRI-E",
+        "theme": "Água e Efluentes",
+        "criteria": "Gestão de impactos relacionados ao descarte de água",
+        "question": "A organização possui processos para gerir os impactos relacionados ao descarte de água e efluentes?",
+        "griCode": "303-2"
+      },
+      {
+        "id": "GRI-E.15",
+        "pillar": "GRI-E",
+        "theme": "Água e Efluentes",
+        "criteria": "Captação de água",
+        "question": "A organização mensura e reporta o volume total de água captada, discriminando por fonte e área com estresse hídrico?",
+        "griCode": "303-3"
+      },
+      {
+        "id": "GRI-E.16",
+        "pillar": "GRI-E",
+        "theme": "Água e Efluentes",
+        "criteria": "Consumo de água",
+        "question": "A organização mensura e reporta o consumo total de água e as variações ao longo do tempo?",
+        "griCode": "303-5"
+      },
+      {
+        "id": "GRI-E.17",
+        "pillar": "GRI-E",
+        "theme": "Resíduos",
+        "criteria": "Geração de resíduos e impactos significativos relacionados a resíduos",
+        "question": "A organização descreve os impactos significativos reais e potenciais relacionados à geração de resíduos?",
+        "griCode": "306-1"
+      },
+      {
+        "id": "GRI-E.18",
+        "pillar": "GRI-E",
+        "theme": "Resíduos",
+        "criteria": "Gestão de impactos significativos relacionados a resíduos",
+        "question": "A organização descreve as ações tomadas para gerir impactos significativos relacionados à geração de resíduos?",
+        "griCode": "306-2"
+      },
+      {
+        "id": "GRI-E.19",
+        "pillar": "GRI-E",
+        "theme": "Resíduos",
+        "criteria": "Resíduos gerados",
+        "question": "A organização mensura e reporta o peso total de resíduos gerados, discriminando por tipo e composição?",
+        "griCode": "306-3"
+      },
+      {
+        "id": "GRI-E.20",
+        "pillar": "GRI-E",
+        "theme": "Resíduos",
+        "criteria": "Resíduos não destinados para disposição final",
+        "question": "A organização reporta o peso total de resíduos desviados de disposição final, discriminando por operação de recuperação?",
+        "griCode": "306-4"
+      },
+      {
+        "id": "GRI-E.21",
+        "pillar": "GRI-E",
+        "theme": "Resíduos",
+        "criteria": "Resíduos destinados para disposição final",
+        "question": "A organização reporta o peso total de resíduos destinados para disposição final, discriminando por operação de disposição?",
+        "griCode": "306-5"
+      },
+      {
+        "id": "GRI-E.22",
+        "pillar": "GRI-E",
+        "theme": "Fornecedores Ambientais",
+        "criteria": "Novos fornecedores selecionados com base em critérios ambientais",
+        "question": "A organização reporta o percentual de novos fornecedores selecionados com base em critérios ambientais?",
+        "griCode": "308-1"
+      }
+    ]
+  },
+  "GRI-S": {
+    "name": "Social",
+    "questions": [
+      {
+        "id": "GRI-S.1",
+        "pillar": "GRI-S",
+        "theme": "Emprego",
+        "criteria": "Novas contratações e rotatividade de empregados",
+        "question": "A organização reporta o número total e a taxa de novas contratações e de rotatividade de empregados, por faixa etária, gênero e região?",
+        "griCode": "401-1"
+      },
+      {
+        "id": "GRI-S.2",
+        "pillar": "GRI-S",
+        "theme": "Emprego",
+        "criteria": "Benefícios oferecidos a empregados em tempo integral",
+        "question": "A organização reporta os benefícios oferecidos a empregados em tempo integral que não são oferecidos a empregados temporários ou de período parcial?",
+        "griCode": "401-2"
+      },
+      {
+        "id": "GRI-S.3",
+        "pillar": "GRI-S",
+        "theme": "Emprego",
+        "criteria": "Licença maternidade/paternidade",
+        "question": "A organização reporta dados sobre licença maternidade e paternidade, incluindo taxas de retorno e retenção após a licença?",
+        "griCode": "401-3"
+      },
+      {
+        "id": "GRI-S.4",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Sistema de gestão de saúde e segurança do trabalho",
+        "question": "A organização possui um sistema de gestão de saúde e segurança do trabalho implementado?",
+        "griCode": "403-1"
+      },
+      {
+        "id": "GRI-S.5",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Identificação de perigos, avaliação de riscos e investigação de incidentes",
+        "question": "A organização possui processos para identificação de perigos, avaliação de riscos e investigação de incidentes de trabalho?",
+        "griCode": "403-2"
+      },
+      {
+        "id": "GRI-S.6",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Serviços de saúde ocupacional",
+        "question": "A organização disponibiliza serviços de saúde ocupacional para seus trabalhadores?",
+        "griCode": "403-3"
+      },
+      {
+        "id": "GRI-S.7",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Participação, consulta e comunicação dos trabalhadores sobre saúde e segurança ocupacional",
+        "question": "A organização possui mecanismos para participação, consulta e comunicação dos trabalhadores sobre saúde e segurança ocupacional?",
+        "griCode": "403-4"
+      },
+      {
+        "id": "GRI-S.8",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Formação dos trabalhadores em saúde e segurança ocupacional",
+        "question": "A organização oferece formação e treinamento em saúde e segurança ocupacional aos seus trabalhadores?",
+        "griCode": "403-5"
+      },
+      {
+        "id": "GRI-S.9",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Promoção da saúde dos trabalhadores",
+        "question": "A organização promove programas de promoção da saúde e bem-estar dos trabalhadores além das obrigações legais?",
+        "griCode": "403-6"
+      },
+      {
+        "id": "GRI-S.10",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Prevenção e mitigação de impactos na saúde e segurança ocupacional ligados a relações comerciais",
+        "question": "A organização adota medidas para prevenir e mitigar impactos na saúde e segurança ocupacional diretamente ligados às suas relações comerciais?",
+        "griCode": "403-7"
+      },
+      {
+        "id": "GRI-S.11",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Trabalhadores abrangidos por um sistema de gestão de saúde e segurança ocupacional",
+        "question": "A organização reporta o número e o percentual de trabalhadores abrangidos por um sistema de gestão de saúde e segurança ocupacional?",
+        "griCode": "403-8"
+      },
+      {
+        "id": "GRI-S.12",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Lesões relacionadas ao trabalho",
+        "question": "A organização reporta dados sobre lesões relacionadas ao trabalho, incluindo taxas de frequência e gravidade?",
+        "griCode": "403-9"
+      },
+      {
+        "id": "GRI-S.13",
+        "pillar": "GRI-S",
+        "theme": "Saúde e Segurança do Trabalho",
+        "criteria": "Doenças relacionadas ao trabalho",
+        "question": "A organização reporta dados sobre doenças relacionadas ao trabalho, incluindo tipos e número de casos?",
+        "griCode": "403-10"
+      },
+      {
+        "id": "GRI-S.14",
+        "pillar": "GRI-S",
+        "theme": "Capacitação e Educação",
+        "criteria": "Média de horas de formação por ano, por empregado",
+        "question": "A organização reporta a média de horas de formação e treinamento por ano, discriminando por gênero e categoria funcional?",
+        "griCode": "404-1"
+      },
+      {
+        "id": "GRI-S.15",
+        "pillar": "GRI-S",
+        "theme": "Capacitação e Educação",
+        "criteria": "Programas para o desenvolvimento de competências dos empregados e apoio à transição de carreira",
+        "question": "A organização oferece programas para o desenvolvimento de competências dos empregados e programas de apoio à transição de carreira?",
+        "griCode": "404-2"
+      },
+      {
+        "id": "GRI-S.16",
+        "pillar": "GRI-S",
+        "theme": "Capacitação e Educação",
+        "criteria": "Percentagem de empregados que recebem avaliações regulares de desempenho",
+        "question": "A organização reporta o percentual de empregados que recebem avaliações regulares de desempenho e desenvolvimento de carreira?",
+        "griCode": "404-3"
+      },
+      {
+        "id": "GRI-S.17",
+        "pillar": "GRI-S",
+        "theme": "Diversidade e Igualdade",
+        "criteria": "Diversidade dos órgãos de governança e dos empregados",
+        "question": "A organização reporta a composição dos órgãos de governança e dos empregados por indicadores de diversidade (gênero, faixa etária, grupos minoritários)?",
+        "griCode": "405-1"
+      },
+      {
+        "id": "GRI-S.18",
+        "pillar": "GRI-S",
+        "theme": "Diversidade e Igualdade",
+        "criteria": "Rácio entre o salário base e a remuneração de mulheres e homens",
+        "question": "A organização reporta o rácio entre o salário base e a remuneração total de mulheres e homens, por categoria funcional e localidade?",
+        "griCode": "405-2"
+      },
+      {
+        "id": "GRI-S.19",
+        "pillar": "GRI-S",
+        "theme": "Diversidade e Igualdade",
+        "criteria": "Casos de discriminação e medidas corretivas tomadas",
+        "question": "A organização reporta o número de casos de discriminação ocorridos e as medidas corretivas tomadas?",
+        "griCode": "406-1"
+      },
+      {
+        "id": "GRI-S.20",
+        "pillar": "GRI-S",
+        "theme": "Comunidades e Fornecedores",
+        "criteria": "Operações com envolvimento da comunidade local, avaliações de impacto e programas de desenvolvimento",
+        "question": "A organização reporta operações com envolvimento da comunidade local, avaliações de impacto e programas de desenvolvimento comunitário?",
+        "griCode": "413-1"
+      },
+      {
+        "id": "GRI-S.21",
+        "pillar": "GRI-S",
+        "theme": "Comunidades e Fornecedores",
+        "criteria": "Novos fornecedores selecionados com base em critérios sociais",
+        "question": "A organização reporta o percentual de novos fornecedores selecionados com base em critérios sociais?",
+        "griCode": "414-1"
+      },
+      {
+        "id": "GRI-S.22",
+        "pillar": "GRI-S",
+        "theme": "Comunidades e Fornecedores",
+        "criteria": "Contribuições políticas",
+        "question": "A organização divulga o valor total de contribuições políticas realizadas, discriminando por país e destinatário?",
+        "griCode": "415-1"
+      },
+      {
+        "id": "GRI-S.23",
+        "pillar": "GRI-S",
+        "theme": "Privacidade",
+        "criteria": "Queixas comprovadas relativas à violação da privacidade e perda de dados de clientes",
+        "question": "A organização reporta o número de queixas comprovadas relativas à violação da privacidade e perda de dados de clientes?",
+        "griCode": "418-1"
+      }
+    ]
+  },
+  "GRI-EC": {
+    "name": "Econômico",
+    "questions": [
+      {
+        "id": "GRI-EC.1",
+        "pillar": "GRI-EC",
+        "theme": "Desempenho Econômico",
+        "criteria": "Valor econômico direto gerado e distribuído",
+        "question": "A organização reporta o valor econômico direto gerado e distribuído, incluindo receitas, custos operacionais, salários e investimentos na comunidade?",
+        "griCode": "201-1"
+      },
+      {
+        "id": "GRI-EC.2",
+        "pillar": "GRI-EC",
+        "theme": "Desempenho Econômico",
+        "criteria": "Obrigações do plano de benefício definido e outros planos de aposentadoria",
+        "question": "A organização reporta suas obrigações com planos de benefício definido e outros planos de aposentadoria?",
+        "griCode": "201-3"
+      },
+      {
+        "id": "GRI-EC.3",
+        "pillar": "GRI-EC",
+        "theme": "Presença no Mercado",
+        "criteria": "Proporção entre o salário mais baixo e o salário mínimo local",
+        "question": "A organização reporta a proporção entre o salário mais baixo praticado e o salário mínimo local, com discriminação por gênero?",
+        "griCode": "202-1"
+      },
+      {
+        "id": "GRI-EC.4",
+        "pillar": "GRI-EC",
+        "theme": "Presença no Mercado",
+        "criteria": "Proporção de membros da diretoria contratados na comunidade local",
+        "question": "A organização reporta a proporção de membros da alta diretoria contratados na comunidade local de operações significativas?",
+        "griCode": "202-2"
+      },
+      {
+        "id": "GRI-EC.5",
+        "pillar": "GRI-EC",
+        "theme": "Impactos Econômicos e Compras",
+        "criteria": "Investimentos em infraestrutura e apoio a serviços",
+        "question": "A organização reporta seus investimentos em infraestrutura e apoio a serviços voltados ao benefício público?",
+        "griCode": "203-1"
+      },
+      {
+        "id": "GRI-EC.6",
+        "pillar": "GRI-EC",
+        "theme": "Impactos Econômicos e Compras",
+        "criteria": "Proporção de gastos com fornecedores locais",
+        "question": "A organização reporta a proporção de gastos com fornecedores locais em operações significativas?",
+        "griCode": "204-1"
+      },
+      {
+        "id": "GRI-EC.7",
+        "pillar": "GRI-EC",
+        "theme": "Anticorrupção",
+        "criteria": "Operações avaliadas quanto a riscos relacionados à corrupção",
+        "question": "A organização avalia suas operações quanto a riscos relacionados à corrupção e reporta os resultados?",
+        "griCode": "205-1"
+      },
+      {
+        "id": "GRI-EC.8",
+        "pillar": "GRI-EC",
+        "theme": "Anticorrupção",
+        "criteria": "Comunicação e capacitação em políticas e procedimentos de combate à corrupção",
+        "question": "A organização comunica e capacita seus empregados e parceiros em políticas e procedimentos de combate à corrupção?",
+        "griCode": "205-2"
+      }
+    ]
+  }
+}

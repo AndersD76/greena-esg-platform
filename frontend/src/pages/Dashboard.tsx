@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
+import { diagnosisService, Diagnosis, PillarScore } from '../services/diagnosis.service';
 import api from '../services/api';
 import { SEO } from '../components/SEO';
 import { usePlan } from '../hooks/usePlan';
@@ -12,11 +12,27 @@ import {
   PieChart, Pie,
 } from 'recharts';
 
-const PILLAR_COLORS = {
-  environmental: '#7B9965',
-  social: '#924131',
-  governance: '#b8963a',
+const PILLAR_COLORS: Record<string, string> = {
+  E: '#7B9965',
+  S: '#924131',
+  G: '#b8963a',
 };
+
+const LEGACY_SCORE_FIELDS: Record<string, keyof Diagnosis> = {
+  E: 'environmentalScore',
+  S: 'socialScore',
+  G: 'governanceScore',
+};
+
+function getPillarColor(p: PillarScore): string {
+  return p.color || PILLAR_COLORS[p.code] || '#6b7280';
+}
+
+function frameworkName(fw?: string): string {
+  if (fw === 'GRI') return 'GRI';
+  if (fw === 'ESG_GRI') return 'ESG+GRI';
+  return 'ESG';
+}
 
 interface ThemeScore {
   pillarCode: string;
@@ -180,27 +196,33 @@ export default function Dashboard() {
 
 
   const overall = selected ? Number(selected.overallScore) : 0;
-  const env = selected ? Number(selected.environmentalScore) : 0;
-  const soc = selected ? Number(selected.socialScore) : 0;
-  const gov = selected ? Number(selected.governanceScore) : 0;
+
+  const pillarScores: PillarScore[] = selectedScores?.pillarScores?.length
+    ? selectedScores.pillarScores
+    : selected
+      ? [
+          { code: 'E', name: 'Ambiental', color: PILLAR_COLORS.E, score: Number(selected.environmentalScore) || 0 },
+          { code: 'S', name: 'Social', color: PILLAR_COLORS.S, score: Number(selected.socialScore) || 0 },
+          { code: 'G', name: 'Governança', color: PILLAR_COLORS.G, score: Number(selected.governanceScore) || 0 },
+        ]
+      : [];
 
   const themeScores: ThemeScore[] = selectedScores?.themeScores || [];
-  const envThemes = themeScores.filter(t => t.pillarCode === 'E');
-  const socThemes = themeScores.filter(t => t.pillarCode === 'S');
-  const govThemes = themeScores.filter(t => t.pillarCode === 'G');
+  const pillarGroups = pillarScores
+    .map(p => ({ ...p, themes: themeScores.filter(t => t.pillarCode === p.code) }))
+    .filter(g => g.themes.length > 0);
 
-  // Recharts data
-  const radarData = [
-    { subject: 'Ambiental', value: env, fullMark: 100 },
-    { subject: 'Social', value: soc, fullMark: 100 },
-    { subject: 'Governança', value: gov, fullMark: 100 },
-  ];
+  const radarData = pillarScores.map(p => ({
+    subject: p.name,
+    value: p.score,
+    fullMark: 100,
+  }));
 
-  const pillarPieData = [
-    { name: 'Ambiental', value: env, color: PILLAR_COLORS.environmental },
-    { name: 'Social', value: soc, color: PILLAR_COLORS.social },
-    { name: 'Governança', value: gov, color: PILLAR_COLORS.governance },
-  ];
+  const pillarPieData = pillarScores.map(p => ({
+    name: p.name,
+    value: p.score,
+    color: getPillarColor(p),
+  }));
 
   const makeBarData = (themes: ThemeScore[]) =>
     themes.map(t => ({
@@ -212,13 +234,17 @@ export default function Dashboard() {
     }));
 
   const evolutionData = completed.length > 1
-    ? completed.slice(0, 6).reverse().map(d => ({
-        date: new Date(d.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
-        Ambiental: Number(d.environmentalScore),
-        Social: Number(d.socialScore),
-        Governança: Number(d.governanceScore),
-        Geral: Number(d.overallScore),
-      }))
+    ? completed.slice(0, 6).reverse().map(d => {
+        const entry: Record<string, any> = {
+          date: new Date(d.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
+          Geral: Number(d.overallScore),
+        };
+        pillarScores.forEach(p => {
+          const field = LEGACY_SCORE_FIELDS[p.code];
+          if (field) entry[p.name] = Number((d as any)[field]);
+        });
+        return entry;
+      })
     : [];
 
   if (loading) {
@@ -241,7 +267,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white">{greeting}{userName ? `, ${userName}` : ''}</h1>
-              <p className="text-sm text-white/50 mt-1">Painel ESG — Visão Geral</p>
+              <p className="text-sm text-white/50 mt-1">Painel {frameworkName(selected?.framework || currentDiagnosis?.framework)} — Visão Geral</p>
             </div>
             <div className="flex items-center gap-3">
               {/* Dropdown */}
@@ -314,7 +340,7 @@ export default function Dashboard() {
                   <svg className="w-6 h-6 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-base font-bold text-brand-900">Diagnóstico ESG</p>
+                  <p className="text-base font-bold text-brand-900">Diagnóstico {frameworkName(currentDiagnosis?.framework)}</p>
                   <p className="text-sm text-gray-400 mt-0.5">{partialScores.answeredCount}/{partialScores.totalCount} respostas — clique para continuar</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -407,7 +433,7 @@ export default function Dashboard() {
 
             {/* ROW 1, COL 2 — Radar + Pie */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center">
-              <h3 className="text-xs font-bold text-brand-900 mb-2 uppercase tracking-wider">Visão Geral ESG</h3>
+              <h3 className="text-xs font-bold text-brand-900 mb-2 uppercase tracking-wider">Visão Geral {frameworkName(selected?.framework)}</h3>
               <ResponsiveContainer width="100%" height={280}>
                 <RechartsRadar data={radarData}>
                   <PolarGrid strokeDasharray="3 3" />
@@ -444,24 +470,23 @@ export default function Dashboard() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-xs font-bold text-brand-900 mb-4 uppercase tracking-wider">Pilares</h3>
               <div className="space-y-5">
-                {[
-                  { label: 'Ambiental (E)', value: env, color: PILLAR_COLORS.environmental },
-                  { label: 'Social (S)', value: soc, color: PILLAR_COLORS.social },
-                  { label: 'Governança (G)', value: gov, color: PILLAR_COLORS.governance },
-                ].map(p => (
-                  <div key={p.label}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-semibold text-gray-600">{p.label}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: p.color + '15', color: p.color }}>{scoreLabel(p.value)}</span>
-                        <span className="text-lg font-bold" style={{ color: p.color }}>{p.value.toFixed(0)}</span>
+                {pillarScores.map(p => {
+                  const color = getPillarColor(p);
+                  return (
+                    <div key={p.code}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-sm font-semibold text-gray-600">{p.name} ({p.code})</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: color + '15', color }}>{scoreLabel(p.score)}</span>
+                          <span className="text-lg font-bold" style={{ color }}>{p.score.toFixed(0)}</span>
+                        </div>
+                      </div>
+                      <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${p.score}%`, backgroundColor: color }} />
                       </div>
                     </div>
-                    <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${p.value}%`, backgroundColor: p.color }} />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -469,81 +494,31 @@ export default function Dashboard() {
         )}
 
         {/* ═══════ INTERACTIVE THEME CHARTS ═══════ */}
-        {themeScores.length > 0 && (
-          <>
-            {/* Ambiental */}
-            {envThemes.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: PILLAR_COLORS.environmental }}>E</div>
-                  <div className="flex-1">
-                    <h3 className="text-base font-bold text-brand-900">Ambiental por Tema</h3>
-                    <p className="text-xs text-gray-400">{envThemes.length} temas avaliados</p>
-                  </div>
-                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.environmental }}>{env.toFixed(0)}</span>
+        {pillarGroups.map(g => {
+          const color = getPillarColor(g);
+          return (
+            <div key={g.code} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: color }}>{g.code}</div>
+                <div className="flex-1">
+                  <h3 className="text-base font-bold text-brand-900">{g.name} por Tema</h3>
+                  <p className="text-xs text-gray-400">{g.themes.length} temas avaliados</p>
                 </div>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={makeBarData(envThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                    <Tooltip content={<ThemeTooltip />} />
-                    <ReferenceLine y={env} stroke={PILLAR_COLORS.environmental} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${env.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.environmental }} />
-                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={PILLAR_COLORS.environmental} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <span className="text-2xl font-bold" style={{ color }}>{g.score.toFixed(0)}</span>
               </div>
-            )}
-
-            {/* Social */}
-            {socThemes.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: PILLAR_COLORS.social }}>S</div>
-                  <div className="flex-1">
-                    <h3 className="text-base font-bold text-brand-900">Social por Tema</h3>
-                    <p className="text-xs text-gray-400">{socThemes.length} temas avaliados</p>
-                  </div>
-                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.social }}>{soc.toFixed(0)}</span>
-                </div>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={makeBarData(socThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                    <Tooltip content={<ThemeTooltip />} />
-                    <ReferenceLine y={soc} stroke={PILLAR_COLORS.social} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${soc.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.social }} />
-                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={PILLAR_COLORS.social} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-
-            {/* Governança */}
-            {govThemes.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: PILLAR_COLORS.governance }}>G</div>
-                  <div className="flex-1">
-                    <h3 className="text-base font-bold text-brand-900">Governança por Tema</h3>
-                    <p className="text-xs text-gray-400">{govThemes.length} temas avaliados</p>
-                  </div>
-                  <span className="text-2xl font-bold" style={{ color: PILLAR_COLORS.governance }}>{gov.toFixed(0)}</span>
-                </div>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={makeBarData(govThemes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
-                    <Tooltip content={<ThemeTooltip />} />
-                    <ReferenceLine y={gov} stroke={PILLAR_COLORS.governance} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${gov.toFixed(0)}`, position: 'right', fontSize: 11, fill: PILLAR_COLORS.governance }} />
-                    <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={PILLAR_COLORS.governance} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </>
-        )}
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={makeBarData(g.themes)} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#6b7280' }} interval={0} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
+                  <Tooltip content={<ThemeTooltip />} />
+                  <ReferenceLine y={g.score} stroke={color} strokeDasharray="6 4" strokeWidth={1.5} label={{ value: `Média ${g.score.toFixed(0)}`, position: 'right', fontSize: 11, fill: color }} />
+                  <Bar dataKey="score" radius={[6, 6, 0, 0]} animationDuration={800} fill={color} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          );
+        })}
 
         {/* ═══════ BENCHMARKING SETORIAL ═══════ */}
         {benchmarking && !benchmarking.insufficient && (() => {
@@ -605,9 +580,9 @@ export default function Dashboard() {
                 <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#9ca3af' }} />
                 <Tooltip />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
-                <Line type="monotone" dataKey="Ambiental" stroke={PILLAR_COLORS.environmental} strokeWidth={2.5} dot={{ r: 5, fill: '#fff', stroke: PILLAR_COLORS.environmental, strokeWidth: 2 }} activeDot={{ r: 7 }} />
-                <Line type="monotone" dataKey="Social" stroke={PILLAR_COLORS.social} strokeWidth={2.5} dot={{ r: 5, fill: '#fff', stroke: PILLAR_COLORS.social, strokeWidth: 2 }} activeDot={{ r: 7 }} />
-                <Line type="monotone" dataKey="Governança" stroke={PILLAR_COLORS.governance} strokeWidth={2.5} dot={{ r: 5, fill: '#fff', stroke: PILLAR_COLORS.governance, strokeWidth: 2 }} activeDot={{ r: 7 }} />
+                {pillarScores.filter(p => LEGACY_SCORE_FIELDS[p.code]).map(p => (
+                  <Line key={p.code} type="monotone" dataKey={p.name} stroke={getPillarColor(p)} strokeWidth={2.5} dot={{ r: 5, fill: '#fff', stroke: getPillarColor(p), strokeWidth: 2 }} activeDot={{ r: 7 }} />
+                ))}
                 <Line type="monotone" dataKey="Geral" stroke="#152F27" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4, fill: '#fff', stroke: '#152F27', strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>

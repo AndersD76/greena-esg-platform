@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { diagnosisService, Diagnosis } from '../services/diagnosis.service';
+import { diagnosisService, Diagnosis, PillarScore } from '../services/diagnosis.service';
 import api from '../services/api';
 
 interface Insight {
@@ -25,10 +25,17 @@ interface ActionPlan {
   impactScore: number;
 }
 
-const PILLAR_COLORS = {
-  environmental: '#7B9965',
-  social: '#924131',
-  governance: '#b8963a',
+const DEFAULT_PILLAR_STYLES: Record<string, { color: string; bg: string }> = {
+  E: { color: '#7B9965', bg: '#f5ffeb' },
+  S: { color: '#924131', bg: '#fdf5f3' },
+  G: { color: '#b8963a', bg: '#fdf8ef' },
+};
+
+const getPillarStyle = (pillar: PillarScore) => {
+  const defaults = DEFAULT_PILLAR_STYLES[pillar.code];
+  const color = pillar.color || defaults?.color || '#6b7280';
+  const bg = defaults?.bg || `${color}12`;
+  return { color, bg };
 };
 
 const getScoreColor = (score: number) => {
@@ -55,6 +62,7 @@ export default function Results() {
   const [loading, setLoading] = useState(true);
   const [certificate, setCertificate] = useState<any>(null);
   const [issuingCert, setIssuingCert] = useState(false);
+  const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
 
   useEffect(() => {
     loadResults();
@@ -73,6 +81,13 @@ export default function Results() {
 
       const actionPlansData = await diagnosisService.getActionPlans(diagnosisId);
       setActionPlans(actionPlansData);
+
+      try {
+        const resultsData = await diagnosisService.getResults(diagnosisId);
+        if (resultsData.pillarScores?.length > 0) {
+          setPillarScores(resultsData.pillarScores);
+        }
+      } catch {}
 
       // Check if certificate already exists
       try {
@@ -119,6 +134,18 @@ export default function Results() {
   const socialScore = Number(diagnosis.socialScore);
   const governanceScore = Number(diagnosis.governanceScore);
 
+  const effectivePillarScores: PillarScore[] = pillarScores.length > 0
+    ? pillarScores
+    : [
+        { code: 'E', name: 'Ambiental', color: '#7B9965', score: environmentalScore },
+        { code: 'S', name: 'Social', color: '#924131', score: socialScore },
+        { code: 'G', name: 'Governança', color: '#b8963a', score: governanceScore },
+      ];
+
+  const frameworkLabel = diagnosis.framework === 'GRI' ? 'GRI'
+    : diagnosis.framework === 'ESG_GRI' ? 'ESG+GRI'
+    : 'ESG';
+
   const categoryColors = {
     critical: { bg: '#FEE2E2', text: '#991B1B' },
     attention: { bg: '#FEF3C7', text: '#92400E' },
@@ -132,7 +159,7 @@ export default function Results() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-brand-900 mb-1">Resultados do Diagnóstico ESG</h1>
+              <h1 className="text-3xl font-bold text-brand-900 mb-1">Resultados do Diagnóstico {frameworkLabel}</h1>
               <p className="text-sm text-gray-500">
                 Concluído em {new Date(diagnosis.completedAt!).toLocaleDateString('pt-BR')}
               </p>
@@ -148,7 +175,7 @@ export default function Results() {
         {/* Overall Score */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
           <div className="text-center">
-            <h2 className="text-xl font-bold text-brand-900 mb-4">Score ESG Geral</h2>
+            <h2 className="text-xl font-bold text-brand-900 mb-4">Score {frameworkLabel} Geral</h2>
             <p className="text-7xl font-bold mb-4" style={{ color: getScoreColor(overallScore) }}>
               {overallScore.toFixed(0)}
             </p>
@@ -160,54 +187,36 @@ export default function Results() {
             </span>
             <p className="mt-6 text-sm text-gray-500 max-w-2xl mx-auto">
               Sua empresa alcançou um score de <strong className="text-brand-900">{overallScore.toFixed(0)}</strong> pontos,
-              indicando um nível <strong className="text-brand-900">{getScoreLevel(overallScore)}</strong> de maturidade ESG.
+              indicando um nível <strong className="text-brand-900">{getScoreLevel(overallScore)}</strong> de maturidade {frameworkLabel}.
             </p>
           </div>
         </div>
 
         {/* Pillar Scores */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" style={{ backgroundColor: '#f5ffeb' }}>
-            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Ambiental</p>
-            <p className="text-5xl font-bold mb-3" style={{ color: PILLAR_COLORS.environmental }}>
-              {environmentalScore.toFixed(0)}
-            </p>
-            <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {effectivePillarScores.map((pillar) => {
+            const style = getPillarStyle(pillar);
+            const score = Number(pillar.score);
+            return (
               <div
-                className="h-full rounded-full transition-all"
-                style={{ width: `${environmentalScore}%`, backgroundColor: PILLAR_COLORS.environmental }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-gray-400">{getScoreLevel(environmentalScore)}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" style={{ backgroundColor: '#fdf5f3' }}>
-            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Social</p>
-            <p className="text-5xl font-bold mb-3" style={{ color: PILLAR_COLORS.social }}>
-              {socialScore.toFixed(0)}
-            </p>
-            <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all"
-                style={{ width: `${socialScore}%`, backgroundColor: PILLAR_COLORS.social }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-gray-400">{getScoreLevel(socialScore)}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" style={{ backgroundColor: '#fdf8ef' }}>
-            <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">Governança</p>
-            <p className="text-5xl font-bold mb-3" style={{ color: PILLAR_COLORS.governance }}>
-              {governanceScore.toFixed(0)}
-            </p>
-            <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all"
-                style={{ width: `${governanceScore}%`, backgroundColor: PILLAR_COLORS.governance }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-gray-400">{getScoreLevel(governanceScore)}</p>
-          </div>
+                key={pillar.code}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+                style={{ backgroundColor: style.bg }}
+              >
+                <p className="text-xs font-medium text-brand-900 mb-2 uppercase tracking-wide">{pillar.name}</p>
+                <p className="text-5xl font-bold mb-3" style={{ color: style.color }}>
+                  {score.toFixed(0)}
+                </p>
+                <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${score}%`, backgroundColor: style.color }}
+                  />
+                </div>
+                <p className="mt-2 text-xs text-gray-400">{getScoreLevel(score)}</p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Strategic Insights */}
@@ -265,7 +274,7 @@ export default function Results() {
                   <div
                     key={action.id}
                     className="p-5 rounded-xl bg-gray-50 border-l-4"
-                    style={{ borderLeftColor: PILLAR_COLORS.environmental }}
+                    style={{ borderLeftColor: DEFAULT_PILLAR_STYLES.E.color }}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">

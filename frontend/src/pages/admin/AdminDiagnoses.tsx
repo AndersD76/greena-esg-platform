@@ -77,6 +77,10 @@ export default function AdminDiagnoses() {
       E: 'Ambiental',
       S: 'Social',
       G: 'Governanca',
+      'GRI-U': 'Universais',
+      'GRI-E': 'Ambiental (GRI)',
+      'GRI-S': 'Social (GRI)',
+      'GRI-EC': 'Econômico',
     };
     return map[pillar] || pillar;
   };
@@ -86,7 +90,17 @@ export default function AdminDiagnoses() {
     if (p === 'environmental' || p === 'e' || p === 'ambiental') return '#7B9965';
     if (p === 'social' || p === 's') return '#924131';
     if (p === 'governance' || p === 'g' || p === 'governanca') return '#b8963a';
+    if (p === 'gri-u') return '#5B6ABF';
+    if (p === 'gri-e') return '#2E7D4F';
+    if (p === 'gri-s') return '#C0392B';
+    if (p === 'gri-ec') return '#D4A017';
     return '#6b7280';
+  };
+
+  const frameworkBadge = (fw?: string) => {
+    if (!fw || fw === 'ESG') return null;
+    const label = fw === 'ESG_GRI' ? 'ESG+GRI' : fw;
+    return <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-100 text-indigo-700 ml-2">{label}</span>;
   };
 
   // View details
@@ -166,7 +180,7 @@ export default function AdminDiagnoses() {
              diagnoses.map((d) => (
               <tr key={d.id} className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer" onClick={() => handleViewDetails(d)}>
                 <td className="px-4 py-3">
-                  <p className="font-semibold text-brand-900">{d.user.name}</p>
+                  <p className="font-semibold text-brand-900">{d.user.name}{frameworkBadge(d.framework)}</p>
                   <p className="text-xs text-gray-400">{d.user.companyName || d.user.email}</p>
                 </td>
                 <td className="px-4 py-3 text-center">

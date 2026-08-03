@@ -64,12 +64,14 @@ export class CertificateService {
       return existingCertificate;
     }
 
+    const framework = diagnosis.framework || 'ESG';
+
     // Obter o nível de certificação baseado na pontuação
     const score = Number(diagnosis.overallScore);
-    const certificationLevel = this.scoringService.getCertificationLevel(score);
+    const certificationLevel = this.scoringService.getCertificationLevel(score, framework);
 
     // Gerar número único do certificado
-    const certificateNumber = this.generateCertificateNumber();
+    const certificateNumber = this.generateCertificateNumber(framework);
 
     // Criar o certificado
     const certificate = await prisma.certificate.create({
@@ -79,6 +81,7 @@ export class CertificateService {
         certificateNumber: certificateNumber,
         level: certificationLevel.level,
         score: score,
+        framework,
         issuedAt: new Date(),
         expiresAt: this.calculateExpirationDate(),
         isValid: true
@@ -101,10 +104,11 @@ export class CertificateService {
   /**
    * Gera um número único para o certificado
    */
-  private generateCertificateNumber(): string {
+  private generateCertificateNumber(framework: string = 'ESG'): string {
     const year = new Date().getFullYear();
     const random = Math.random().toString(36).substring(2, 10).toUpperCase();
-    return `GREENA-${year}-${random}`;
+    const fwTag = framework === 'ESG_GRI' ? 'ESGGRI' : framework;
+    return `GREENA-${fwTag}-${year}-${random}`;
   }
 
   /**

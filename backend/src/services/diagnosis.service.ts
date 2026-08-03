@@ -15,9 +15,6 @@ export class DiagnosisService {
     this.actionPlanService = new ActionPlanService();
   }
 
-  /**
-   * Diagnóstico em andamento do usuário, se houver
-   */
   async findInProgress(userId: string) {
     return prisma.diagnosis.findFirst({
       where: {
@@ -27,16 +24,10 @@ export class DiagnosisService {
     });
   }
 
-  /**
-   * Cria novo diagnóstico
-   */
-  async create(userId: string, type: 'full' | 'demo' = 'full') {
-    // Verificar se já existe diagnóstico em progresso
+  async create(userId: string, type: 'full' | 'demo' = 'full', framework: string = 'ESG') {
     const existingDiagnosis = await this.findInProgress(userId);
 
     if (existingDiagnosis) {
-      // Realinha o tipo com o plano atual: quem faz upgrade passa a ter o
-      // questionário completo e quem está no gratuito volta para o demo.
       if (existingDiagnosis.type !== type) {
         return prisma.diagnosis.update({
           where: { id: existingDiagnosis.id },
@@ -47,29 +38,30 @@ export class DiagnosisService {
       return existingDiagnosis;
     }
 
+    const frameworkLabel = framework === 'GRI' ? 'GRI'
+      : framework === 'ESG_GRI' ? 'ESG+GRI'
+      : 'ESG';
+
     const diagnosis = await prisma.diagnosis.create({
       data: {
         userId,
         status: 'in_progress',
         type,
+        framework,
       },
     });
 
-    // Log de atividade
     await prisma.activityLog.create({
       data: {
         userId,
         actionType: 'diagnosis_started',
-        description: 'Diagnóstico ESG iniciado',
+        description: `Diagnóstico ${frameworkLabel} iniciado`,
       },
     });
 
     return diagnosis;
   }
 
-  /**
-   * Lista diagnósticos do usuário
-   */
   async list(userId: string) {
     return prisma.diagnosis.findMany({
       where: { userId },
@@ -77,9 +69,6 @@ export class DiagnosisService {
     });
   }
 
-  /**
-   * Busca diagnóstico por ID
-   */
   async getById(id: string, userId: string) {
     const diagnosis = await prisma.diagnosis.findFirst({
       where: { id, userId },
@@ -111,9 +100,6 @@ export class DiagnosisService {
     return diagnosis;
   }
 
-  /**
-   * Completa diagnóstico e gera insights e plano de ação
-   */
   async complete(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
 
@@ -121,16 +107,10 @@ export class DiagnosisService {
       throw new Error('Diagnóstico já foi concluído');
     }
 
-    // Calcular scores
     const scores = await this.scoringService.calculateAllScores(id);
-
-    // Gerar insights
     await this.insightsService.generateInsights(id);
-
-    // Gerar plano de ação
     await this.actionPlanService.generateActionPlan(id);
 
-    // Atualizar diagnóstico
     const updatedDiagnosis = await prisma.diagnosis.update({
       where: { id },
       data: {
@@ -139,12 +119,16 @@ export class DiagnosisService {
       },
     });
 
-    // Log de atividade
+    const framework = diagnosis.framework || 'ESG';
+    const frameworkLabel = framework === 'GRI' ? 'GRI'
+      : framework === 'ESG_GRI' ? 'ESG+GRI'
+      : 'ESG';
+
     await prisma.activityLog.create({
       data: {
         userId,
         actionType: 'diagnosis_completed',
-        description: `Diagnóstico ESG concluído com score ${scores.overall}`,
+        description: `Diagnóstico ${frameworkLabel} concluído com score ${scores.overall}`,
       },
     });
 
@@ -154,9 +138,6 @@ export class DiagnosisService {
     };
   }
 
-  /**
-   * Busca resultados de um diagnóstico
-   */
   async getResults(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
 
@@ -167,32 +148,59 @@ export class DiagnosisService {
     const insights = await this.insightsService.getInsights(id);
     const actionPlan = await this.actionPlanService.getActionPlan(id);
 
+    // Fetch dynamic pillar scores
+    const pillarScores = await prisma.diagnosisScore.findMany({
+      where: { diagnosisId: id },
+      include: { pillar: true },
+      orderBy: { pillar: { sortOrder: 'asc' } },
+    });
+
+    const scores: Record<string, number> = {
+      overall: Number(diagnosis.overallScore),
+    };
+
+    // Legacy fields
+    scores.environmental = Number(diagnosis.environmentalScore);
+    scores.social = Number(diagnosis.socialScore);
+    scores.governance = Number(diagnosis.governanceScore);
+
     return {
       diagnosis,
-      scores: {
-        overall: Number(diagnosis.overallScore),
-        environmental: Number(diagnosis.environmentalScore),
-        social: Number(diagnosis.socialScore),
-        governance: Number(diagnosis.governanceScore),
-      },
+      scores,
+      pillarScores: pillarScores.map(ps => ({
+        code: ps.pillar.code,
+        name: ps.pillar.name,
+        color: ps.pillar.color,
+        score: Number(ps.score),
+      })),
       insights,
       actionPlan,
     };
   }
 
-  /**
-   * Calcula progresso do diagnóstico
-   */
   async getProgress(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
+    const framework = diagnosis.framework || 'ESG';
 
-    // Contar total de questões
-    const totalQuestions = await prisma.assessmentItem.count();
+    // Count only questions for this framework
+    const frameworkPillars = framework === 'ESG_GRI'
+      ? { in: ['ESG', 'GRI'] as string[] }
+      : framework;
 
-    // Contar questões respondidas
+    const totalQuestions = await prisma.assessmentItem.count({
+      where: {
+        criteria: {
+          theme: {
+            pillar: typeof frameworkPillars === 'string'
+              ? { framework: frameworkPillars }
+              : { framework: frameworkPillars },
+          },
+        },
+      },
+    });
+
     const answeredQuestions = diagnosis.responses.length;
-
-    const progress = Math.round((answeredQuestions / totalQuestions) * 100);
+    const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 
     return {
       total: totalQuestions,
@@ -202,16 +210,10 @@ export class DiagnosisService {
     };
   }
 
-  /**
-   * Finaliza diagnóstico (alias for complete)
-   */
   async finalize(id: string, userId: string) {
     return this.complete(id, userId);
   }
 
-  /**
-   * Busca apenas insights de um diagnóstico
-   */
   async getInsights(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
 
@@ -222,9 +224,6 @@ export class DiagnosisService {
     return this.insightsService.getInsights(id);
   }
 
-  /**
-   * Busca apenas plano de ação de um diagnóstico
-   */
   async getActionPlans(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
 
@@ -235,16 +234,10 @@ export class DiagnosisService {
     return this.actionPlanService.getActionPlan(id);
   }
 
-  /**
-   * Atualiza status de uma ação do plano
-   */
   async updateActionStatus(actionId: number, status: string) {
     return this.actionPlanService.updateActionStatus(actionId, status);
   }
 
-  /**
-   * Simula impacto de cada ação no score
-   */
   async getSimulatedActions(id: string, userId: string) {
     const diagnosis = await prisma.diagnosis.findFirst({ where: { id, userId } });
     if (!diagnosis) throw new Error('Diagnóstico não encontrado');
@@ -252,9 +245,6 @@ export class DiagnosisService {
     return this.scoringService.simulateActionImpact(id);
   }
 
-  /**
-   * Benchmarking por setor
-   */
   async getBenchmarking(id: string, userId: string) {
     const diagnosis = await prisma.diagnosis.findFirst({ where: { id, userId } });
     if (!diagnosis) throw new Error('Diagnóstico não encontrado');
@@ -263,17 +253,21 @@ export class DiagnosisService {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user?.sector) return { insufficient: true, reason: 'Setor não informado no perfil' };
 
-    // Buscar todos os diagnósticos concluídos de usuários do mesmo setor
+    const framework = diagnosis.framework || 'ESG';
+
     const sectorDiagnoses = await prisma.diagnosis.findMany({
       where: {
         status: 'completed',
+        framework,
         user: { sector: user.sector, isActive: true },
       },
       orderBy: { completedAt: 'desc' },
-      include: { user: { select: { id: true } } },
+      include: {
+        user: { select: { id: true } },
+        pillarScores: { include: { pillar: true } },
+      },
     });
 
-    // Deduplica: apenas o mais recente por usuário
     const seen = new Set<string>();
     const unique = sectorDiagnoses.filter(d => {
       if (seen.has(d.user.id)) return false;
@@ -287,15 +281,12 @@ export class DiagnosisService {
 
     const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
     const overalls = unique.map(d => Number(d.overallScore));
-    const envs = unique.map(d => Number(d.environmentalScore));
-    const socs = unique.map(d => Number(d.socialScore));
-    const govs = unique.map(d => Number(d.governanceScore));
 
     const userOverall = Number(diagnosis.overallScore);
     const belowCount = overalls.filter(s => s < userOverall).length;
     const percentile = Math.round((belowCount / unique.length) * 100);
 
-    return {
+    const result: Record<string, unknown> = {
       insufficient: false,
       sector: user.sector,
       companiesCount: unique.length,
@@ -307,24 +298,26 @@ export class DiagnosisService {
       },
       sectorAverage: {
         overall: Math.round(avg(overalls) * 100) / 100,
-        environmental: Math.round(avg(envs) * 100) / 100,
-        social: Math.round(avg(socs) * 100) / 100,
-        governance: Math.round(avg(govs) * 100) / 100,
       },
       percentile,
       sectorBest: Math.max(...overalls),
       sectorWorst: Math.min(...overalls),
     };
+
+    // Add legacy ESG averages when applicable
+    if (framework === 'ESG' || framework === 'ESG_GRI') {
+      const envs = unique.map(d => Number(d.environmentalScore));
+      const socs = unique.map(d => Number(d.socialScore));
+      const govs = unique.map(d => Number(d.governanceScore));
+      (result.sectorAverage as Record<string, number>).environmental = Math.round(avg(envs) * 100) / 100;
+      (result.sectorAverage as Record<string, number>).social = Math.round(avg(socs) * 100) / 100;
+      (result.sectorAverage as Record<string, number>).governance = Math.round(avg(govs) * 100) / 100;
+    }
+
+    return result;
   }
 
-  /**
-   * Completa diagnóstico simplificado (plano free) com scores diretos
-   */
-  async completeSimplified(id: string, userId: string, scores: {
-    environmental: number;
-    social: number;
-    governance: number;
-  }) {
+  async completeSimplified(id: string, userId: string, scores: Record<string, number>) {
     const diagnosis = await prisma.diagnosis.findFirst({
       where: { id, userId },
     });
@@ -337,25 +330,37 @@ export class DiagnosisService {
       throw new Error('Diagnóstico já foi concluído');
     }
 
-    const overall = Math.round(((scores.environmental + scores.social + scores.governance) / 3) * 100) / 100;
+    const scoreValues = Object.values(scores);
+    const overall = scoreValues.length > 0
+      ? Math.round((scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length) * 100) / 100
+      : 0;
+
+    const updateData: Record<string, unknown> = {
+      status: 'completed',
+      completedAt: new Date(),
+      overallScore: new Decimal(overall),
+    };
+
+    // Dual-write legacy columns for ESG
+    if (scores.environmental !== undefined) updateData.environmentalScore = new Decimal(scores.environmental);
+    if (scores.social !== undefined) updateData.socialScore = new Decimal(scores.social);
+    if (scores.governance !== undefined) updateData.governanceScore = new Decimal(scores.governance);
 
     const updatedDiagnosis = await prisma.diagnosis.update({
       where: { id },
-      data: {
-        status: 'completed',
-        completedAt: new Date(),
-        overallScore: new Decimal(overall),
-        environmentalScore: new Decimal(scores.environmental),
-        socialScore: new Decimal(scores.social),
-        governanceScore: new Decimal(scores.governance),
-      },
+      data: updateData,
     });
+
+    const framework = diagnosis.framework || 'ESG';
+    const frameworkLabel = framework === 'GRI' ? 'GRI'
+      : framework === 'ESG_GRI' ? 'ESG+GRI'
+      : 'ESG';
 
     await prisma.activityLog.create({
       data: {
         userId,
         actionType: 'diagnosis_completed',
-        description: `Diagnóstico ESG simplificado concluído com score ${overall}`,
+        description: `Diagnóstico ${frameworkLabel} simplificado concluído com score ${overall}`,
       },
     });
 
@@ -365,32 +370,47 @@ export class DiagnosisService {
     };
   }
 
-  /**
-   * Calcula scores parciais baseado nas respostas atuais (mesmo sem finalizar)
-   */
   async getPartialScores(id: string, userId: string) {
     const diagnosis = await this.getById(id, userId);
+    const framework = diagnosis.framework || 'ESG';
 
-    // Se já está completo, retornar scores oficiais + themeScores
     if (diagnosis.status === 'completed') {
       const overallScore = Number(diagnosis.overallScore);
-      const certification = this.scoringService.getCertificationLevel(overallScore);
-      const themeScores = await this.scoringService.calculateThemeScores(id);
+      const certification = this.scoringService.getCertificationLevel(overallScore, framework);
+      const themeScores = await this.scoringService.calculateThemeScores(id, framework);
 
-      return {
+      const pillarScores = await prisma.diagnosisScore.findMany({
+        where: { diagnosisId: id },
+        include: { pillar: true },
+        orderBy: { pillar: { sortOrder: 'asc' } },
+      });
+
+      const result: Record<string, unknown> = {
         overall: overallScore,
-        environmental: Number(diagnosis.environmentalScore),
-        social: Number(diagnosis.socialScore),
-        governance: Number(diagnosis.governanceScore),
         isPartial: false,
         certification,
         themeScores,
+        pillarScores: pillarScores.map(ps => ({
+          code: ps.pillar.code,
+          name: ps.pillar.name,
+          color: ps.pillar.color,
+          score: Number(ps.score),
+        })),
       };
+
+      // Legacy fields
+      result.environmental = Number(diagnosis.environmentalScore);
+      result.social = Number(diagnosis.socialScore);
+      result.governance = Number(diagnosis.governanceScore);
+
+      return result;
     }
 
-    // Calcular scores parciais baseado nas respostas existentes
     const partialScores = await this.scoringService.calculatePartialScores(id);
-    const certification = this.scoringService.getCertificationLevel(partialScores.overall);
+    const certification = this.scoringService.getCertificationLevel(
+      partialScores.overall as number,
+      framework
+    );
 
     return {
       ...partialScores,

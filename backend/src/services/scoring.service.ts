@@ -1,12 +1,14 @@
 import prisma from '../config/database';
 import { Decimal } from '@prisma/client/runtime/library';
 
+const LEGACY_PILLAR_MAP: Record<string, string> = {
+  E: 'environmentalScore',
+  S: 'socialScore',
+  G: 'governanceScore',
+};
+
 export class ScoringService {
-  /**
-   * Calcula o score de um pilar
-   */
   async calculatePillarScore(diagnosisId: string, pillarCode: string): Promise<number> {
-    // Buscar pillar
     const pillar = await prisma.pillar.findUnique({
       where: { code: pillarCode },
       include: {
@@ -26,7 +28,6 @@ export class ScoringService {
       throw new Error('Pilar não encontrado');
     }
 
-    // Obter todas as questões do pilar
     const assessmentItemIds: number[] = [];
     pillar.themes.forEach((theme) => {
       theme.criteria.forEach((criteria) => {
@@ -36,7 +37,6 @@ export class ScoringService {
       });
     });
 
-    // Buscar respostas do diagnóstico para este pilar
     const responses = await prisma.response.findMany({
       where: {
         diagnosisId,
@@ -48,12 +48,10 @@ export class ScoringService {
       return 0;
     }
 
-    // Calcular score usando apenas evaluationValue (1-5)
     let totalScore = 0;
     let validQuestions = 0;
 
     responses.forEach((response) => {
-      // Ignorar "Não se aplica" (evaluationValue = 0)
       if (response.evaluation === 'Não se aplica' || response.evaluationValue === 0) {
         return;
       }
@@ -66,45 +64,79 @@ export class ScoringService {
       return 0;
     }
 
-    // Score máximo possível = validQuestions * 5 (nota máxima)
     const maxPossible = validQuestions * 5;
     const score = (totalScore / maxPossible) * 100;
 
-    return Math.round(score * 100) / 100; // 2 casas decimais
+    return Math.round(score * 100) / 100;
   }
 
-  /**
-   * Calcula todos os scores de um diagnóstico
-   */
+  private async getPillarsForFramework(framework: string) {
+    if (framework === 'ESG_GRI') {
+      return prisma.pillar.findMany({
+        where: { framework: { in: ['ESG', 'GRI'] } },
+        orderBy: { sortOrder: 'asc' },
+      });
+    }
+    return prisma.pillar.findMany({
+      where: { framework: framework === 'GRI' ? 'GRI' : 'ESG' },
+      orderBy: { sortOrder: 'asc' },
+    });
+  }
+
   async calculateAllScores(diagnosisId: string) {
-    const environmentalScore = await this.calculatePillarScore(diagnosisId, 'E');
-    const socialScore = await this.calculatePillarScore(diagnosisId, 'S');
-    const governanceScore = await this.calculatePillarScore(diagnosisId, 'G');
+    const diagnosis = await prisma.diagnosis.findUnique({ where: { id: diagnosisId } });
+    if (!diagnosis) throw new Error('Diagnóstico não encontrado');
 
-    const overallScore = (environmentalScore + socialScore + governanceScore) / 3;
+    const framework = diagnosis.framework || 'ESG';
+    const pillars = await this.getPillarsForFramework(framework);
 
-    // Atualizar diagnóstico
+    const pillarScores: Record<string, number> = {};
+    for (const pillar of pillars) {
+      const score = await this.calculatePillarScore(diagnosisId, pillar.code);
+      pillarScores[pillar.code] = score;
+
+      await prisma.diagnosisScore.upsert({
+        where: {
+          diagnosisId_pillarId: { diagnosisId, pillarId: pillar.id },
+        },
+        update: { score: new Decimal(score) },
+        create: {
+          diagnosisId,
+          pillarId: pillar.id,
+          score: new Decimal(score),
+        },
+      });
+    }
+
+    const scores = Object.values(pillarScores);
+    const overallScore = scores.length > 0
+      ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100) / 100
+      : 0;
+
+    // Dual-write: legacy columns for ESG/ESG_GRI
+    const legacyData: Record<string, Decimal> = {
+      overallScore: new Decimal(overallScore),
+    };
+    if (framework === 'ESG' || framework === 'ESG_GRI') {
+      for (const [code, field] of Object.entries(LEGACY_PILLAR_MAP)) {
+        if (pillarScores[code] !== undefined) {
+          legacyData[field] = new Decimal(pillarScores[code]);
+        }
+      }
+    }
+
     await prisma.diagnosis.update({
       where: { id: diagnosisId },
-      data: {
-        environmentalScore: new Decimal(environmentalScore),
-        socialScore: new Decimal(socialScore),
-        governanceScore: new Decimal(governanceScore),
-        overallScore: new Decimal(Math.round(overallScore * 100) / 100),
-      },
+      data: legacyData,
     });
 
-    return {
-      environmental: environmentalScore,
-      social: socialScore,
-      governance: governanceScore,
-      overall: Math.round(overallScore * 100) / 100,
-    };
+    const result: Record<string, number> = { overall: overallScore };
+    for (const pillar of pillars) {
+      result[pillar.code] = pillarScores[pillar.code];
+    }
+    return result;
   }
 
-  /**
-   * Classifica score por nível
-   */
   getScoreLevel(score: number): {
     level: string;
     label: string;
@@ -125,10 +157,7 @@ export class ScoringService {
     return { level: 'excellent', label: 'Excelente', color: '#22C55E' };
   }
 
-  /**
-   * Retorna o nível de certificação ESG baseado na pontuação
-   */
-  getCertificationLevel(score: number): {
+  getCertificationLevel(score: number, framework: string = 'ESG'): {
     level: 'bronze' | 'silver' | 'gold';
     name: string;
     title: string;
@@ -137,11 +166,15 @@ export class ScoringService {
     scoreRange: string;
     characteristics: string[];
   } {
+    const frameworkLabel = framework === 'GRI' ? 'GRI'
+      : framework === 'ESG_GRI' ? 'ESG+GRI'
+      : 'ESG';
+
     if (score < 40) {
       return {
         level: 'bronze',
-        name: 'Compromisso ESG',
-        title: 'Fundamentos ESG',
+        name: `Compromisso ${frameworkLabel}`,
+        title: `Fundamentos ${frameworkLabel}`,
         message: 'Quem dá o primeiro passo na transformação sustentável.',
         color: '#CD7F32',
         scoreRange: '0-39',
@@ -157,31 +190,31 @@ export class ScoringService {
     if (score < 70) {
       return {
         level: 'silver',
-        name: 'Integração ESG',
-        title: 'Gestão ESG',
+        name: `Integração ${frameworkLabel}`,
+        title: `Gestão ${frameworkLabel}`,
         message: 'Quem transforma intenções em práticas consistentes.',
         color: '#C0C0C0',
         scoreRange: '40-69',
         characteristics: [
-          'Gestão integrada das dimensões ESG',
+          `Gestão integrada das dimensões ${frameworkLabel}`,
           'Políticas estruturadas e metas claras para reduzir impactos',
-          'Indicadores ESG integrados ao planejamento estratégico',
+          `Indicadores ${frameworkLabel} integrados ao planejamento estratégico`,
           'Práticas de governança ativas, com transparência e compliance',
-          'Comunicação interna e externa sobre ações e resultados ESG'
+          `Comunicação interna e externa sobre ações e resultados ${frameworkLabel}`
         ]
       };
     }
 
     return {
       level: 'gold',
-      name: 'Liderança ESG',
-      title: 'Excelência ESG',
+      name: `Liderança ${frameworkLabel}`,
+      title: `Excelência ${frameworkLabel}`,
       message: 'Quem inspira o mercado e multiplica o impacto positivo.',
       color: '#FFD700',
       scoreRange: '70-100',
       characteristics: [
-        'Excelência em ESG com impacto positivo em todo ecossistema',
-        'Estratégia ESG integrada à governança e cultura organizacional',
+        `Excelência em ${frameworkLabel} com impacto positivo em todo ecossistema`,
+        `Estratégia ${frameworkLabel} integrada à governança e cultura organizacional`,
         'Relatórios públicos seguindo padrões reconhecidos (GRI, SASB, IFRS)',
         'Engajamento ativo com comunidades, fornecedores e stakeholders',
         'Referência setorial em inovação e impacto positivo',
@@ -190,45 +223,73 @@ export class ScoringService {
     };
   }
 
-  /**
-   * Calcula scores parciais baseado nas respostas atuais (mesmo sem finalizar)
-   */
   async calculatePartialScores(diagnosisId: string) {
-    const environmentalScore = await this.calculatePillarScore(diagnosisId, 'E');
-    const socialScore = await this.calculatePillarScore(diagnosisId, 'S');
-    const governanceScore = await this.calculatePillarScore(diagnosisId, 'G');
+    const diagnosis = await prisma.diagnosis.findUnique({ where: { id: diagnosisId } });
+    if (!diagnosis) throw new Error('Diagnóstico não encontrado');
 
-    const overallScore = (environmentalScore + socialScore + governanceScore) / 3;
+    const framework = diagnosis.framework || 'ESG';
+    const pillars = await this.getPillarsForFramework(framework);
 
-    // Contar respostas e total de questões
+    const pillarScores: Record<string, number> = {};
+    for (const pillar of pillars) {
+      pillarScores[pillar.code] = await this.calculatePillarScore(diagnosisId, pillar.code);
+    }
+
+    const scores = Object.values(pillarScores);
+    const overallScore = scores.length > 0
+      ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100) / 100
+      : 0;
+
     const answeredCount = await prisma.response.count({
       where: { diagnosisId },
     });
 
-    const totalCount = await prisma.assessmentItem.count();
+    const pillarIds = pillars.map(p => p.id);
+    const totalCount = await prisma.assessmentItem.count({
+      where: {
+        criteria: {
+          theme: {
+            pillarId: { in: pillarIds },
+          },
+        },
+      },
+    });
 
-    // Scores por tema para gráficos detalhados
-    const themeScores = await this.calculateThemeScores(diagnosisId);
+    const themeScores = await this.calculateThemeScores(diagnosisId, framework);
 
-    return {
-      environmental: environmentalScore,
-      social: socialScore,
-      governance: governanceScore,
-      overall: Math.round(overallScore * 100) / 100,
+    const result: Record<string, unknown> = {
+      overall: overallScore,
       answeredCount,
       totalCount,
       themeScores,
+      pillarScores: pillars.map(p => ({
+        code: p.code,
+        name: p.name,
+        color: p.color,
+        score: pillarScores[p.code],
+      })),
     };
+
+    // Legacy fields for backward compat
+    if (framework === 'ESG' || framework === 'ESG_GRI') {
+      result.environmental = pillarScores['E'] ?? 0;
+      result.social = pillarScores['S'] ?? 0;
+      result.governance = pillarScores['G'] ?? 0;
+    }
+
+    return result;
   }
 
-  /**
-   * Simula impacto de cada ação do plano no score
-   * Para cada ação (que corresponde a uma resposta com evaluationValue=1),
-   * calcula o que aconteceria se a resposta mudasse de 1→5
-   */
   async simulateActionImpact(diagnosisId: string) {
-    // 1. Buscar todos os pilares com hierarquia completa
+    const diagnosis = await prisma.diagnosis.findUnique({ where: { id: diagnosisId } });
+    if (!diagnosis) throw new Error('Diagnóstico não encontrado');
+
+    const framework = diagnosis.framework || 'ESG';
+    const frameworkPillars = await this.getPillarsForFramework(framework);
+    const pillarCodes: Set<string> = new Set(frameworkPillars.map(p => p.code));
+
     const pillars = await prisma.pillar.findMany({
+      where: { code: { in: [...pillarCodes] } },
       include: {
         themes: {
           include: {
@@ -242,12 +303,10 @@ export class ScoringService {
       },
     });
 
-    // 2. Buscar todas as respostas do diagnóstico
     const responses = await prisma.response.findMany({
       where: { diagnosisId },
     });
 
-    // 3. Construir mapa assessmentItemId → pillarCode
     const itemToPillar: Record<number, string> = {};
     const itemToQuestion: Record<number, string> = {};
     for (const pillar of pillars) {
@@ -261,12 +320,10 @@ export class ScoringService {
       }
     }
 
-    // 4. Calcular totais atuais por pilar
-    const pillarTotals: Record<string, { totalScore: number; validQuestions: number }> = {
-      E: { totalScore: 0, validQuestions: 0 },
-      S: { totalScore: 0, validQuestions: 0 },
-      G: { totalScore: 0, validQuestions: 0 },
-    };
+    const pillarTotals: Record<string, { totalScore: number; validQuestions: number }> = {};
+    for (const code of pillarCodes) {
+      pillarTotals[code] = { totalScore: 0, validQuestions: 0 };
+    }
 
     for (const resp of responses) {
       if (resp.evaluation === 'Não se aplica' || resp.evaluationValue === 0) continue;
@@ -277,21 +334,22 @@ export class ScoringService {
       }
     }
 
-    // Calcular scores atuais
     const currentScores: Record<string, number> = {};
-    for (const code of ['E', 'S', 'G']) {
+    for (const code of pillarCodes) {
       const { totalScore, validQuestions } = pillarTotals[code];
       currentScores[code] = validQuestions > 0 ? (totalScore / (validQuestions * 5)) * 100 : 0;
     }
-    const currentOverall = (currentScores['E'] + currentScores['S'] + currentScores['G']) / 3;
-    const currentLevel = this.getCertificationLevel(currentOverall).level;
 
-    // 5. Buscar ações do diagnóstico
+    const allScoreValues = Object.values(currentScores);
+    const currentOverall = allScoreValues.length > 0
+      ? allScoreValues.reduce((a, b) => a + b, 0) / allScoreValues.length
+      : 0;
+    const currentLevel = this.getCertificationLevel(currentOverall, framework).level;
+
     const actions = await prisma.actionPlan.findMany({
       where: { diagnosisId },
     });
 
-    // 6. Construir lista de questions para matching flexível
     const questionItems: Array<{ question: string; id: number; pillarCode: string }> = [];
     for (const [idStr, question] of Object.entries(itemToQuestion)) {
       const id = Number(idStr);
@@ -299,7 +357,6 @@ export class ScoringService {
       questionItems.push({ question, id, pillarCode });
     }
 
-    // 7. Simular impacto de cada ação
     const simulations: Array<{
       actionId: number;
       pillarCode: string;
@@ -311,9 +368,7 @@ export class ScoringService {
     }> = [];
 
     for (const action of actions) {
-      // Limpar prefixo "N. Implementar: " e trailing "..." do título
       const cleanTitle = action.title.replace(/^\d+\.\s*(Implementar:\s*)?/, '').replace(/\.{3}$/, '');
-      // Match flexível: buscar question que começa com o cleanTitle ou é exatamente igual
       const match = questionItems.find(q => q.question === cleanTitle || q.question === action.title || q.question.startsWith(cleanTitle));
       if (!match) continue;
 
@@ -321,15 +376,14 @@ export class ScoringService {
       const { totalScore, validQuestions } = pillarTotals[pillarCode];
       if (validQuestions === 0) continue;
 
-      // Simular: mudar resposta de 1→5 (+4 no total)
       const simulatedPillarScore = ((totalScore + 4) / (validQuestions * 5)) * 100;
       const scoreDelta = simulatedPillarScore - currentScores[pillarCode];
 
-      // Recalcular overall com pilar simulado
       const scores = { ...currentScores };
       scores[pillarCode] = simulatedPillarScore;
-      const simulatedOverall = (scores['E'] + scores['S'] + scores['G']) / 3;
-      const simulatedLevel = this.getCertificationLevel(simulatedOverall).level;
+      const allSimScores = Object.values(scores);
+      const simulatedOverall = allSimScores.reduce((a, b) => a + b, 0) / allSimScores.length;
+      const simulatedLevel = this.getCertificationLevel(simulatedOverall, framework).level;
 
       simulations.push({
         actionId: action.id,
@@ -345,11 +399,15 @@ export class ScoringService {
     return simulations;
   }
 
-  /**
-   * Calcula scores por tema para gráficos detalhados
-   */
-  async calculateThemeScores(diagnosisId: string) {
+  async calculateThemeScores(diagnosisId: string, framework?: string) {
+    const whereClause = framework
+      ? { framework: framework === 'ESG_GRI' ? undefined : framework }
+      : {};
+
     const pillars = await prisma.pillar.findMany({
+      where: framework === 'ESG_GRI'
+        ? { framework: { in: ['ESG', 'GRI'] } }
+        : whereClause,
       include: {
         themes: {
           include: {
@@ -361,6 +419,7 @@ export class ScoringService {
           },
         },
       },
+      orderBy: { sortOrder: 'asc' },
     });
 
     const results: Array<{

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { pillarService, AssessmentItem } from '../services/pillar.service';
+import { pillarService, AssessmentItem, Pillar } from '../services/pillar.service';
 import { responseService, ResponseData } from '../services/response.service';
 import { diagnosisService } from '../services/diagnosis.service';
 import { Card } from '../components/common/Card';
@@ -15,7 +15,6 @@ interface Response {
   };
 }
 
-// Escala de maturidade ESG (0-5)
 const evaluationOptions = [
   { value: 'Não se aplica', label: 'N/A', fullLabel: 'Não se aplica', maturity: 'N/A', score: 0, counted: false },
   { value: 'Não iniciado', label: '1', fullLabel: 'Não iniciado', maturity: 'ELEMENTAR', score: 1, counted: true },
@@ -25,7 +24,26 @@ const evaluationOptions = [
   { value: 'Totalmente implementado', label: '5', fullLabel: 'Totalmente implementado', maturity: 'TRANSFORMADOR', score: 5, counted: true },
 ];
 
-// Componente de progresso circular
+const PILLAR_GRADIENTS: Record<string, string> = {
+  E: 'linear-gradient(135deg, #3D6B2E 0%, #7B9965 100%)',
+  S: 'linear-gradient(135deg, #6B2A1E 0%, #924131 100%)',
+  G: 'linear-gradient(135deg, #8B7332 0%, #b8963a 100%)',
+  'GRI-U': 'linear-gradient(135deg, #3B4AA0 0%, #5B6ABF 100%)',
+  'GRI-E': 'linear-gradient(135deg, #1B5E3A 0%, #2E7D4F 100%)',
+  'GRI-S': 'linear-gradient(135deg, #8B1A1A 0%, #C0392B 100%)',
+  'GRI-EC': 'linear-gradient(135deg, #A08010 0%, #D4A017 100%)',
+};
+
+const PILLAR_BG: Record<string, { bg: string; border: string; text: string }> = {
+  E: { bg: '#f0f7ed', border: '#7B9965', text: '#3D6B2E' },
+  S: { bg: '#fdf2f0', border: '#924131', text: '#6B2A1E' },
+  G: { bg: '#faf6ee', border: '#b8963a', text: '#8B7332' },
+  'GRI-U': { bg: '#eef0fa', border: '#5B6ABF', text: '#3B4AA0' },
+  'GRI-E': { bg: '#e8f5ed', border: '#2E7D4F', text: '#1B5E3A' },
+  'GRI-S': { bg: '#fbe8e8', border: '#C0392B', text: '#8B1A1A' },
+  'GRI-EC': { bg: '#faf5e6', border: '#D4A017', text: '#A08010' },
+};
+
 function CircularProgress({ value, size = 60, strokeWidth = 6, color = '#7B9965' }: { value: number; size?: number; strokeWidth?: number; color?: string }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -33,26 +51,9 @@ function CircularProgress({ value, size = 60, strokeWidth = 6, color = '#7B9965'
 
   return (
     <svg width={size} height={size} className="transform -rotate-90">
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        stroke="#e5e7eb"
-        strokeWidth={strokeWidth}
-        fill="none"
-      />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        stroke={color}
-        strokeWidth={strokeWidth}
-        fill="none"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        className="transition-all duration-500"
-      />
+      <circle cx={size / 2} cy={size / 2} r={radius} stroke="#e5e7eb" strokeWidth={strokeWidth} fill="none" />
+      <circle cx={size / 2} cy={size / 2} r={radius} stroke={color} strokeWidth={strokeWidth} fill="none"
+        strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className="transition-all duration-500" />
     </svg>
   );
 }
@@ -67,6 +68,7 @@ export default function Questionnaire() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showObservations, setShowObservations] = useState(false);
+  const [framework, setFramework] = useState('ESG');
 
   useEffect(() => {
     loadQuestionnaire();
@@ -75,10 +77,17 @@ export default function Questionnaire() {
   async function loadQuestionnaire() {
     try {
       setLoading(true);
-      const allQuestions = await pillarService.getAllQuestions();
+
+      let fw = 'ESG';
+      if (diagnosisId) {
+        const diagnosis = await diagnosisService.getById(diagnosisId);
+        fw = diagnosis.framework || 'ESG';
+        setFramework(fw);
+      }
+
+      const allQuestions = await pillarService.getAllQuestions(fw);
       setQuestions(allQuestions);
 
-      // Load existing responses
       if (diagnosisId) {
         const existingResponses = await responseService.getByDiagnosisId(diagnosisId);
         const responsesMap: Response = {};
@@ -90,15 +99,13 @@ export default function Questionnaire() {
         });
         setResponses(responsesMap);
 
-        // Navigate to first unanswered question
         if (existingResponses.length > 0) {
           const firstUnansweredIndex = allQuestions.findIndex(
-            (q) => !responsesMap[q.id]?.evaluation
+            (q: AssessmentItem) => !responsesMap[q.id]?.evaluation
           );
           if (firstUnansweredIndex !== -1) {
             setCurrentIndex(firstUnansweredIndex);
           } else {
-            // All answered - go to last question
             setCurrentIndex(allQuestions.length - 1);
           }
         }
@@ -174,7 +181,6 @@ export default function Questionnaire() {
 
   function updateResponse(field: keyof ResponseData, value: any) {
     if (!currentQuestion) return;
-
     setResponses({
       ...responses,
       [currentQuestion.id]: {
@@ -195,18 +201,26 @@ export default function Questionnaire() {
   }
 
   const currentQuestion = questions[currentIndex];
-
   const pillarCode = currentQuestion?.criteria.theme.pillar.code || '';
+  const pillarName = currentQuestion?.criteria.theme.pillar.name || '';
+  const pillarColor = currentQuestion?.criteria.theme.pillar.color || '#7B9965';
   const themeName = currentQuestion?.criteria.theme.name || '';
   const criteriaName = currentQuestion?.criteria.name || '';
 
+  // Dynamic pillar progress
+  const uniquePillars: Pillar[] = [];
+  const seenCodes = new Set<string>();
+  questions.forEach((q) => {
+    const p = q.criteria.theme.pillar;
+    if (!seenCodes.has(p.code)) {
+      seenCodes.add(p.code);
+      uniquePillars.push(p);
+    }
+  });
+  uniquePillars.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
-  const pillarProgress: Record<string, { answered: number; total: number }> = {
-    E: { answered: 0, total: 0 },
-    S: { answered: 0, total: 0 },
-    G: { answered: 0, total: 0 }
-  };
-
+  const pillarProgress: Record<string, { answered: number; total: number }> = {};
+  uniquePillars.forEach(p => { pillarProgress[p.code] = { answered: 0, total: 0 }; });
   questions.forEach((q) => {
     const code = q.criteria.theme.pillar.code;
     if (pillarProgress[code]) {
@@ -217,8 +231,8 @@ export default function Questionnaire() {
     }
   });
 
-  const totalAnswered = pillarProgress.E.answered + pillarProgress.S.answered + pillarProgress.G.answered;
-  const totalQuestions = pillarProgress.E.total + pillarProgress.S.total + pillarProgress.G.total;
+  const totalAnswered = Object.values(pillarProgress).reduce((s, p) => s + p.answered, 0);
+  const totalQuestions = Object.values(pillarProgress).reduce((s, p) => s + p.total, 0);
   const overallProgress = totalQuestions > 0 ? Math.round((totalAnswered / totalQuestions) * 100) : 0;
 
   const questionsOfCurrentPillar = questions.filter(
@@ -227,6 +241,10 @@ export default function Questionnaire() {
   const currentQuestionIndexInPillar = questionsOfCurrentPillar.findIndex(
     (q) => q.id === currentQuestion?.id
   );
+
+  const frameworkLabel = framework === 'GRI' ? 'GRI'
+    : framework === 'ESG_GRI' ? 'ESG+GRI'
+    : 'ESG';
 
   if (loading) {
     return (
@@ -247,15 +265,9 @@ export default function Questionnaire() {
             <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="#F59E0B" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Nenhuma questão encontrada
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Não foi possível carregar as questões do diagnóstico.
-            </p>
-            <Button onClick={() => navigate('/dashboard')}>
-              Voltar ao Dashboard
-            </Button>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Nenhuma questão encontrada</h2>
+            <p className="text-gray-600 mb-6">Não foi possível carregar as questões do diagnóstico.</p>
+            <Button onClick={() => navigate('/dashboard')}>Voltar ao Dashboard</Button>
           </div>
         </Card>
       </div>
@@ -263,6 +275,7 @@ export default function Questionnaire() {
   }
 
   const currentResponse = responses[currentQuestion.id] || {};
+  const gradient = PILLAR_GRADIENTS[pillarCode] || `linear-gradient(135deg, ${pillarColor} 0%, ${pillarColor}88 100%)`;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
@@ -271,59 +284,39 @@ export default function Questionnaire() {
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
+              <button onClick={() => navigate('/dashboard')} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </button>
               <div>
-                <h1 className="text-lg font-bold" style={{ color: '#152F27' }}>Diagnóstico ESG</h1>
+                <h1 className="text-lg font-bold" style={{ color: '#152F27' }}>Diagnóstico {frameworkLabel}</h1>
                 <p className="text-xs text-gray-500">
-                  {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'} — Questão {currentQuestionIndexInPillar + 1} de {questionsOfCurrentPillar.length}
+                  {pillarName} — Questão {currentQuestionIndexInPillar + 1} de {questionsOfCurrentPillar.length}
                 </p>
               </div>
             </div>
-
-            {/* Progress bar geral no header */}
             <div className="flex items-center gap-4">
               <div className="hidden md:flex items-center gap-2">
                 <span className="text-sm font-semibold" style={{ color: '#666' }}>{overallProgress}% concluido</span>
                 <div className="w-32 h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#E5E7EB' }}>
-                  <div
-                    className="h-full transition-all duration-300"
-                    style={{ width: `${overallProgress}%`, background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-                  />
+                  <div className="h-full transition-all duration-300" style={{ width: `${overallProgress}%`, background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }} />
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={async () => {
-                    if (currentQuestion && responses[currentQuestion.id]?.evaluation) {
-                      try {
-                        setSaving(true);
-                        await responseService.upsert(diagnosisId!, {
-                          assessmentItemId: currentQuestion.id,
-                          evaluation: responses[currentQuestion.id].evaluation,
-                          observations: responses[currentQuestion.id].observations,
-                        });
-                      } catch {} finally { setSaving(false); }
-                    }
-                  }}
-                  className="text-sm"
-                >
-                  Salvar
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/dashboard')}
-                  className="text-sm"
-                >
-                  Sair
-                </Button>
+                <Button variant="outline" onClick={async () => {
+                  if (currentQuestion && responses[currentQuestion.id]?.evaluation) {
+                    try {
+                      setSaving(true);
+                      await responseService.upsert(diagnosisId!, {
+                        assessmentItemId: currentQuestion.id,
+                        evaluation: responses[currentQuestion.id].evaluation,
+                        observations: responses[currentQuestion.id].observations,
+                      });
+                    } catch {} finally { setSaving(false); }
+                  }
+                }} className="text-sm">Salvar</Button>
+                <Button variant="outline" onClick={() => navigate('/dashboard')} className="text-sm">Sair</Button>
               </div>
             </div>
           </div>
@@ -332,134 +325,60 @@ export default function Questionnaire() {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex gap-6">
-          {/* Sidebar - Pilares */}
+          {/* Sidebar - Pilares dinâmicos */}
           <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white rounded-2xl shadow-sm p-4 sticky top-24">
               <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-4">Progresso</h3>
-
               <div className="space-y-3">
-                {/* Ambiental */}
-                <button
-                  onClick={() => navigateToPillar('E')}
-                  className="w-full p-3 rounded-xl transition-all shadow-sm"
-                  style={
-                    pillarCode === 'E'
-                      ? { background: 'linear-gradient(135deg, #3D6B2E 0%, #7B9965 100%)', color: 'white' }
-                      : { backgroundColor: '#f0f7ed', borderLeft: '3px solid #7B9965' }
-                  }
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <CircularProgress
-                        value={pillarProgress.E.total > 0 ? (pillarProgress.E.answered / pillarProgress.E.total) * 100 : 0}
-                        size={44}
-                        strokeWidth={4}
-                        color={pillarCode === 'E' ? '#fff' : '#7B9965'}
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'E' ? '#fff' : '#7B9965' }}>
-                        {pillarProgress.E.answered}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'E' ? '#fff' : '#3D6B2E' }}>Ambiental</p>
-                      <p className="text-xs" style={{ color: pillarCode === 'E' ? 'rgba(255,255,255,0.7)' : '#7B9965' }}>
-                        {pillarProgress.E.answered}/{pillarProgress.E.total} respostas
-                      </p>
-                    </div>
-                  </div>
-                </button>
+                {uniquePillars.map((p) => {
+                  const prog = pillarProgress[p.code] || { answered: 0, total: 0 };
+                  const isActive = pillarCode === p.code;
+                  const pGradient = PILLAR_GRADIENTS[p.code] || `linear-gradient(135deg, ${p.color || '#666'} 0%, ${p.color || '#666'}88 100%)`;
+                  const pBg = PILLAR_BG[p.code] || { bg: '#f5f5f5', border: p.color || '#666', text: '#333' };
 
-                {/* Social */}
-                <button
-                  onClick={() => navigateToPillar('S')}
-                  className="w-full p-3 rounded-xl transition-all shadow-sm"
-                  style={
-                    pillarCode === 'S'
-                      ? { background: 'linear-gradient(135deg, #6B2A1E 0%, #924131 100%)', color: 'white' }
-                      : { backgroundColor: '#fdf2f0', borderLeft: '3px solid #924131' }
-                  }
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <CircularProgress
-                        value={pillarProgress.S.total > 0 ? (pillarProgress.S.answered / pillarProgress.S.total) * 100 : 0}
-                        size={44}
-                        strokeWidth={4}
-                        color={pillarCode === 'S' ? '#fff' : '#924131'}
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'S' ? '#fff' : '#924131' }}>
-                        {pillarProgress.S.answered}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'S' ? '#fff' : '#6B2A1E' }}>Social</p>
-                      <p className="text-xs" style={{ color: pillarCode === 'S' ? 'rgba(255,255,255,0.7)' : '#924131' }}>
-                        {pillarProgress.S.answered}/{pillarProgress.S.total} respostas
-                      </p>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Governança */}
-                <button
-                  onClick={() => navigateToPillar('G')}
-                  className="w-full p-3 rounded-xl transition-all shadow-sm"
-                  style={
-                    pillarCode === 'G'
-                      ? { background: 'linear-gradient(135deg, #8B7332 0%, #b8963a 100%)', color: 'white' }
-                      : { backgroundColor: '#faf6ee', borderLeft: '3px solid #b8963a' }
-                  }
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <CircularProgress
-                        value={pillarProgress.G.total > 0 ? (pillarProgress.G.answered / pillarProgress.G.total) * 100 : 0}
-                        size={44}
-                        strokeWidth={4}
-                        color={pillarCode === 'G' ? '#fff' : '#b8963a'}
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#b8963a' }}>
-                        {pillarProgress.G.answered}
-                      </span>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="text-sm font-bold" style={{ color: pillarCode === 'G' ? '#fff' : '#8B7332' }}>Governança</p>
-                      <p className="text-xs" style={{ color: pillarCode === 'G' ? 'rgba(255,255,255,0.7)' : '#b8963a' }}>
-                        {pillarProgress.G.answered}/{pillarProgress.G.total} respostas
-                      </p>
-                    </div>
-                  </div>
-                </button>
+                  return (
+                    <button
+                      key={p.code}
+                      onClick={() => navigateToPillar(p.code)}
+                      className="w-full p-3 rounded-xl transition-all shadow-sm"
+                      style={isActive
+                        ? { background: pGradient, color: 'white' }
+                        : { backgroundColor: pBg.bg, borderLeft: `3px solid ${pBg.border}` }
+                      }
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <CircularProgress
+                            value={prog.total > 0 ? (prog.answered / prog.total) * 100 : 0}
+                            size={44} strokeWidth={4}
+                            color={isActive ? '#fff' : pBg.border}
+                          />
+                          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold"
+                            style={{ color: isActive ? '#fff' : pBg.border }}>
+                            {prog.answered}
+                          </span>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="text-sm font-bold" style={{ color: isActive ? '#fff' : pBg.text }}>{p.name}</p>
+                          <p className="text-xs" style={{ color: isActive ? 'rgba(255,255,255,0.7)' : pBg.border }}>
+                            {prog.answered}/{prog.total} respostas
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Legenda de maturidade */}
               <div className="mt-6 pt-4 border-t">
                 <h4 className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: '#666' }}>Escala de Maturidade</h4>
                 <div className="space-y-1.5 text-xs" style={{ color: '#666' }}>
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#E5E7EB', color: '#666' }}>0</span>
-                    <span>Não se aplica</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: '#924131' }}>1</span>
-                    <span>Não iniciado</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>2</span>
-                    <span>Planejado</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#EFD4A8', color: '#B8965A' }}>3</span>
-                    <span>Em andamento</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#D4E8C7', color: '#7B9965' }}>4</span>
-                    <span>Implementado parcialmente</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#C5E1B5', color: '#152F27' }}>5</span>
-                    <span>Totalmente implementado</span>
-                  </div>
+                  <div className="flex items-center gap-2"><span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#E5E7EB', color: '#666' }}>0</span><span>Não se aplica</span></div>
+                  <div className="flex items-center gap-2"><span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEE2E2', color: '#924131' }}>1</span><span>Não iniciado</span></div>
+                  <div className="flex items-center gap-2"><span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}>2</span><span>Planejado</span></div>
+                  <div className="flex items-center gap-2"><span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#EFD4A8', color: '#B8965A' }}>3</span><span>Em andamento</span></div>
+                  <div className="flex items-center gap-2"><span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#D4E8C7', color: '#7B9965' }}>4</span><span>Implementado parcialmente</span></div>
+                  <div className="flex items-center gap-2"><span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ backgroundColor: '#C5E1B5', color: '#152F27' }}>5</span><span>Totalmente implementado</span></div>
                 </div>
               </div>
             </div>
@@ -467,14 +386,17 @@ export default function Questionnaire() {
 
           {/* Area principal */}
           <div className="flex-1 max-w-3xl">
-            {/* Card da questao */}
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              {/* Header do card com cor do pilar */}
-              <div className="px-6 py-4" style={{ background: pillarCode === 'E' ? 'linear-gradient(135deg, #3D6B2E 0%, #7B9965 100%)' : pillarCode === 'S' ? 'linear-gradient(135deg, #6B2A1E 0%, #924131 100%)' : 'linear-gradient(135deg, #8B7332 0%, #b8963a 100%)' }}>
+              <div className="px-6 py-4" style={{ background: gradient }}>
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-white font-bold text-lg">
-                    {pillarCode === 'E' ? 'Ambiental' : pillarCode === 'S' ? 'Social' : 'Governança'}
-                  </h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-white font-bold text-lg">{pillarName}</h2>
+                    {framework === 'ESG_GRI' && currentQuestion.frameworkTag && (
+                      <span className="bg-white/20 backdrop-blur px-2 py-0.5 rounded text-white text-xs font-bold">
+                        [{currentQuestion.frameworkTag === 'ESG_GRI' ? 'ESG+GRI' : currentQuestion.frameworkTag}]
+                      </span>
+                    )}
+                  </div>
                   <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-white text-sm font-medium">
                     {currentQuestionIndexInPillar + 1} / {questionsOfCurrentPillar.length}
                   </span>
@@ -482,26 +404,27 @@ export default function Questionnaire() {
                 <div className="text-white/90 text-sm">
                   <span className="font-semibold">{themeName}</span>
                 </div>
-                <div className="mt-1 px-3 py-1.5 rounded-lg bg-white/15 inline-block">
-                  <span className="text-white text-xs font-bold uppercase tracking-wide">
+                <div className="mt-1 flex items-center gap-2">
+                  <span className="px-3 py-1.5 rounded-lg bg-white/15 text-white text-xs font-bold uppercase tracking-wide">
                     Critério: {criteriaName}
                   </span>
+                  {currentQuestion.griCode && (
+                    <span className="px-2 py-1 rounded bg-white/25 text-white text-xs font-bold">
+                      GRI {currentQuestion.griCode}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              {/* Corpo do card */}
               <div className="p-6">
-                {/* Pergunta */}
                 <h3 className="text-xl font-semibold text-gray-800 leading-relaxed mb-8">
                   {currentQuestion.question}
                 </h3>
 
-                {/* Opcoes de avaliacao - Dropdown */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-600 mb-3">
                     Qual o nível de maturidade desta prática na sua empresa?
                   </label>
-
                   <select
                     value={currentResponse.evaluation || ''}
                     onChange={(e) => updateResponse('evaluation', e.target.value)}
@@ -519,9 +442,7 @@ export default function Questionnaire() {
                   >
                     <option value="" disabled>Selecione o nível de maturidade...</option>
                     {evaluationOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.score} - {option.fullLabel}
-                      </option>
+                      <option key={option.value} value={option.value}>{option.score} - {option.fullLabel}</option>
                     ))}
                   </select>
 
@@ -553,75 +474,49 @@ export default function Questionnaire() {
                           {currentResponse.evaluation}
                         </span>
                         {currentResponse.evaluation === 'Não se aplica' && (
-                          <span className="text-xs text-gray-500 italic">
-                            - Não será contabilizada no cálculo do score
-                          </span>
+                          <span className="text-xs text-gray-500 italic">- Não será contabilizada no cálculo do score</span>
                         )}
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Observacoes - colapsavel */}
                 <div className="border-t pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowObservations(!showObservations)}
-                    className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
-                  >
+                  <button type="button" onClick={() => setShowObservations(!showObservations)}
+                    className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
                     <svg className={`w-4 h-4 transition-transform ${showObservations ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                     Adicionar observação (opcional)
                   </button>
-
                   {showObservations && (
-                    <textarea
-                      value={currentResponse.observations || ''}
-                      onChange={(e) => updateResponse('observations', e.target.value)}
-                      rows={3}
-                      className="w-full mt-3 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm"
-                      placeholder="Adicione observações relevantes sobre esta questão..."
-                    />
+                    <textarea value={currentResponse.observations || ''} onChange={(e) => updateResponse('observations', e.target.value)}
+                      rows={3} className="w-full mt-3 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none text-sm"
+                      placeholder="Adicione observações relevantes sobre esta questão..." />
                   )}
                 </div>
               </div>
 
-              {/* Footer com navegacao */}
               <div className="bg-gray-50 px-6 py-4 flex items-center justify-between">
-                <button
-                  onClick={handlePrevious}
-                  disabled={currentIndex === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
+                <button onClick={handlePrevious} disabled={currentIndex === 0}
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                   Anterior
                 </button>
-
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleSkip}
-                    disabled={currentIndex === questions.length - 1}
-                    className="px-4 py-2 text-gray-500 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm"
-                  >
+                  <button onClick={handleSkip} disabled={currentIndex === questions.length - 1}
+                    className="px-4 py-2 text-gray-500 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm">
                     Pular
                   </button>
-                  <button
-                    onClick={handleSaveResponse}
-                    disabled={!currentResponse.evaluation || saving}
+                  <button onClick={handleSaveResponse} disabled={!currentResponse.evaluation || saving}
                     className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105"
-                    style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}
-                  >
+                    style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
                     {saving ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Salvando...
-                      </>
+                      <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>Salvando...</>
                     ) : (
-                      <>
-                        {currentIndex === questions.length - 1 ? 'Finalizar' : 'Próxima'}
+                      <>{currentIndex === questions.length - 1 ? 'Finalizar' : 'Próxima'}
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -631,11 +526,7 @@ export default function Questionnaire() {
                 </div>
               </div>
             </div>
-
-            {/* Info */}
-            <p className="text-center text-xs text-gray-400 mt-4">
-              Suas respostas são salvas automaticamente
-            </p>
+            <p className="text-center text-xs text-gray-400 mt-4">Suas respostas são salvas automaticamente</p>
           </div>
         </div>
       </div>

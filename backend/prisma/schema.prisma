@@ -43,15 +43,19 @@ model User {
 }
 
 model Pillar {
-  id          Int     @id @default(autoincrement())
-  code        String  @unique // 'E', 'S', 'G'
-  name        String  // 'Ambiental', 'Social', 'Governança'
-  description String?
-  icon        String?
-  color       String?
+  id            Int     @id @default(autoincrement())
+  code          String  @unique
+  name          String
+  description   String?
+  icon          String?
+  color         String?
+  framework     String  @default("ESG")
+  sortOrder     Int     @default(0) @map("sort_order")
+  macroCategory String? @map("macro_category")
 
-  themes           Theme[]
+  themes            Theme[]
   strategicInsights StrategicInsight[]
+  diagnosisScores   DiagnosisScore[]
 
   @@map("pillars")
 }
@@ -81,13 +85,17 @@ model Criteria {
 }
 
 model AssessmentItem {
-  id         Int    @id @default(autoincrement())
-  criteriaId Int    @map("criteria_id")
-  question   String
-  order      Int
+  id           Int     @id @default(autoincrement())
+  criteriaId   Int     @map("criteria_id")
+  question     String
+  order        Int
+  griCode      String? @map("gri_code")
+  frameworkTag String  @default("ESG") @map("framework_tag")
 
-  criteria  Criteria   @relation(fields: [criteriaId], references: [id])
-  responses Response[]
+  criteria    Criteria           @relation(fields: [criteriaId], references: [id])
+  responses   Response[]
+  esgMappings FrameworkMapping[] @relation("esg_mapping")
+  griMappings FrameworkMapping[] @relation("gri_mapping")
 
   @@map("assessment_items")
 }
@@ -95,8 +103,9 @@ model AssessmentItem {
 model Diagnosis {
   id                 String    @id @default(uuid())
   userId             String    @map("user_id")
-  status             String    @default("in_progress") // 'in_progress', 'completed'
-  type               String    @default("full") // 'full' (questionário completo), 'demo' (6 perguntas do plano gratuito)
+  status             String    @default("in_progress")
+  type               String    @default("full")
+  framework          String    @default("ESG")
   overallScore       Decimal?  @map("overall_score") @db.Decimal(5, 2)
   environmentalScore Decimal?  @map("environmental_score") @db.Decimal(5, 2)
   socialScore        Decimal?  @map("social_score") @db.Decimal(5, 2)
@@ -111,6 +120,7 @@ model Diagnosis {
   actionPlans       ActionPlan[]
   strategicInsights StrategicInsight[]
   certificates      Certificate[]
+  pillarScores      DiagnosisScore[]
 
   @@map("diagnoses")
 }
@@ -227,6 +237,7 @@ model Certificate {
   certificateNumber String    @unique @map("certificate_number")
   level             String
   score             Decimal   @db.Decimal(5, 2)
+  framework         String    @default("ESG")
   issuedAt          DateTime  @default(now()) @map("issued_at")
   expiresAt         DateTime? @map("expires_at")
   certificateUrl    String?   @map("certificate_url")
@@ -288,6 +299,33 @@ model PageView {
   @@index([path])
   @@index([sessionId])
   @@map("page_views")
+}
+
+model DiagnosisScore {
+  id          Int      @id @default(autoincrement())
+  diagnosisId String   @map("diagnosis_id")
+  pillarId    Int      @map("pillar_id")
+  score       Decimal  @db.Decimal(5, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+  pillar    Pillar    @relation(fields: [pillarId], references: [id])
+
+  @@unique([diagnosisId, pillarId])
+  @@map("diagnosis_scores")
+}
+
+model FrameworkMapping {
+  id                  Int    @id @default(autoincrement())
+  esgAssessmentItemId Int    @map("esg_assessment_item_id")
+  griAssessmentItemId Int    @map("gri_assessment_item_id")
+  compatibilityLevel  String @map("compatibility_level")
+
+  esgItem AssessmentItem @relation("esg_mapping", fields: [esgAssessmentItemId], references: [id])
+  griItem AssessmentItem @relation("gri_mapping", fields: [griAssessmentItemId], references: [id])
+
+  @@unique([esgAssessmentItemId, griAssessmentItemId])
+  @@map("framework_mappings")
 }
 
 model ConsultationMessage {

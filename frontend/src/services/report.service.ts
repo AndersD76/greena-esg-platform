@@ -68,6 +68,8 @@ export interface ActionPlan {
 export interface FullReport {
   reportDate: string;
   diagnosisId: string;
+  framework: string;
+  frameworkLabel: string;
   completedAt: string;
   companyInfo: {
     name: string;
@@ -85,6 +87,7 @@ export interface FullReport {
     social: number;
     governance: number;
   };
+  pillarScores: Array<{ code: string; name: string; color: string | null; score: number }>;
   certification: Certification;
   pillarBreakdowns: PillarBreakdown[];
   insights: Insight[];
