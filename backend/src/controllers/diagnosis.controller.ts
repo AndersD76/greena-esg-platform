@@ -27,7 +27,7 @@ export class DiagnosisController {
       }
 
       // Retomar um diagnóstico em andamento não consome uma nova cota
-      const inProgress = await diagnosisService.findInProgress(userId);
+      const inProgress = await diagnosisService.findInProgress(userId, framework);
 
       if (!isAdmin && !inProgress) {
         const limit = await subscriptionService.canCreateDiagnosis(userId);

@@ -15,17 +15,18 @@ export class DiagnosisService {
     this.actionPlanService = new ActionPlanService();
   }
 
-  async findInProgress(userId: string) {
+  async findInProgress(userId: string, framework?: string) {
     return prisma.diagnosis.findFirst({
       where: {
         userId,
         status: 'in_progress',
+        ...(framework ? { framework } : {}),
       },
     });
   }
 
   async create(userId: string, type: 'full' | 'demo' = 'full', framework: string = 'ESG') {
-    const existingDiagnosis = await this.findInProgress(userId);
+    const existingDiagnosis = await this.findInProgress(userId, framework);
 
     if (existingDiagnosis) {
       if (existingDiagnosis.type !== type) {
