@@ -8,8 +8,12 @@ const FRAMEWORKS = [
     title: 'ESG',
     subtitle: '215 perguntas',
     description: 'Avaliação Environmental, Social e Governança — o diagnóstico padrão para medir a maturidade ESG da sua organização.',
-    color: '#2E7D4F',
-    pillars: ['Ambiental', 'Social', 'Governança'],
+    accent: '#7B9965',
+    pillars: [
+      { name: 'Ambiental', color: '#7B9965' },
+      { name: 'Social', color: '#924131' },
+      { name: 'Governança', color: '#b8963a' },
+    ],
     requiresPaid: false,
   },
   {
@@ -17,8 +21,13 @@ const FRAMEWORKS = [
     title: 'GRI Standards',
     subtitle: '84 divulgações',
     description: 'Avaliação baseada nos Standards do Global Reporting Initiative — indicadores reconhecidos internacionalmente para relato de sustentabilidade.',
-    color: '#5B6ABF',
-    pillars: ['Universais', 'Ambiental', 'Social', 'Econômico'],
+    accent: '#5B6ABF',
+    pillars: [
+      { name: 'Universais', color: '#5B6ABF' },
+      { name: 'Ambiental', color: '#2E7D4F' },
+      { name: 'Social', color: '#C0392B' },
+      { name: 'Econômico', color: '#D4A017' },
+    ],
     requiresPaid: true,
   },
   {
@@ -26,8 +35,14 @@ const FRAMEWORKS = [
     title: 'ESG + GRI',
     subtitle: '~232 perguntas',
     description: 'Avaliação integrada combinando ESG e GRI — perguntas compatíveis são unificadas, com sinalização clara de cada framework.',
-    color: '#D4A017',
-    pillars: ['Ambiental', 'Social', 'Governança', 'Universais', 'Econômico'],
+    accent: '#D4A017',
+    pillars: [
+      { name: 'Ambiental', color: '#7B9965' },
+      { name: 'Social', color: '#924131' },
+      { name: 'Governança', color: '#b8963a' },
+      { name: 'Universais', color: '#5B6ABF' },
+      { name: 'Econômico', color: '#D4A017' },
+    ],
     requiresPaid: true,
   },
 ];
@@ -67,24 +82,22 @@ export default function FrameworkSelector({ isFreePlan }: FrameworkSelectorProps
   };
 
   return (
-    <div className="min-h-screen py-12 px-4" style={{ backgroundColor: '#F8FAF7' }}>
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-3" style={{ color: '#152F27' }}>
-            Escolha o Framework de Avaliação
-          </h1>
-          <p className="text-lg" style={{ color: '#4A5C52' }}>
-            Selecione o tipo de diagnóstico que melhor atende às necessidades da sua organização.
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-brand-900">
+        <div className="max-w-5xl mx-auto px-6 py-8">
+          <h1 className="text-2xl font-bold text-white">Novo Diagnóstico</h1>
+          <p className="text-sm text-white/50 mt-1">Escolha o framework de avaliação para sua organização</p>
         </div>
+      </div>
 
+      <div className="max-w-5xl mx-auto px-6 py-8">
         {error && (
-          <div className="max-w-md mx-auto mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-center">
+          <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-sm text-red-700 text-center">
             {error}
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {FRAMEWORKS.map((fw) => {
             const disabled = fw.requiresPaid && isFreePlan;
             const isLoading = loading === fw.key;
@@ -92,61 +105,57 @@ export default function FrameworkSelector({ isFreePlan }: FrameworkSelectorProps
             return (
               <div
                 key={fw.key}
-                className={`relative rounded-2xl border-2 p-6 flex flex-col transition-all ${
-                  disabled
-                    ? 'opacity-60 cursor-not-allowed border-gray-200 bg-gray-50'
-                    : 'cursor-pointer hover:shadow-lg bg-white'
+                className={`bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden transition-all ${
+                  disabled ? 'opacity-50' : 'hover:shadow-md hover:border-gray-200 cursor-pointer'
                 }`}
-                style={disabled ? {} : { borderColor: fw.color + '40' }}
                 onClick={() => !disabled && !loading && handleSelect(fw.key)}
               >
-                {fw.requiresPaid && isFreePlan && (
-                  <span
-                    className="absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full text-white"
-                    style={{ backgroundColor: fw.color }}
+                <div className="h-1.5" style={{ backgroundColor: fw.accent }} />
+
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <h2 className="text-lg font-bold text-brand-900">{fw.title}</h2>
+                    {fw.requiresPaid && isFreePlan && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 uppercase tracking-wide">
+                        Plano Pago
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs font-semibold mb-3" style={{ color: fw.accent }}>{fw.subtitle}</p>
+                  <p className="text-sm text-gray-500 flex-1">{fw.description}</p>
+
+                  <div className="flex flex-wrap gap-1.5 mt-4 mb-5">
+                    {fw.pillars.map((p) => (
+                      <span
+                        key={p.name}
+                        className="flex items-center gap-1.5 text-xs text-gray-600 px-2 py-1 rounded-full bg-gray-50"
+                      >
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                        {p.name}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    disabled={disabled || !!loading}
+                    className={`w-full py-2.5 text-sm font-semibold rounded-full transition-all disabled:opacity-50 ${
+                      disabled
+                        ? 'bg-gray-100 text-gray-400'
+                        : 'bg-brand-900 text-white hover:bg-brand-900/90'
+                    }`}
                   >
-                    Plano Pago
-                  </span>
-                )}
-
-                <h2 className="text-xl font-bold mb-1" style={{ color: '#152F27' }}>
-                  {fw.title}
-                </h2>
-                <p className="text-sm font-medium mb-3" style={{ color: fw.color }}>
-                  {fw.subtitle}
-                </p>
-                <p className="text-sm flex-1" style={{ color: '#4A5C52' }}>
-                  {fw.description}
-                </p>
-
-                <div className="flex flex-wrap gap-1 mt-4 mb-4">
-                  {fw.pillars.map((p) => (
-                    <span
-                      key={p}
-                      className="text-xs px-2 py-0.5 rounded-full"
-                      style={{ backgroundColor: fw.color + '15', color: fw.color }}
-                    >
-                      {p}
-                    </span>
-                  ))}
+                    {isLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                        Criando...
+                      </span>
+                    ) : disabled ? (
+                      'Fazer Upgrade'
+                    ) : (
+                      'Iniciar Diagnóstico'
+                    )}
+                  </button>
                 </div>
-
-                <button
-                  disabled={disabled || !!loading}
-                  className="w-full py-2.5 rounded-lg font-semibold text-white transition-colors disabled:opacity-50"
-                  style={{ backgroundColor: disabled ? '#9CA3AF' : fw.color }}
-                >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-                      Criando...
-                    </span>
-                  ) : disabled ? (
-                    'Fazer Upgrade'
-                  ) : (
-                    'Iniciar Diagnóstico'
-                  )}
-                </button>
               </div>
             );
           })}
