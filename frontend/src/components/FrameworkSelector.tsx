@@ -92,7 +92,7 @@ export default function FrameworkSelector({ isFreePlan }: FrameworkSelectorProps
             return (
               <div
                 key={fw.key}
-                className={`relative rounded-2xl border-2 p-6 transition-all ${
+                className={`relative rounded-2xl border-2 p-6 flex flex-col transition-all ${
                   disabled
                     ? 'opacity-60 cursor-not-allowed border-gray-200 bg-gray-50'
                     : 'cursor-pointer hover:shadow-lg bg-white'
@@ -115,11 +115,11 @@ export default function FrameworkSelector({ isFreePlan }: FrameworkSelectorProps
                 <p className="text-sm font-medium mb-3" style={{ color: fw.color }}>
                   {fw.subtitle}
                 </p>
-                <p className="text-sm mb-4" style={{ color: '#4A5C52' }}>
+                <p className="text-sm flex-1" style={{ color: '#4A5C52' }}>
                   {fw.description}
                 </p>
 
-                <div className="flex flex-wrap gap-1 mb-4">
+                <div className="flex flex-wrap gap-1 mt-4 mb-4">
                   {fw.pillars.map((p) => (
                     <span
                       key={p}
