@@ -100,13 +100,13 @@ export default function Dashboard() {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [currentDiagnosis, setCurrentDiagnosis] = useState<Diagnosis | null>(null);
-  const [partialScores, setPartialScores] = useState<any>(null);
+  const [inProgressList, setInProgressList] = useState<Array<{ diagnosis: Diagnosis; scores: any }>>([]);
   const [userName, setUserName] = useState('');
   const [certificate, setCertificate] = useState<any>(null);
   const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string | null>(null);
   const [selectedScores, setSelectedScores] = useState<any>(null);
   const [benchmarking, setBenchmarking] = useState<any>(null);
+  const [activeFramework, setActiveFramework] = useState<string>('ESG');
   const { isFreePlan } = usePlan();
   const navigate = useNavigate();
 
@@ -127,13 +127,24 @@ export default function Dashboard() {
       setLoadError(false);
       const data = await diagnosisService.list();
       setDiagnoses(data);
-      const ip = data.find(d => d.status === 'in_progress');
-      if (ip) {
-        setCurrentDiagnosis(ip);
-        loadPartialScores(ip.id);
-      }
+
+      const ipList = data.filter(d => d.status === 'in_progress');
+      const ipWithScores = await Promise.all(
+        ipList.map(async (ip) => {
+          try {
+            const res = await api.get(`/diagnoses/${ip.id}/partial-scores`);
+            return { diagnosis: ip, scores: res.data };
+          } catch {
+            return { diagnosis: ip, scores: null };
+          }
+        })
+      );
+      setInProgressList(ipWithScores);
+
       const completed = data.filter(d => d.status === 'completed');
       if (completed.length > 0) {
+        const latestFw = completed[0].framework || 'ESG';
+        setActiveFramework(latestFw);
         const lastId = completed[0].id;
         setSelectedDiagnosisId(lastId);
         loadSelectedScores(lastId);
@@ -147,15 +158,6 @@ export default function Dashboard() {
       setLoadError(true);
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function loadPartialScores(id: string) {
-    try {
-      const res = await api.get(`/diagnoses/${id}/partial-scores`);
-      setPartialScores(res.data);
-    } catch (e) {
-      console.error('Erro ao carregar scores parciais:', e);
     }
   }
 
@@ -190,9 +192,28 @@ export default function Dashboard() {
     navigate('/diagnosis/new');
   }
 
-  const completed = diagnoses.filter(d => d.status === 'completed');
+  const allCompleted = diagnoses.filter(d => d.status === 'completed');
+  const completedFrameworks = [...new Set(allCompleted.map(d => d.framework || 'ESG'))];
+  const showFrameworkTabs = completedFrameworks.length > 1;
+  const completed = allCompleted.filter(d => (d.framework || 'ESG') === activeFramework);
   const selected = completed.find(d => d.id === selectedDiagnosisId) || null;
   const greeting = (() => { const h = new Date().getHours(); return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite'; })();
+
+  function handleSwitchFramework(fw: string) {
+    setActiveFramework(fw);
+    setSelectedScores(null);
+    setCertificate(null);
+    setBenchmarking(null);
+    const fwCompleted = allCompleted.filter(d => (d.framework || 'ESG') === fw);
+    if (fwCompleted.length > 0) {
+      const firstId = fwCompleted[0].id;
+      setSelectedDiagnosisId(firstId);
+      loadSelectedScores(firstId);
+      api.get(`/certificates/diagnosis/${firstId}`).then(r => { if (r.data) setCertificate(r.data); }).catch(() => {});
+    } else {
+      setSelectedDiagnosisId(null);
+    }
+  }
 
 
   const overall = selected ? Number(selected.overallScore) : 0;
@@ -267,7 +288,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white">{greeting}{userName ? `, ${userName}` : ''}</h1>
-              <p className="text-sm text-white/50 mt-1">Painel {frameworkName(selected?.framework || currentDiagnosis?.framework)} — Visão Geral</p>
+              <p className="text-sm text-white/50 mt-1">Painel {frameworkName(activeFramework)} — Visão Geral</p>
             </div>
             <div className="flex items-center gap-3">
               {/* Dropdown */}
@@ -302,8 +323,27 @@ export default function Dashboard() {
         {/* ═══════ AVISO DE ASSINATURA ═══════ */}
         <SubscriptionNotice />
 
+        {/* ═══════ FRAMEWORK TABS ═══════ */}
+        {showFrameworkTabs && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-1.5 flex gap-1">
+            {completedFrameworks.map(fw => (
+              <button
+                key={fw}
+                onClick={() => handleSwitchFramework(fw)}
+                className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all ${
+                  activeFramework === fw
+                    ? 'bg-brand-900 text-white shadow-sm'
+                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                }`}
+              >
+                {frameworkName(fw)}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* ═══════ ERROR ═══════ */}
-        {loadError && !selected && !currentDiagnosis && (
+        {loadError && !selected && inProgressList.length === 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
             <h2 className="text-xl font-bold text-brand-900 mb-2">Erro ao carregar dados</h2>
             <p className="text-sm text-gray-500 mb-5">Não foi possível conectar ao servidor.</p>
@@ -314,7 +354,7 @@ export default function Dashboard() {
         )}
 
         {/* ═══════ WELCOME ═══════ */}
-        {!loadError && !selected && !currentDiagnosis && (
+        {!loadError && !selected && inProgressList.length === 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12">
             <div className="flex items-center gap-10">
               <div className="flex-1">
@@ -328,10 +368,11 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ═══════ IN-PROGRESS BANNER ═══════ */}
-        {currentDiagnosis && partialScores && (
+        {/* ═══════ IN-PROGRESS BANNERS ═══════ */}
+        {inProgressList.map(({ diagnosis: ipDiag, scores: ipScores }) => (
           <Link
-            to={`/diagnosis/${currentDiagnosis.id}/${currentDiagnosis.type === 'demo' ? 'simplified-questionnaire' : 'questionnaire'}`}
+            key={ipDiag.id}
+            to={`/diagnosis/${ipDiag.id}/${ipDiag.type === 'demo' ? 'simplified-questionnaire' : 'questionnaire'}`}
             className="block"
           >
             <div className="bg-white rounded-2xl shadow-sm border-2 border-amber-200 p-5 hover:border-amber-300 transition-all">
@@ -340,23 +381,29 @@ export default function Dashboard() {
                   <svg className="w-6 h-6 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-base font-bold text-brand-900">Diagnóstico {frameworkName(currentDiagnosis?.framework)}</p>
-                  <p className="text-sm text-gray-400 mt-0.5">{partialScores.answeredCount}/{partialScores.totalCount} respostas — clique para continuar</p>
+                  <p className="text-base font-bold text-brand-900">Diagnóstico {frameworkName(ipDiag.framework)}</p>
+                  <p className="text-sm text-gray-400 mt-0.5">
+                    {ipScores ? `${ipScores.answeredCount}/${ipScores.totalCount} respostas — ` : ''}clique para continuar
+                  </p>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="w-40 h-3 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${(partialScores.answeredCount / (partialScores.totalCount || 75)) * 100}%` }} />
-                  </div>
-                  <span className="text-lg font-bold text-amber-700">{Math.round((partialScores.answeredCount / (partialScores.totalCount || 75)) * 100)}%</span>
+                  {ipScores && (
+                    <>
+                      <div className="w-40 h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${(ipScores.answeredCount / (ipScores.totalCount || 75)) * 100}%` }} />
+                      </div>
+                      <span className="text-lg font-bold text-amber-700">{Math.round((ipScores.answeredCount / (ipScores.totalCount || 75)) * 100)}%</span>
+                    </>
+                  )}
                   <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </div>
               </div>
             </div>
           </Link>
-        )}
+        ))}
 
         {/* ═══════ ACTION CARDS (top row) ═══════ */}
-        {completed.length > 0 && !currentDiagnosis && (
+        {allCompleted.length > 0 && inProgressList.length === 0 && (
           <div className="grid grid-cols-1 gap-4">
             <button onClick={handleStartNewDiagnosis} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:border-brand-700/30 transition-all text-left group">
               <div className="flex items-center gap-4">
@@ -590,24 +637,27 @@ export default function Dashboard() {
         )}
 
         {/* ═══════ HISTORY ═══════ */}
-        {completed.length > 0 && (
+        {allCompleted.length > 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-sm font-bold text-brand-900 mb-4 uppercase tracking-wider">Histórico de Diagnósticos</h3>
             <div className="space-y-3">
-              {completed.slice(0, 5).map(d => (
+              {allCompleted.slice(0, 8).map(d => (
                 <div key={d.id} className={`flex items-center justify-between p-4 rounded-xl transition-all ${selectedDiagnosisId === d.id ? 'bg-brand-100/60 ring-1 ring-brand-700/20' : 'bg-gray-50 hover:bg-brand-100/30'}`}>
                   <div className="flex items-center gap-4">
                     <div className="w-11 h-11 rounded-lg flex items-center justify-center" style={{ backgroundColor: scoreColor(Number(d.overallScore)) + '15' }}>
                       <span className="text-base font-bold" style={{ color: scoreColor(Number(d.overallScore)) }}>{Number(d.overallScore).toFixed(0)}</span>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-brand-900">Score: {Number(d.overallScore).toFixed(0)} — {scoreLabel(Number(d.overallScore))}</p>
+                      <p className="text-sm font-bold text-brand-900">
+                        <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 mr-2 uppercase">{frameworkName(d.framework)}</span>
+                        Score: {Number(d.overallScore).toFixed(0)} — {scoreLabel(Number(d.overallScore))}
+                      </p>
                       <p className="text-xs text-gray-400">{new Date(d.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
                     {selectedDiagnosisId !== d.id && (
-                      <button onClick={() => handleSelectDiagnosis(d.id)} className="px-4 py-1.5 text-xs font-semibold text-brand-900 border border-brand-700/30 rounded-full hover:bg-brand-100">Visualizar</button>
+                      <button onClick={() => { setActiveFramework(d.framework || 'ESG'); handleSelectDiagnosis(d.id); }} className="px-4 py-1.5 text-xs font-semibold text-brand-900 border border-brand-700/30 rounded-full hover:bg-brand-100">Visualizar</button>
                     )}
                     {!isFreePlan && (
                       <>

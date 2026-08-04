@@ -6,6 +6,7 @@ interface ResponseData {
   assessmentItemId: number;
   evaluation: string;
   observations?: string | null;
+  data?: Record<string, unknown> | null;
 }
 
 export class ResponseService {
@@ -58,6 +59,7 @@ export class ResponseService {
         evaluationValue,
         score: new Decimal(score),
         observations: data.observations,
+        data: data.data ?? undefined,
       },
       create: {
         diagnosisId,
@@ -66,6 +68,7 @@ export class ResponseService {
         evaluationValue,
         score: new Decimal(score),
         observations: data.observations,
+        data: data.data ?? undefined,
       },
       include: {
         assessmentItem: {

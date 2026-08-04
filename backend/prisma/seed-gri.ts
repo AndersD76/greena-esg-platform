@@ -137,6 +137,7 @@ async function main() {
           order: questionCount + 1,
           griCode: q.griCode,
           frameworkTag: 'GRI',
+          dataFields: q.dataFields || undefined,
         },
       });
 

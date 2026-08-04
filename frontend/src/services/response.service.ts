@@ -4,6 +4,7 @@ export interface ResponseData {
   assessmentItemId: number;
   evaluation: 'Não se aplica' | 'Não iniciado' | 'Planejado' | 'Em andamento' | 'Implementado parcialmente' | 'Totalmente implementado';
   observations?: string;
+  data?: Record<string, unknown> | null;
 }
 
 export const responseService = {

@@ -91,6 +91,7 @@ model AssessmentItem {
   order        Int
   griCode      String? @map("gri_code")
   frameworkTag String  @default("ESG") @map("framework_tag")
+  dataFields   Json?   @map("data_fields")
 
   criteria    Criteria           @relation(fields: [criteriaId], references: [id])
   responses   Response[]
@@ -135,6 +136,7 @@ model Response {
   evaluationValue  Int      @map("evaluation_value") // 0-5 (escala de maturidade)
   score            Decimal  @db.Decimal(5, 2) // = evaluationValue (0-5)
   observations     String?
+  data             Json?
   createdAt        DateTime @default(now()) @map("created_at")
 
   diagnosis      Diagnosis      @relation(fields: [diagnosisId], references: [id])

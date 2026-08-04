@@ -12,12 +12,22 @@ export interface Pillar {
   macroCategory?: string;
 }
 
+export interface DataField {
+  key: string;
+  label: string;
+  type: 'text' | 'number' | 'textarea' | 'select' | 'percentage' | 'currency' | 'boolean';
+  unit?: string;
+  placeholder?: string;
+  options?: string[];
+}
+
 export interface AssessmentItem {
   id: number;
   question: string;
   order: number;
   griCode?: string;
   frameworkTag: string;
+  dataFields?: DataField[];
   criteria: {
     id: number;
     name: string;

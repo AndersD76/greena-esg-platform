@@ -474,6 +474,7 @@ export default function Reports() {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'completed' | 'in_progress'>('all');
+  const [frameworkFilter, setFrameworkFilter] = useState<string>('all');
   const [selectedDiagnosisId, setSelectedDiagnosisId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -491,11 +492,13 @@ export default function Reports() {
     }
   }
 
+  const availableFrameworks = [...new Set(diagnoses.map((d) => d.framework || 'ESG'))];
+  const showFrameworkTabs = availableFrameworks.length > 1;
+
   const filteredDiagnoses = diagnoses.filter((d) => {
-    if (filter === 'all') return true;
-    if (filter === 'completed') return d.status === 'completed';
-    if (filter === 'in_progress') return d.status === 'in_progress';
-    return true;
+    const statusMatch = filter === 'all' || d.status === filter;
+    const fwMatch = frameworkFilter === 'all' || (d.framework || 'ESG') === frameworkFilter;
+    return statusMatch && fwMatch;
   });
 
   const completedDiagnoses = diagnoses.filter((d) => d.status === 'completed');
@@ -560,7 +563,31 @@ export default function Reports() {
           </div>
         )}
 
-        {/* Filters */}
+        {/* Framework Tabs */}
+        {showFrameworkTabs && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 mb-4">
+            <div className="flex gap-2">
+              {[{ key: 'all', label: 'Todos' }, ...availableFrameworks.map((fw) => ({
+                key: fw,
+                label: fw === 'ESG_GRI' ? 'ESG+GRI' : fw,
+              }))].map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => setFrameworkFilter(item.key)}
+                  className={`px-5 py-2 text-sm font-bold rounded-xl transition-all ${
+                    frameworkFilter === item.key
+                      ? 'text-white bg-brand-900'
+                      : 'text-gray-500 bg-gray-50 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Status Filters */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
           <div className="flex gap-2">
             {[
@@ -616,11 +643,13 @@ export default function Reports() {
                         >
                           {diagnosis.status === 'completed' ? 'Concluído' : 'Em Andamento'}
                         </span>
-                        {diagnosis.framework && diagnosis.framework !== 'ESG' && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700">
-                            {diagnosis.framework === 'ESG_GRI' ? 'ESG+GRI' : diagnosis.framework}
-                          </span>
-                        )}
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          (diagnosis.framework || 'ESG') === 'GRI' ? 'bg-indigo-100 text-indigo-700'
+                          : (diagnosis.framework || 'ESG') === 'ESG_GRI' ? 'bg-purple-100 text-purple-700'
+                          : 'bg-emerald-100 text-emerald-700'
+                        }`}>
+                          {(diagnosis.framework || 'ESG') === 'ESG_GRI' ? 'ESG+GRI' : (diagnosis.framework || 'ESG')}
+                        </span>
                         <p className="text-xs text-gray-400">
                           {diagnosis.status === 'completed' && diagnosis.completedAt
                             ? `Concluído em ${new Date(diagnosis.completedAt).toLocaleDateString('pt-BR')}`
@@ -641,30 +670,42 @@ export default function Reports() {
                               </span>
                             </div>
                           </div>
-                          {diagnosis.environmentalScore != null && (
-                            <div>
-                              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Ambiental</p>
-                              <p className="text-2xl font-bold" style={{ color: getScoreColor(Number(diagnosis.environmentalScore)) }}>
-                                {Number(diagnosis.environmentalScore).toFixed(0)}
-                              </p>
-                            </div>
-                          )}
-                          {diagnosis.socialScore != null && (
-                            <div>
-                              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Social</p>
-                              <p className="text-2xl font-bold" style={{ color: getScoreColor(Number(diagnosis.socialScore)) }}>
-                                {Number(diagnosis.socialScore).toFixed(0)}
-                              </p>
-                            </div>
-                          )}
-                          {diagnosis.governanceScore != null && (
-                            <div>
-                              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Governança</p>
-                              <p className="text-2xl font-bold" style={{ color: getScoreColor(Number(diagnosis.governanceScore)) }}>
-                                {Number(diagnosis.governanceScore).toFixed(0)}
-                              </p>
-                            </div>
-                          )}
+                          {(diagnosis as any).pillarScores && (diagnosis as any).pillarScores.length > 0
+                            ? (diagnosis as any).pillarScores.map((ps: any) => (
+                              <div key={ps.code || ps.pillarCode}>
+                                <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{ps.name || ps.pillarName}</p>
+                                <p className="text-2xl font-bold" style={{ color: pillarColors[ps.code || ps.pillarCode] || getScoreColor(Number(ps.score)) }}>
+                                  {Number(ps.score).toFixed(0)}
+                                </p>
+                              </div>
+                            ))
+                            : <>
+                              {diagnosis.environmentalScore != null && (
+                                <div>
+                                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Ambiental</p>
+                                  <p className="text-2xl font-bold" style={{ color: getScoreColor(Number(diagnosis.environmentalScore)) }}>
+                                    {Number(diagnosis.environmentalScore).toFixed(0)}
+                                  </p>
+                                </div>
+                              )}
+                              {diagnosis.socialScore != null && (
+                                <div>
+                                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Social</p>
+                                  <p className="text-2xl font-bold" style={{ color: getScoreColor(Number(diagnosis.socialScore)) }}>
+                                    {Number(diagnosis.socialScore).toFixed(0)}
+                                  </p>
+                                </div>
+                              )}
+                              {diagnosis.governanceScore != null && (
+                                <div>
+                                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Governança</p>
+                                  <p className="text-2xl font-bold" style={{ color: getScoreColor(Number(diagnosis.governanceScore)) }}>
+                                    {Number(diagnosis.governanceScore).toFixed(0)}
+                                  </p>
+                                </div>
+                              )}
+                            </>
+                          }
                         </div>
                       )}
                     </div>

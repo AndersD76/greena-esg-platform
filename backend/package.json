@@ -5,11 +5,12 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "prisma generate && prisma migrate deploy && tsc",
     "start": "node dist/server.js",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
     "prisma:seed-gri": "tsx prisma/seed-gri.ts",
+    "prisma:seed-gri-datafields": "tsx prisma/seed-gri-datafields.ts",
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate"
   },

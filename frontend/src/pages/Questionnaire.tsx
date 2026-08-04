@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { pillarService, AssessmentItem, Pillar } from '../services/pillar.service';
+import { pillarService, AssessmentItem, Pillar, DataField } from '../services/pillar.service';
 import { responseService, ResponseData } from '../services/response.service';
 import { diagnosisService } from '../services/diagnosis.service';
 import { Card } from '../components/common/Card';
@@ -12,6 +12,7 @@ interface Response {
   [key: number]: {
     evaluation: ResponseData['evaluation'];
     observations?: string;
+    data?: Record<string, unknown>;
   };
 }
 
@@ -95,6 +96,7 @@ export default function Questionnaire() {
           responsesMap[resp.assessmentItemId] = {
             evaluation: resp.evaluation,
             observations: resp.observations,
+            data: resp.data || undefined,
           };
         });
         setResponses(responsesMap);
@@ -132,6 +134,7 @@ export default function Questionnaire() {
         assessmentItemId: currentQuestion.id,
         evaluation: response.evaluation,
         observations: response.observations,
+        data: response.data || null,
       });
 
       setShowObservations(false);
@@ -312,6 +315,7 @@ export default function Questionnaire() {
                         assessmentItemId: currentQuestion.id,
                         evaluation: responses[currentQuestion.id].evaluation,
                         observations: responses[currentQuestion.id].observations,
+                        data: responses[currentQuestion.id].data || null,
                       });
                     } catch {} finally { setSaving(false); }
                   }
@@ -421,9 +425,88 @@ export default function Questionnaire() {
                   {currentQuestion.question}
                 </h3>
 
+                {currentQuestion.dataFields && currentQuestion.dataFields.length > 0 && (
+                  <div className="mb-8 p-5 rounded-xl border-2 border-dashed" style={{ borderColor: `${pillarColor}40`, backgroundColor: `${pillarColor}08` }}>
+                    <h4 className="text-sm font-bold uppercase tracking-wide mb-4" style={{ color: pillarColor }}>
+                      Dados da Divulgação GRI {currentQuestion.griCode}
+                    </h4>
+                    <div className="space-y-4">
+                      {currentQuestion.dataFields.map((field: DataField) => {
+                        const fieldValue = (currentResponse.data as Record<string, unknown>)?.[field.key] ?? '';
+                        const updateField = (value: unknown) => {
+                          setResponses({
+                            ...responses,
+                            [currentQuestion.id]: {
+                              ...responses[currentQuestion.id],
+                              data: {
+                                ...(responses[currentQuestion.id]?.data || {}),
+                                [field.key]: value,
+                              },
+                            },
+                          });
+                        };
+
+                        return (
+                          <div key={field.key}>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              {field.label}
+                              {field.unit && <span className="text-gray-400 font-normal ml-1">({field.unit})</span>}
+                            </label>
+                            {field.type === 'textarea' ? (
+                              <textarea
+                                value={String(fieldValue)}
+                                onChange={(e) => updateField(e.target.value)}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent resize-none text-sm"
+                                style={{ focusRingColor: pillarColor } as any}
+                                placeholder={field.placeholder}
+                              />
+                            ) : field.type === 'select' ? (
+                              <select
+                                value={String(fieldValue)}
+                                onChange={(e) => updateField(e.target.value)}
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm appearance-none cursor-pointer"
+                                style={{
+                                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundPosition: 'right 10px center',
+                                  paddingRight: '36px',
+                                }}
+                              >
+                                <option value="">Selecione...</option>
+                                {field.options?.map((opt) => (
+                                  <option key={opt} value={opt}>{opt}</option>
+                                ))}
+                              </select>
+                            ) : field.type === 'number' ? (
+                              <input
+                                type="number"
+                                value={fieldValue === '' ? '' : Number(fieldValue)}
+                                onChange={(e) => updateField(e.target.value === '' ? '' : Number(e.target.value))}
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm"
+                                placeholder={field.placeholder || '0'}
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                value={String(fieldValue)}
+                                onChange={(e) => updateField(e.target.value)}
+                                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:border-transparent text-sm"
+                                placeholder={field.placeholder}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-600 mb-3">
-                    Qual o nível de maturidade desta prática na sua empresa?
+                    {currentQuestion.griCode
+                      ? 'Qual o nível de conformidade com esta divulgação?'
+                      : 'Qual o nível de maturidade desta prática na sua empresa?'}
                   </label>
                   <select
                     value={currentResponse.evaluation || ''}

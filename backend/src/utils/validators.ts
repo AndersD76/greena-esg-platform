@@ -20,6 +20,7 @@ export const responseSchema = z.object({
   assessmentItemId: z.number(),
   evaluation: z.enum(['Não se aplica', 'Não iniciado', 'Planejado', 'Em andamento', 'Implementado parcialmente', 'Totalmente implementado']),
   observations: z.string().nullable().optional(),
+  data: z.record(z.unknown()).nullable().optional(),
 });
 
 // Escala de maturidade ESG: 0-5
