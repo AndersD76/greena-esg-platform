@@ -1,6 +1,7 @@
 import prisma from '../config/database';
 import { evaluationValues } from '../utils/validators';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from '@prisma/client';
 
 interface ResponseData {
   assessmentItemId: number;
@@ -59,7 +60,7 @@ export class ResponseService {
         evaluationValue,
         score: new Decimal(score),
         observations: data.observations,
-        data: data.data ?? undefined,
+        data: (data.data ?? undefined) as Prisma.InputJsonValue | undefined,
       },
       create: {
         diagnosisId,
@@ -68,7 +69,7 @@ export class ResponseService {
         evaluationValue,
         score: new Decimal(score),
         observations: data.observations,
-        data: data.data ?? undefined,
+        data: (data.data ?? undefined) as Prisma.InputJsonValue | undefined,
       },
       include: {
         assessmentItem: {
