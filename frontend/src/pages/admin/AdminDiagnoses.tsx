@@ -5,6 +5,7 @@ interface DiagnosisDetails {
   id: string;
   userId: string;
   status: string;
+  framework?: string;
   overallScore: number | null;
   environmentalScore: number | null;
   socialScore: number | null;
@@ -12,17 +13,47 @@ interface DiagnosisDetails {
   completedAt: string | null;
   createdAt: string;
   user: { id: string; name: string; email: string; companyName: string | null };
-  answers?: Array<{
-    id: string;
-    questionId: string;
-    answer: string;
-    score: number | null;
-    question?: {
-      id: string;
-      title: string;
-      theme: string;
-      pillar: string;
+  responses?: Array<{
+    id: number;
+    evaluation: string;
+    evaluationValue: number | null;
+    score: number | string | null;
+    observations: string | null;
+    data: Record<string, unknown> | null;
+    assessmentItem: {
+      id: number;
+      question: string;
+      order: number;
+      griCode: string | null;
+      criteria: {
+        name: string;
+        theme: {
+          name: string;
+          pillar: { code: string; name: string; color: string | null };
+        };
+      };
     };
+  }>;
+  actionPlans?: Array<{
+    id: number;
+    title: string;
+    description: string | null;
+    priority: number;
+    status: string;
+    pillarCode: string | null;
+  }>;
+  strategicInsights?: Array<{
+    id: number;
+    title: string;
+    description: string;
+    category: string;
+    priority: string;
+  }>;
+  certificates?: Array<{
+    id: string;
+    certificateNumber: string;
+    level: string;
+    issuedAt: string;
   }>;
   [key: string]: unknown;
 }
@@ -278,32 +309,42 @@ export default function AdminDiagnoses() {
               ) : selectedDiagnosis ? (
                 <div className="space-y-6">
                   {/* Score overview */}
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="bg-gray-50 rounded-xl p-4 text-center">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Geral</p>
-                      <p className={`text-2xl font-bold ${selectedDiagnosis.overallScore !== null ? scoreColor(Number(selectedDiagnosis.overallScore)) : 'text-gray-300'}`}>
-                        {selectedDiagnosis.overallScore !== null ? Number(selectedDiagnosis.overallScore).toFixed(0) : '—'}
-                      </p>
-                    </div>
-                    <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#7B996510' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: '#7B9965' }}>Ambiental</p>
-                      <p className="text-2xl font-bold" style={{ color: '#7B9965' }}>
-                        {selectedDiagnosis.environmentalScore !== null ? Number(selectedDiagnosis.environmentalScore).toFixed(0) : '—'}
-                      </p>
-                    </div>
-                    <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#92413110' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: '#924131' }}>Social</p>
-                      <p className="text-2xl font-bold" style={{ color: '#924131' }}>
-                        {selectedDiagnosis.socialScore !== null ? Number(selectedDiagnosis.socialScore).toFixed(0) : '—'}
-                      </p>
-                    </div>
-                    <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#b8963a10' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: '#b8963a' }}>Governanca</p>
-                      <p className="text-2xl font-bold" style={{ color: '#b8963a' }}>
-                        {selectedDiagnosis.governanceScore !== null ? Number(selectedDiagnosis.governanceScore).toFixed(0) : '—'}
-                      </p>
-                    </div>
-                  </div>
+                  {(() => {
+                    const pillarScoresMap = new Map<string, { code: string; name: string; total: number; count: number }>();
+                    if (selectedDiagnosis.responses) {
+                      for (const r of selectedDiagnosis.responses) {
+                        const p = r.assessmentItem.criteria.theme.pillar;
+                        const existing = pillarScoresMap.get(p.code);
+                        if (existing) {
+                          existing.total += Number(r.score || 0);
+                          existing.count += 1;
+                        } else {
+                          pillarScoresMap.set(p.code, { code: p.code, name: p.name, total: Number(r.score || 0), count: 1 });
+                        }
+                      }
+                    }
+                    const pillarScoresArr = [...pillarScoresMap.values()];
+                    const cols = Math.min(pillarScoresArr.length + 1, 5);
+                    return (
+                      <div className={`grid gap-3`} style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+                        <div className="bg-gray-50 rounded-xl p-4 text-center">
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Geral</p>
+                          <p className={`text-2xl font-bold ${selectedDiagnosis.overallScore !== null ? scoreColor(Number(selectedDiagnosis.overallScore)) : 'text-gray-300'}`}>
+                            {selectedDiagnosis.overallScore !== null ? Number(selectedDiagnosis.overallScore).toFixed(0) : '—'}
+                          </p>
+                        </div>
+                        {pillarScoresArr.map((ps) => {
+                          const avg = ps.count > 0 ? (ps.total / ps.count) * 20 : 0;
+                          return (
+                            <div key={ps.code} className="rounded-xl p-4 text-center" style={{ backgroundColor: `${pillarColor(ps.code)}10` }}>
+                              <p className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: pillarColor(ps.code) }}>{ps.name}</p>
+                              <p className="text-2xl font-bold" style={{ color: pillarColor(ps.code) }}>{avg.toFixed(0)}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
 
                   {/* Info grid */}
                   <div className="grid grid-cols-2 gap-4 text-sm">
@@ -312,6 +353,11 @@ export default function AdminDiagnoses() {
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(selectedDiagnosis.status)}`}>
                         {getStatusLabel(selectedDiagnosis.status)}
                       </span>
+                      {selectedDiagnosis.framework && (
+                        <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700">
+                          {selectedDiagnosis.framework === 'ESG_GRI' ? 'ESG+GRI' : selectedDiagnosis.framework}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <p className="text-gray-400 text-xs font-semibold mb-0.5">Email</p>
@@ -331,37 +377,105 @@ export default function AdminDiagnoses() {
                     </div>
                   </div>
 
-                  {/* Answers */}
-                  {selectedDiagnosis.answers && selectedDiagnosis.answers.length > 0 && (
+                  {/* Certificates */}
+                  {selectedDiagnosis.certificates && selectedDiagnosis.certificates.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-bold text-brand-900 mb-3">Respostas ({selectedDiagnosis.answers.length})</h3>
+                      <h3 className="text-sm font-bold text-brand-900 mb-2">Certificados</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedDiagnosis.certificates.map((c) => (
+                          <div key={c.id} className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                            <span className="text-amber-600 text-lg">🏅</span>
+                            <div>
+                              <p className="text-xs font-bold text-amber-800">{c.level === 'gold' ? 'Ouro' : c.level === 'silver' ? 'Prata' : 'Bronze'}</p>
+                              <p className="text-[10px] text-amber-600 font-mono">{c.certificateNumber}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Strategic Insights */}
+                  {selectedDiagnosis.strategicInsights && selectedDiagnosis.strategicInsights.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-bold text-brand-900 mb-2">Insights Estratégicos ({selectedDiagnosis.strategicInsights.length})</h3>
                       <div className="space-y-2">
-                        {selectedDiagnosis.answers.map((a, idx) => (
-                          <div key={a.id || idx} className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                        {selectedDiagnosis.strategicInsights.map((insight) => (
+                          <div key={insight.id} className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                                insight.priority === 'high' ? 'bg-red-100 text-red-700' :
+                                insight.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-green-100 text-green-700'
+                              }`}>{insight.priority === 'high' ? 'Alta' : insight.priority === 'medium' ? 'Média' : 'Baixa'}</span>
+                              <span className="text-[10px] text-gray-400 font-medium">{insight.category}</span>
+                            </div>
+                            <p className="text-sm font-semibold text-gray-700">{insight.title}</p>
+                            <p className="text-xs text-gray-500 mt-1">{insight.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Plans */}
+                  {selectedDiagnosis.actionPlans && selectedDiagnosis.actionPlans.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-bold text-brand-900 mb-2">Plano de Ação ({selectedDiagnosis.actionPlans.length})</h3>
+                      <div className="space-y-2">
+                        {selectedDiagnosis.actionPlans.map((ap) => (
+                          <div key={ap.id} className="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-start gap-3">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-900 text-white text-[10px] font-bold flex items-center justify-center mt-0.5">
+                              {ap.priority}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-semibold text-gray-700">{ap.title}</p>
+                                {ap.pillarCode && (
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold text-white" style={{ backgroundColor: pillarColor(ap.pillarCode) }}>
+                                    {pillarLabel(ap.pillarCode)}
+                                  </span>
+                                )}
+                              </div>
+                              {ap.description && <p className="text-xs text-gray-500 mt-1">{ap.description}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Responses */}
+                  {selectedDiagnosis.responses && selectedDiagnosis.responses.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-bold text-brand-900 mb-3">Respostas ({selectedDiagnosis.responses.length})</h3>
+                      <div className="space-y-2">
+                        {selectedDiagnosis.responses.map((r, idx) => (
+                          <div key={r.id || idx} className="bg-gray-50 rounded-lg p-3 border border-gray-100">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1 min-w-0">
-                                {a.question ? (
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span
-                                      className="px-1.5 py-0.5 rounded text-[9px] font-bold text-white"
-                                      style={{ backgroundColor: pillarColor(a.question.pillar) }}
-                                    >
-                                      {pillarLabel(a.question.pillar)}
-                                    </span>
-                                    {a.question.theme && (
-                                      <span className="text-[10px] text-gray-400 font-medium">{a.question.theme}</span>
-                                    )}
-                                  </div>
-                                ) : null}
-                                <p className="text-sm text-gray-700 font-medium">
-                                  {a.question?.title || `Pergunta ${idx + 1}`}
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span
+                                    className="px-1.5 py-0.5 rounded text-[9px] font-bold text-white"
+                                    style={{ backgroundColor: pillarColor(r.assessmentItem.criteria.theme.pillar.code) }}
+                                  >
+                                    {pillarLabel(r.assessmentItem.criteria.theme.pillar.code)}
+                                  </span>
+                                  <span className="text-[10px] text-gray-400 font-medium">{r.assessmentItem.criteria.theme.name}</span>
+                                  {r.assessmentItem.griCode && (
+                                    <span className="text-[10px] font-mono text-indigo-500">GRI {r.assessmentItem.griCode}</span>
+                                  )}
+                                </div>
+                                <p className="text-sm text-gray-700 font-medium">{r.assessmentItem.question}</p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  <span className="font-semibold">Avaliação:</span> {r.evaluation}
+                                  {r.observations && <> — {r.observations}</>}
                                 </p>
-                                <p className="text-sm text-gray-500 mt-1">{a.answer}</p>
                               </div>
-                              {a.score !== null && a.score !== undefined && (
+                              {r.score !== null && r.score !== undefined && (
                                 <div className="flex-shrink-0 text-right">
-                                  <span className={`text-lg font-bold ${scoreColor(Number(a.score))}`}>
-                                    {Number(a.score).toFixed(0)}
+                                  <span className={`text-lg font-bold ${scoreColor(Number(r.score) * 20)}`}>
+                                    {(Number(r.score) * 20).toFixed(0)}
                                   </span>
                                 </div>
                               )}
@@ -372,8 +486,8 @@ export default function AdminDiagnoses() {
                     </div>
                   )}
 
-                  {/* If no answers */}
-                  {selectedDiagnosis.answers && selectedDiagnosis.answers.length === 0 && (
+                  {/* No responses */}
+                  {(!selectedDiagnosis.responses || selectedDiagnosis.responses.length === 0) && (
                     <div className="text-center py-8 text-gray-400 text-sm">
                       Nenhuma resposta registrada.
                     </div>
