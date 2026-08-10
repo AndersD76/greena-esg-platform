@@ -36,7 +36,7 @@ import {
 import SimplifiedQuestionnaire from './pages/SimplifiedQuestionnaire';
 import PublicProfile from './pages/PublicProfile';
 import StakeholderReport from './pages/StakeholderReport';
-import AiChat from './pages/AiChat';
+import GaiaWidget from './components/GaiaWidget';
 import { usePageTracking } from './hooks/usePageTracking';
 import { usePlan } from './hooks/usePlan';
 import UpgradeRequired from './components/UpgradeRequired';
@@ -279,16 +279,6 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/ai-chat"
-            element={
-              <PrivateRoute>
-                <PaidRoute>
-                  <AiChat />
-                </PaidRoute>
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/consultations"
             element={
               <PrivateRoute>
@@ -321,6 +311,7 @@ function AppRoutes() {
       </main>
       {user && !hideMainLayout && <Footer />}
       {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
+      {user && !hideMainLayout && <GaiaWidget />}
       <CookieConsent />
     </div>
   );

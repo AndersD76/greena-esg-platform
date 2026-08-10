@@ -60,9 +60,6 @@ export function Header() {
                   <Link to="/reports" className={navLinkClass('/reports', true)}>
                     Relatórios
                   </Link>
-                  <Link to="/ai-chat" className={navLinkClass('/ai-chat', true)}>
-                    Consultor IA
-                  </Link>
                   <Link to="/consultations" className={navLinkClass('/consultations')}>
                     Consultorias
                   </Link>
@@ -150,7 +147,6 @@ export function Header() {
               <>
                 <Link to="/insights" className={mobileNavLinkClass('/insights', true)}>Planos de Ação</Link>
                 <Link to="/reports" className={mobileNavLinkClass('/reports', true)}>Relatórios</Link>
-                <Link to="/ai-chat" className={mobileNavLinkClass('/ai-chat', true)}>Consultor IA</Link>
                 <Link to="/consultations" className={mobileNavLinkClass('/consultations')}>Consultorias</Link>
               </>
             )}
