@@ -7,39 +7,89 @@
         "pillar": "GRI-U",
         "theme": "Organização e Estratégia",
         "criteria": "Detalhes organizacionais",
-        "question": "A organização relata seu nome jurídico, estrutura societária, localização da sede e países em que opera?",
+        "question": "Detalhes organizacionais",
         "griCode": "2-1",
         "dataFields": [
-          {"key": "legalName", "label": "Nome jurídico", "type": "text", "placeholder": "Razão social completa"},
-          {"key": "ownershipType", "label": "Estrutura societária", "type": "text", "placeholder": "Ex: S.A., Ltda., cooperativa"},
-          {"key": "headquarters", "label": "Localização da sede", "type": "text", "placeholder": "Cidade, estado, país"},
-          {"key": "countries", "label": "Países em que opera", "type": "textarea", "placeholder": "Liste os países de operação"}
+          {
+            "key": "legalName",
+            "label": "Nome jurídico",
+            "type": "text",
+            "placeholder": "Razão social completa"
+          },
+          {
+            "key": "ownershipType",
+            "label": "Estrutura societária",
+            "type": "text",
+            "placeholder": "Ex: S.A., Ltda., cooperativa"
+          },
+          {
+            "key": "headquarters",
+            "label": "Localização da sede",
+            "type": "text",
+            "placeholder": "Cidade, estado, país"
+          },
+          {
+            "key": "countries",
+            "label": "Países em que opera",
+            "type": "textarea",
+            "placeholder": "Liste os países de operação"
+          }
         ]
       },
       {
         "id": "GRI-U.2",
         "pillar": "GRI-U",
         "theme": "Organização e Estratégia",
-        "criteria": "Entidades incluídas no relatório de sustentabilidade",
-        "question": "A organização lista todas as entidades incluídas no seu relatório de sustentabilidade e justifica eventuais exclusões?",
+        "criteria": "Entidades incluídas no relatório de sustentabilidade da organização",
+        "question": "Entidades incluídas no relatório de sustentabilidade da organização",
         "griCode": "2-2",
         "dataFields": [
-          {"key": "entities", "label": "Entidades incluídas", "type": "textarea", "placeholder": "Liste as entidades e subsidiárias incluídas no relatório"},
-          {"key": "exclusions", "label": "Exclusões e justificativas", "type": "textarea", "placeholder": "Entidades excluídas e razões para exclusão"}
+          {
+            "key": "entities",
+            "label": "Entidades incluídas",
+            "type": "textarea",
+            "placeholder": "Liste as entidades e subsidiárias incluídas no relatório"
+          },
+          {
+            "key": "exclusions",
+            "label": "Exclusões e justificativas",
+            "type": "textarea",
+            "placeholder": "Entidades excluídas e razões para exclusão"
+          }
         ]
       },
       {
         "id": "GRI-U.3",
         "pillar": "GRI-U",
         "theme": "Organização e Estratégia",
-        "criteria": "Período do relatório, frequência e ponto de contato",
-        "question": "A organização informa o período coberto pelo relatório, a frequência de publicação e o ponto de contato para dúvidas?",
+        "criteria": "Período do relatório, frequência e ponto de contacto",
+        "question": "Período do relatório, frequência e ponto de contacto",
         "griCode": "2-3",
         "dataFields": [
-          {"key": "reportPeriod", "label": "Período coberto", "type": "text", "placeholder": "Ex: 01/01/2025 a 31/12/2025"},
-          {"key": "frequency", "label": "Frequência de publicação", "type": "text", "placeholder": "Ex: Anual, semestral"},
-          {"key": "contactName", "label": "Ponto de contato", "type": "text", "placeholder": "Nome e cargo do responsável"},
-          {"key": "contactEmail", "label": "E-mail de contato", "type": "text", "placeholder": "email@empresa.com.br"}
+          {
+            "key": "reportPeriod",
+            "label": "Período coberto",
+            "type": "text",
+            "placeholder": "Ex: 01/01/2025 a 31/12/2025"
+          },
+          {
+            "key": "frequency",
+            "label": "Frequência de publicação",
+            "type": "text",
+            "placeholder": "Ex: Anual, semestral"
+          },
+          {
+            "key": "contactName",
+            "label": "Ponto de contato",
+            "type": "text",
+            "placeholder": "Nome e cargo do responsável"
+          },
+          {
+            "key": "contactEmail",
+            "label": "E-mail de contato",
+            "type": "text",
+            "placeholder": "email@empresa.com.br"
+          }
         ]
       },
       {
@@ -47,12 +97,31 @@
         "pillar": "GRI-U",
         "theme": "Organização e Estratégia",
         "criteria": "Garantia externa",
-        "question": "A organização submete seu relatório de sustentabilidade a processos de garantia ou verificação externa?",
+        "question": "Garantia externa",
         "griCode": "2-5",
         "dataFields": [
-          {"key": "hasExternalAssurance", "label": "Possui verificação externa?", "type": "select", "options": ["Sim", "Não", "Em planejamento"]},
-          {"key": "assuranceProvider", "label": "Organismo verificador", "type": "text", "placeholder": "Nome da empresa/organismo de verificação"},
-          {"key": "assuranceScope", "label": "Escopo da verificação", "type": "textarea", "placeholder": "Quais indicadores/seções foram verificados"}
+          {
+            "key": "hasExternalAssurance",
+            "label": "Possui verificação externa?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não",
+              "Em planejamento"
+            ]
+          },
+          {
+            "key": "assuranceProvider",
+            "label": "Organismo verificador",
+            "type": "text",
+            "placeholder": "Nome da empresa/organismo de verificação"
+          },
+          {
+            "key": "assuranceScope",
+            "label": "Escopo da verificação",
+            "type": "textarea",
+            "placeholder": "Quais indicadores/seções foram verificados"
+          }
         ]
       },
       {
@@ -60,12 +129,27 @@
         "pillar": "GRI-U",
         "theme": "Organização e Estratégia",
         "criteria": "Atividades, cadeia de valor e outras relações comerciais",
-        "question": "A organização descreve suas atividades, cadeia de valor e outras relações comerciais relevantes?",
+        "question": "Atividades, cadeia de valor e outras relações comerciais",
         "griCode": "2-6",
         "dataFields": [
-          {"key": "activities", "label": "Principais atividades, produtos e serviços", "type": "textarea", "placeholder": "Descreva os setores de atuação e produtos/serviços oferecidos"},
-          {"key": "valueChain", "label": "Cadeia de valor", "type": "textarea", "placeholder": "Descreva fornecedores, parceiros e clientes relevantes"},
-          {"key": "businessRelationships", "label": "Outras relações comerciais relevantes", "type": "textarea", "placeholder": "Joint ventures, parcerias, subcontratações"}
+          {
+            "key": "activities",
+            "label": "Principais atividades, produtos e serviços",
+            "type": "textarea",
+            "placeholder": "Descreva os setores de atuação e produtos/serviços oferecidos"
+          },
+          {
+            "key": "valueChain",
+            "label": "Cadeia de valor",
+            "type": "textarea",
+            "placeholder": "Descreva fornecedores, parceiros e clientes relevantes"
+          },
+          {
+            "key": "businessRelationships",
+            "label": "Outras relações comerciais relevantes",
+            "type": "textarea",
+            "placeholder": "Joint ventures, parcerias, subcontratações"
+          }
         ]
       },
       {
@@ -73,11 +157,21 @@
         "pillar": "GRI-U",
         "theme": "Organização e Estratégia",
         "criteria": "Declaração sobre a estratégia de desenvolvimento sustentável",
-        "question": "A organização publica uma declaração formal sobre sua estratégia de desenvolvimento sustentável?",
+        "question": "Declaração sobre a estratégia de desenvolvimento sustentável",
         "griCode": "2-22",
         "dataFields": [
-          {"key": "strategyStatement", "label": "Declaração sobre estratégia de sustentabilidade", "type": "textarea", "placeholder": "Texto da declaração formal ou resumo da estratégia"},
-          {"key": "sdgAlignment", "label": "ODS (Objetivos de Desenvolvimento Sustentável) priorizados", "type": "textarea", "placeholder": "Liste os ODS que a organização prioriza"}
+          {
+            "key": "strategyStatement",
+            "label": "Declaração sobre estratégia de sustentabilidade",
+            "type": "textarea",
+            "placeholder": "Texto da declaração formal ou resumo da estratégia"
+          },
+          {
+            "key": "sdgAlignment",
+            "label": "ODS (Objetivos de Desenvolvimento Sustentável) priorizados",
+            "type": "textarea",
+            "placeholder": "Liste os ODS que a organização prioriza"
+          }
         ]
       },
       {
@@ -85,15 +179,40 @@
         "pillar": "GRI-U",
         "theme": "Força de Trabalho",
         "criteria": "Empregados",
-        "question": "A organização reporta o número total de empregados, discriminando por tipo de contrato, jornada, gênero e região?",
+        "question": "Empregados",
         "griCode": "2-7",
         "dataFields": [
-          {"key": "totalEmployees", "label": "Total de empregados", "type": "number"},
-          {"key": "permanentEmployees", "label": "Empregados permanentes", "type": "number"},
-          {"key": "temporaryEmployees", "label": "Empregados temporários", "type": "number"},
-          {"key": "fullTime", "label": "Jornada integral", "type": "number"},
-          {"key": "partTime", "label": "Jornada parcial", "type": "number"},
-          {"key": "genderBreakdown", "label": "Distribuição por gênero e região", "type": "textarea", "placeholder": "Ex: 60% homens, 40% mulheres; SP: 200, RJ: 50"}
+          {
+            "key": "totalEmployees",
+            "label": "Total de empregados",
+            "type": "number"
+          },
+          {
+            "key": "permanentEmployees",
+            "label": "Empregados permanentes",
+            "type": "number"
+          },
+          {
+            "key": "temporaryEmployees",
+            "label": "Empregados temporários",
+            "type": "number"
+          },
+          {
+            "key": "fullTime",
+            "label": "Jornada integral",
+            "type": "number"
+          },
+          {
+            "key": "partTime",
+            "label": "Jornada parcial",
+            "type": "number"
+          },
+          {
+            "key": "genderBreakdown",
+            "label": "Distribuição por gênero e região",
+            "type": "textarea",
+            "placeholder": "Ex: 60% homens, 40% mulheres; SP: 200, RJ: 50"
+          }
         ]
       },
       {
@@ -101,11 +220,20 @@
         "pillar": "GRI-U",
         "theme": "Força de Trabalho",
         "criteria": "Trabalhadores que não são empregados",
-        "question": "A organização reporta o número e o tipo de trabalhadores que não são empregados, mas cuja atuação é controlada pela organização?",
+        "question": "Trabalhadores que não são empregados",
         "griCode": "2-8",
         "dataFields": [
-          {"key": "nonEmployeeWorkers", "label": "Total de trabalhadores não empregados", "type": "number"},
-          {"key": "workerTypes", "label": "Tipos de trabalhadores", "type": "textarea", "placeholder": "Ex: terceirizados, estagiários, voluntários, autônomos"}
+          {
+            "key": "nonEmployeeWorkers",
+            "label": "Total de trabalhadores não empregados",
+            "type": "number"
+          },
+          {
+            "key": "workerTypes",
+            "label": "Tipos de trabalhadores",
+            "type": "textarea",
+            "placeholder": "Ex: terceirizados, estagiários, voluntários, autônomos"
+          }
         ]
       },
       {
@@ -113,11 +241,21 @@
         "pillar": "GRI-U",
         "theme": "Força de Trabalho",
         "criteria": "Acordos de negociação coletiva",
-        "question": "A organização reporta o percentual de empregados cobertos por acordos de negociação coletiva?",
+        "question": "Acordos de negociação coletiva",
         "griCode": "2-30",
         "dataFields": [
-          {"key": "collectiveBargainingPct", "label": "% empregados com negociação coletiva", "type": "number", "unit": "%"},
-          {"key": "agreements", "label": "Acordos coletivos vigentes", "type": "textarea", "placeholder": "Descreva os principais acordos e sindicatos envolvidos"}
+          {
+            "key": "collectiveBargainingPct",
+            "label": "% empregados com negociação coletiva",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "agreements",
+            "label": "Acordos coletivos vigentes",
+            "type": "textarea",
+            "placeholder": "Descreva os principais acordos e sindicatos envolvidos"
+          }
         ]
       },
       {
@@ -125,14 +263,37 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Estrutura e composição da governança",
-        "question": "A organização descreve a estrutura e a composição do seu órgão máximo de governança, incluindo comitês?",
+        "question": "Estrutura e composição da governança",
         "griCode": "2-9",
         "dataFields": [
-          {"key": "governanceBody", "label": "Órgão máximo de governança", "type": "text", "placeholder": "Ex: Conselho de Administração"},
-          {"key": "totalMembers", "label": "Número de membros", "type": "number"},
-          {"key": "independentMembers", "label": "Membros independentes", "type": "number"},
-          {"key": "committees", "label": "Comitês existentes", "type": "textarea", "placeholder": "Liste os comitês e suas funções"},
-          {"key": "diversityComposition", "label": "Composição por gênero e faixa etária", "type": "textarea", "placeholder": "Ex: 30% mulheres, 20% abaixo de 50 anos"}
+          {
+            "key": "governanceBody",
+            "label": "Órgão máximo de governança",
+            "type": "text",
+            "placeholder": "Ex: Conselho de Administração"
+          },
+          {
+            "key": "totalMembers",
+            "label": "Número de membros",
+            "type": "number"
+          },
+          {
+            "key": "independentMembers",
+            "label": "Membros independentes",
+            "type": "number"
+          },
+          {
+            "key": "committees",
+            "label": "Comitês existentes",
+            "type": "textarea",
+            "placeholder": "Liste os comitês e suas funções"
+          },
+          {
+            "key": "diversityComposition",
+            "label": "Composição por gênero e faixa etária",
+            "type": "textarea",
+            "placeholder": "Ex: 30% mulheres, 20% abaixo de 50 anos"
+          }
         ]
       },
       {
@@ -140,11 +301,21 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Nomeação e seleção do órgão máximo de governança",
-        "question": "A organização descreve os processos de nomeação e seleção dos membros do órgão máximo de governança?",
+        "question": "Nomeação e seleção do órgão máximo de governança",
         "griCode": "2-10",
         "dataFields": [
-          {"key": "nominationProcess", "label": "Processo de nomeação e seleção", "type": "textarea", "placeholder": "Descreva critérios de seleção, quem nomeia, mandato"},
-          {"key": "independenceCriteria", "label": "Critérios de independência", "type": "textarea", "placeholder": "Critérios usados para definir membros independentes"}
+          {
+            "key": "nominationProcess",
+            "label": "Processo de nomeação e seleção",
+            "type": "textarea",
+            "placeholder": "Descreva critérios de seleção, quem nomeia, mandato"
+          },
+          {
+            "key": "independenceCriteria",
+            "label": "Critérios de independência",
+            "type": "textarea",
+            "placeholder": "Critérios usados para definir membros independentes"
+          }
         ]
       },
       {
@@ -152,11 +323,24 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Presidente do órgão máximo de governança",
-        "question": "A organização informa se o presidente do órgão máximo de governança também é um executivo sênior e como conflitos de interesse são geridos?",
+        "question": "Presidente do órgão máximo de governança",
         "griCode": "2-11",
         "dataFields": [
-          {"key": "chairIsExecutive", "label": "Presidente também é executivo sênior?", "type": "select", "options": ["Sim", "Não"]},
-          {"key": "conflictManagement", "label": "Gestão de conflitos de interesse do presidente", "type": "textarea", "placeholder": "Como conflitos de interesse são prevenidos e tratados"}
+          {
+            "key": "chairIsExecutive",
+            "label": "Presidente também é executivo sênior?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não"
+            ]
+          },
+          {
+            "key": "conflictManagement",
+            "label": "Gestão de conflitos de interesse do presidente",
+            "type": "textarea",
+            "placeholder": "Como conflitos de interesse são prevenidos e tratados"
+          }
         ]
       },
       {
@@ -164,10 +348,15 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Papel do órgão máximo de governança na supervisão da gestão de impactos",
-        "question": "A organização descreve o papel do órgão máximo de governança na supervisão da gestão de impactos na economia, meio ambiente e pessoas?",
+        "question": "Papel do órgão máximo de governança na supervisão da gestão de impactos",
         "griCode": "2-12",
         "dataFields": [
-          {"key": "oversightRole", "label": "Papel na supervisão de impactos", "type": "textarea", "placeholder": "Como o órgão supervisiona impactos ESG — frequência de reuniões, temas tratados"}
+          {
+            "key": "oversightRole",
+            "label": "Papel na supervisão de impactos",
+            "type": "textarea",
+            "placeholder": "Como o órgão supervisiona impactos ESG — frequência de reuniões, temas tratados"
+          }
         ]
       },
       {
@@ -175,10 +364,15 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Delegação de responsabilidades para a gestão de impactos",
-        "question": "A organização descreve como delega responsabilidades para a gestão de impactos na economia, meio ambiente e pessoas?",
+        "question": "Delegação de responsabilidades para a gestão de impactos",
         "griCode": "2-13",
         "dataFields": [
-          {"key": "delegation", "label": "Delegação de responsabilidades", "type": "textarea", "placeholder": "Cargos/áreas responsáveis, processos de reporte ao órgão de governança"}
+          {
+            "key": "delegation",
+            "label": "Delegação de responsabilidades",
+            "type": "textarea",
+            "placeholder": "Cargos/áreas responsáveis, processos de reporte ao órgão de governança"
+          }
         ]
       },
       {
@@ -186,10 +380,15 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Papel do órgão máximo de governança no relato de sustentabilidade",
-        "question": "A organização descreve o papel do órgão máximo de governança na revisão e aprovação do relato de sustentabilidade?",
+        "question": "Papel do órgão máximo de governança no relato de sustentabilidade",
         "griCode": "2-14",
         "dataFields": [
-          {"key": "reportApproval", "label": "Processo de revisão e aprovação do relatório", "type": "textarea", "placeholder": "Quem revisa, quem aprova, frequência"}
+          {
+            "key": "reportApproval",
+            "label": "Processo de revisão e aprovação do relatório",
+            "type": "textarea",
+            "placeholder": "Quem revisa, quem aprova, frequência"
+          }
         ]
       },
       {
@@ -197,11 +396,25 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Conflitos de interesse",
-        "question": "A organização descreve os processos para prevenir e mitigar conflitos de interesse no órgão máximo de governança?",
+        "question": "Conflitos de interesse",
         "griCode": "2-15",
         "dataFields": [
-          {"key": "conflictPolicy", "label": "Política de conflitos de interesse", "type": "textarea", "placeholder": "Processos para identificar, prevenir e mitigar conflitos"},
-          {"key": "disclosureToStakeholders", "label": "Divulgação para stakeholders?", "type": "select", "options": ["Sim", "Não", "Parcialmente"]}
+          {
+            "key": "conflictPolicy",
+            "label": "Política de conflitos de interesse",
+            "type": "textarea",
+            "placeholder": "Processos para identificar, prevenir e mitigar conflitos"
+          },
+          {
+            "key": "disclosureToStakeholders",
+            "label": "Divulgação para stakeholders?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não",
+              "Parcialmente"
+            ]
+          }
         ]
       },
       {
@@ -209,11 +422,20 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Comunicação de preocupações críticas",
-        "question": "A organização descreve como preocupações críticas são comunicadas ao órgão máximo de governança?",
+        "question": "Comunicação de preocupações críticas",
         "griCode": "2-16",
         "dataFields": [
-          {"key": "criticalConcernsProcess", "label": "Processo de comunicação de preocupações críticas", "type": "textarea", "placeholder": "Como preocupações são comunicadas e tratadas pelo órgão de governança"},
-          {"key": "criticalConcernsCount", "label": "Nº de preocupações críticas comunicadas no período", "type": "number"}
+          {
+            "key": "criticalConcernsProcess",
+            "label": "Processo de comunicação de preocupações críticas",
+            "type": "textarea",
+            "placeholder": "Como preocupações são comunicadas e tratadas pelo órgão de governança"
+          },
+          {
+            "key": "criticalConcernsCount",
+            "label": "Nº de preocupações críticas comunicadas no período",
+            "type": "number"
+          }
         ]
       },
       {
@@ -221,10 +443,15 @@
         "pillar": "GRI-U",
         "theme": "Governança",
         "criteria": "Conhecimento coletivo do órgão máximo de governança",
-        "question": "A organização adota medidas para garantir o conhecimento coletivo do órgão máximo de governança sobre desenvolvimento sustentável?",
+        "question": "Conhecimento coletivo do órgão máximo de governança",
         "griCode": "2-17",
         "dataFields": [
-          {"key": "knowledgeMeasures", "label": "Medidas adotadas", "type": "textarea", "placeholder": "Treinamentos, workshops, consultorias sobre sustentabilidade para o órgão de governança"}
+          {
+            "key": "knowledgeMeasures",
+            "label": "Medidas adotadas",
+            "type": "textarea",
+            "placeholder": "Treinamentos, workshops, consultorias sobre sustentabilidade para o órgão de governança"
+          }
         ]
       },
       {
@@ -232,11 +459,25 @@
         "pillar": "GRI-U",
         "theme": "Remuneração",
         "criteria": "Políticas de remuneração",
-        "question": "A organização descreve suas políticas de remuneração para os membros do órgão máximo de governança e da diretoria executiva?",
+        "question": "Políticas de remuneração",
         "griCode": "2-19",
         "dataFields": [
-          {"key": "remunerationPolicy", "label": "Política de remuneração", "type": "textarea", "placeholder": "Componentes: fixo, variável, benefícios, bônus por desempenho ESG"},
-          {"key": "esgLinkedRemuneration", "label": "Remuneração atrelada a metas ESG?", "type": "select", "options": ["Sim", "Não", "Em planejamento"]}
+          {
+            "key": "remunerationPolicy",
+            "label": "Política de remuneração",
+            "type": "textarea",
+            "placeholder": "Componentes: fixo, variável, benefícios, bônus por desempenho ESG"
+          },
+          {
+            "key": "esgLinkedRemuneration",
+            "label": "Remuneração atrelada a metas ESG?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não",
+              "Em planejamento"
+            ]
+          }
         ]
       },
       {
@@ -244,11 +485,24 @@
         "pillar": "GRI-U",
         "theme": "Remuneração",
         "criteria": "Processo para a definição da remuneração",
-        "question": "A organização descreve o processo para definir a remuneração, incluindo consultores independentes e voto dos stakeholders?",
+        "question": "Processo para a definição da remuneração",
         "griCode": "2-20",
         "dataFields": [
-          {"key": "remunerationProcess", "label": "Processo de definição da remuneração", "type": "textarea", "placeholder": "Comitê de remuneração, uso de consultores, participação de stakeholders"},
-          {"key": "independentConsultant", "label": "Usa consultor independente?", "type": "select", "options": ["Sim", "Não"]}
+          {
+            "key": "remunerationProcess",
+            "label": "Processo de definição da remuneração",
+            "type": "textarea",
+            "placeholder": "Comitê de remuneração, uso de consultores, participação de stakeholders"
+          },
+          {
+            "key": "independentConsultant",
+            "label": "Usa consultor independente?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não"
+            ]
+          }
         ]
       },
       {
@@ -256,11 +510,21 @@
         "pillar": "GRI-U",
         "theme": "Remuneração",
         "criteria": "Rácio da remuneração total anual",
-        "question": "A organização divulga o rácio entre a remuneração total anual do indivíduo mais bem pago e a mediana dos demais empregados?",
+        "question": "Rácio da remuneração total anual",
         "griCode": "2-21",
         "dataFields": [
-          {"key": "payRatio", "label": "Rácio de remuneração (maior/mediana)", "type": "number", "placeholder": "Ex: 15.2"},
-          {"key": "payRatioChange", "label": "Variação percentual em relação ao período anterior", "type": "number", "unit": "%"}
+          {
+            "key": "payRatio",
+            "label": "Rácio de remuneração (maior/mediana)",
+            "type": "number",
+            "placeholder": "Ex: 15.2"
+          },
+          {
+            "key": "payRatioChange",
+            "label": "Variação percentual em relação ao período anterior",
+            "type": "number",
+            "unit": "%"
+          }
         ]
       },
       {
@@ -268,11 +532,25 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Compromissos de política",
-        "question": "A organização descreve seus compromissos de política em relação a direitos humanos e conduta empresarial responsável?",
+        "question": "Compromissos de política",
         "griCode": "2-23",
         "dataFields": [
-          {"key": "policyCommitments", "label": "Compromissos de política", "type": "textarea", "placeholder": "Políticas formais de direitos humanos, código de conduta, declarações públicas"},
-          {"key": "humanRightsPolicy", "label": "Possui política de direitos humanos?", "type": "select", "options": ["Sim", "Não", "Em elaboração"]}
+          {
+            "key": "policyCommitments",
+            "label": "Compromissos de política",
+            "type": "textarea",
+            "placeholder": "Políticas formais de direitos humanos, código de conduta, declarações públicas"
+          },
+          {
+            "key": "humanRightsPolicy",
+            "label": "Possui política de direitos humanos?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não",
+              "Em elaboração"
+            ]
+          }
         ]
       },
       {
@@ -280,10 +558,15 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Incorporação dos compromissos de política",
-        "question": "A organização descreve como incorpora seus compromissos de política nas atividades e relações comerciais?",
+        "question": "Incorporação dos compromissos de política",
         "griCode": "2-24",
         "dataFields": [
-          {"key": "policyIntegration", "label": "Incorporação nas atividades e relações comerciais", "type": "textarea", "placeholder": "Como os compromissos são aplicados na prática — treinamentos, processos, contratos"}
+          {
+            "key": "policyIntegration",
+            "label": "Incorporação nas atividades e relações comerciais",
+            "type": "textarea",
+            "placeholder": "Como os compromissos são aplicados na prática — treinamentos, processos, contratos"
+          }
         ]
       },
       {
@@ -291,11 +574,25 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Processos para reparar impactos negativos",
-        "question": "A organização possui processos para identificar e reparar impactos negativos que causou ou para os quais contribuiu?",
+        "question": "Processos para reparar impactos negativos",
         "griCode": "2-25",
         "dataFields": [
-          {"key": "remediationProcess", "label": "Processos de remediação", "type": "textarea", "placeholder": "Mecanismos para identificar, investigar e reparar impactos negativos"},
-          {"key": "grievanceMechanism", "label": "Possui mecanismo de reclamação?", "type": "select", "options": ["Sim", "Não", "Em implementação"]}
+          {
+            "key": "remediationProcess",
+            "label": "Processos de remediação",
+            "type": "textarea",
+            "placeholder": "Mecanismos para identificar, investigar e reparar impactos negativos"
+          },
+          {
+            "key": "grievanceMechanism",
+            "label": "Possui mecanismo de reclamação?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não",
+              "Em implementação"
+            ]
+          }
         ]
       },
       {
@@ -303,11 +600,24 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Mecanismos para obter aconselhamento e apresentar preocupações",
-        "question": "A organização disponibiliza mecanismos para que partes interessadas obtenham aconselhamento e apresentem preocupações sobre conduta empresarial?",
+        "question": "Mecanismos para obter aconselhamento e apresentar preocupações",
         "griCode": "2-26",
         "dataFields": [
-          {"key": "advisoryMechanisms", "label": "Mecanismos disponíveis", "type": "textarea", "placeholder": "Canal de denúncias, ouvidoria, linha ética, e-mail de compliance"},
-          {"key": "anonymousReporting", "label": "Permite denúncia anônima?", "type": "select", "options": ["Sim", "Não"]}
+          {
+            "key": "advisoryMechanisms",
+            "label": "Mecanismos disponíveis",
+            "type": "textarea",
+            "placeholder": "Canal de denúncias, ouvidoria, linha ética, e-mail de compliance"
+          },
+          {
+            "key": "anonymousReporting",
+            "label": "Permite denúncia anônima?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não"
+            ]
+          }
         ]
       },
       {
@@ -315,12 +625,26 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Conformidade com leis e regulamentos",
-        "question": "A organização reporta casos significativos de não conformidade com leis e regulamentos e as medidas tomadas?",
+        "question": "Conformidade com leis e regulamentos",
         "griCode": "2-27",
         "dataFields": [
-          {"key": "nonComplianceCases", "label": "Nº de casos de não conformidade no período", "type": "number"},
-          {"key": "finesTotal", "label": "Valor total de multas (R$)", "type": "number", "unit": "R$"},
-          {"key": "nonComplianceDetails", "label": "Detalhes dos casos e medidas tomadas", "type": "textarea", "placeholder": "Natureza das infrações e ações corretivas"}
+          {
+            "key": "nonComplianceCases",
+            "label": "Nº de casos de não conformidade no período",
+            "type": "number"
+          },
+          {
+            "key": "finesTotal",
+            "label": "Valor total de multas (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "nonComplianceDetails",
+            "label": "Detalhes dos casos e medidas tomadas",
+            "type": "textarea",
+            "placeholder": "Natureza das infrações e ações corretivas"
+          }
         ]
       },
       {
@@ -328,10 +652,15 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Participação em associações",
-        "question": "A organização reporta suas participações em associações setoriais e organizações nacionais ou internacionais relevantes?",
+        "question": "Participação em associações",
         "griCode": "2-28",
         "dataFields": [
-          {"key": "associations", "label": "Associações e organizações", "type": "textarea", "placeholder": "Liste associações setoriais, ONGs, pactos e iniciativas (ex: Pacto Global, CDP, CEBDS)"}
+          {
+            "key": "associations",
+            "label": "Associações e organizações",
+            "type": "textarea",
+            "placeholder": "Liste associações setoriais, ONGs, pactos e iniciativas (ex: Pacto Global, CDP, CEBDS)"
+          }
         ]
       },
       {
@@ -339,11 +668,21 @@
         "pillar": "GRI-U",
         "theme": "Políticas e Conformidade",
         "criteria": "Envolvimento das partes interessadas (stakeholders)",
-        "question": "A organização descreve como identifica e se envolve com suas partes interessadas (stakeholders) e os resultados desse engajamento?",
+        "question": "Envolvimento das partes interessadas (stakeholders)",
         "griCode": "2-29",
         "dataFields": [
-          {"key": "stakeholderGroups", "label": "Principais grupos de stakeholders", "type": "textarea", "placeholder": "Ex: empregados, comunidades, investidores, fornecedores, governo"},
-          {"key": "engagementMethods", "label": "Métodos de engajamento", "type": "textarea", "placeholder": "Pesquisas, reuniões, painéis, consultas públicas"}
+          {
+            "key": "stakeholderGroups",
+            "label": "Principais grupos de stakeholders",
+            "type": "textarea",
+            "placeholder": "Ex: empregados, comunidades, investidores, fornecedores, governo"
+          },
+          {
+            "key": "engagementMethods",
+            "label": "Métodos de engajamento",
+            "type": "textarea",
+            "placeholder": "Pesquisas, reuniões, painéis, consultas públicas"
+          }
         ]
       },
       {
@@ -351,10 +690,15 @@
         "pillar": "GRI-U",
         "theme": "Tópicos Materiais",
         "criteria": "Processo para determinar os temas materiais",
-        "question": "A organização descreve o processo utilizado para determinar seus temas materiais, incluindo os stakeholders envolvidos?",
+        "question": "Processo para determinar os temas materiais",
         "griCode": "3-1",
         "dataFields": [
-          {"key": "materialityProcess", "label": "Processo de materialidade", "type": "textarea", "placeholder": "Metodologia usada, stakeholders consultados, critérios de priorização"}
+          {
+            "key": "materialityProcess",
+            "label": "Processo de materialidade",
+            "type": "textarea",
+            "placeholder": "Metodologia usada, stakeholders consultados, critérios de priorização"
+          }
         ]
       },
       {
@@ -362,10 +706,15 @@
         "pillar": "GRI-U",
         "theme": "Tópicos Materiais",
         "criteria": "Lista de temas materiais",
-        "question": "A organização publica sua lista de temas materiais e explica como foram priorizados?",
+        "question": "Lista de temas materiais",
         "griCode": "3-2",
         "dataFields": [
-          {"key": "materialTopics", "label": "Lista de temas materiais", "type": "textarea", "placeholder": "Liste os temas materiais identificados em ordem de prioridade"}
+          {
+            "key": "materialTopics",
+            "label": "Lista de temas materiais",
+            "type": "textarea",
+            "placeholder": "Liste os temas materiais identificados em ordem de prioridade"
+          }
         ]
       },
       {
@@ -373,10 +722,15 @@
         "pillar": "GRI-U",
         "theme": "Tópicos Materiais",
         "criteria": "Gestão de temas materiais",
-        "question": "A organização descreve como gerencia cada um dos temas materiais identificados, incluindo políticas, ações e metas?",
+        "question": "Gestão de temas materiais",
         "griCode": "3-3",
         "dataFields": [
-          {"key": "materialTopicManagement", "label": "Gestão dos temas materiais", "type": "textarea", "placeholder": "Políticas, metas, indicadores e ações para cada tema material"}
+          {
+            "key": "materialTopicManagement",
+            "label": "Gestão dos temas materiais",
+            "type": "textarea",
+            "placeholder": "Políticas, metas, indicadores e ações para cada tema material"
+          }
         ]
       }
     ]
@@ -389,10 +743,15 @@
         "pillar": "GRI-E",
         "theme": "Biodiversidade",
         "criteria": "Gestão de impactos na biodiversidade",
-        "question": "A organização possui processos para gerir seus impactos na biodiversidade ao longo de suas operações e cadeia de valor?",
+        "question": "Gestão de impactos na biodiversidade",
         "griCode": "101-2",
         "dataFields": [
-          {"key": "biodiversityPolicy", "label": "Política de biodiversidade", "type": "textarea", "placeholder": "Descreva processos, políticas e programas de gestão da biodiversidade"}
+          {
+            "key": "biodiversityPolicy",
+            "label": "Política de biodiversidade",
+            "type": "textarea",
+            "placeholder": "Descreva processos, políticas e programas de gestão da biodiversidade"
+          }
         ]
       },
       {
@@ -400,10 +759,15 @@
         "pillar": "GRI-E",
         "theme": "Biodiversidade",
         "criteria": "Identificação de impactos na biodiversidade",
-        "question": "A organização identifica e avalia seus impactos reais e potenciais na biodiversidade?",
+        "question": "Identificação de impactos na biodiversidade",
         "griCode": "101-4",
         "dataFields": [
-          {"key": "impactAssessment", "label": "Avaliação de impactos na biodiversidade", "type": "textarea", "placeholder": "Impactos identificados, metodologia de avaliação, resultados"}
+          {
+            "key": "impactAssessment",
+            "label": "Avaliação de impactos na biodiversidade",
+            "type": "textarea",
+            "placeholder": "Impactos identificados, metodologia de avaliação, resultados"
+          }
         ]
       },
       {
@@ -411,11 +775,20 @@
         "pillar": "GRI-E",
         "theme": "Biodiversidade",
         "criteria": "Locais com impactos na biodiversidade",
-        "question": "A organização identifica e reporta locais de operação com impactos significativos na biodiversidade, incluindo áreas protegidas?",
+        "question": "Locais com impactos na biodiversidade",
         "griCode": "101-5",
         "dataFields": [
-          {"key": "sitesCount", "label": "Nº de locais com impactos na biodiversidade", "type": "number"},
-          {"key": "protectedAreas", "label": "Operações em/próximo de áreas protegidas", "type": "textarea", "placeholder": "Liste os locais, tipo de área protegida, e extensão do impacto"}
+          {
+            "key": "sitesCount",
+            "label": "Nº de locais com impactos na biodiversidade",
+            "type": "number"
+          },
+          {
+            "key": "protectedAreas",
+            "label": "Operações em/próximo de áreas protegidas",
+            "type": "textarea",
+            "placeholder": "Liste os locais, tipo de área protegida, e extensão do impacto"
+          }
         ]
       },
       {
@@ -423,10 +796,15 @@
         "pillar": "GRI-E",
         "theme": "Biodiversidade",
         "criteria": "Mudanças no estado da biodiversidade",
-        "question": "A organização monitora e reporta mudanças no estado da biodiversidade nas áreas afetadas por suas operações?",
+        "question": "Mudanças no estado da biodiversidade",
         "griCode": "101-7",
         "dataFields": [
-          {"key": "monitoringResults", "label": "Resultados do monitoramento", "type": "textarea", "placeholder": "Espécies monitoradas, tendências observadas, ações de mitigação"}
+          {
+            "key": "monitoringResults",
+            "label": "Resultados do monitoramento",
+            "type": "textarea",
+            "placeholder": "Espécies monitoradas, tendências observadas, ações de mitigação"
+          }
         ]
       },
       {
@@ -434,10 +812,15 @@
         "pillar": "GRI-E",
         "theme": "Biodiversidade",
         "criteria": "Serviços ecossistêmicos",
-        "question": "A organização identifica e avalia sua dependência e seus impactos nos serviços ecossistêmicos?",
+        "question": "Serviços ecossistêmicos",
         "griCode": "101-8",
         "dataFields": [
-          {"key": "ecosystemServices", "label": "Serviços ecossistêmicos identificados", "type": "textarea", "placeholder": "Serviços dos quais depende (água, polinização, regulação climática) e impactos"}
+          {
+            "key": "ecosystemServices",
+            "label": "Serviços ecossistêmicos identificados",
+            "type": "textarea",
+            "placeholder": "Serviços dos quais depende (água, polinização, regulação climática) e impactos"
+          }
         ]
       },
       {
@@ -445,13 +828,33 @@
         "pillar": "GRI-E",
         "theme": "Mudanças Climáticas",
         "criteria": "Emissões de GEE de Escopo 1",
-        "question": "A organização mensura e reporta suas emissões de gases de efeito estufa (GEE) de Escopo 1 (emissões diretas)?",
+        "question": "Emissões de GEE de Escopo 1",
         "griCode": "102-5",
         "dataFields": [
-          {"key": "scope1Total", "label": "Emissões Escopo 1 totais", "type": "number", "unit": "tCO₂e"},
-          {"key": "scope1Gases", "label": "Gases incluídos no cálculo", "type": "text", "placeholder": "Ex: CO₂, CH₄, N₂O, HFCs"},
-          {"key": "scope1Methodology", "label": "Metodologia utilizada", "type": "text", "placeholder": "Ex: GHG Protocol, IPCC 2006"},
-          {"key": "scope1BaseYear", "label": "Ano-base", "type": "text", "placeholder": "Ex: 2020"}
+          {
+            "key": "scope1Total",
+            "label": "Emissões Escopo 1 totais",
+            "type": "number",
+            "unit": "tCO₂e"
+          },
+          {
+            "key": "scope1Gases",
+            "label": "Gases incluídos no cálculo",
+            "type": "text",
+            "placeholder": "Ex: CO₂, CH₄, N₂O, HFCs"
+          },
+          {
+            "key": "scope1Methodology",
+            "label": "Metodologia utilizada",
+            "type": "text",
+            "placeholder": "Ex: GHG Protocol, IPCC 2006"
+          },
+          {
+            "key": "scope1BaseYear",
+            "label": "Ano-base",
+            "type": "text",
+            "placeholder": "Ex: 2020"
+          }
         ]
       },
       {
@@ -459,11 +862,21 @@
         "pillar": "GRI-E",
         "theme": "Mudanças Climáticas",
         "criteria": "Emissões de GEE de Escopo 2",
-        "question": "A organização mensura e reporta suas emissões de gases de efeito estufa (GEE) de Escopo 2 (energia adquirida)?",
+        "question": "Emissões de GEE de Escopo 2",
         "griCode": "102-6",
         "dataFields": [
-          {"key": "scope2LocationBased", "label": "Escopo 2 — abordagem baseada na localização", "type": "number", "unit": "tCO₂e"},
-          {"key": "scope2MarketBased", "label": "Escopo 2 — abordagem baseada no mercado", "type": "number", "unit": "tCO₂e"}
+          {
+            "key": "scope2LocationBased",
+            "label": "Escopo 2 — abordagem baseada na localização",
+            "type": "number",
+            "unit": "tCO₂e"
+          },
+          {
+            "key": "scope2MarketBased",
+            "label": "Escopo 2 — abordagem baseada no mercado",
+            "type": "number",
+            "unit": "tCO₂e"
+          }
         ]
       },
       {
@@ -471,11 +884,21 @@
         "pillar": "GRI-E",
         "theme": "Mudanças Climáticas",
         "criteria": "Emissões de GEE de Escopo 3",
-        "question": "A organização mensura e reporta suas emissões de gases de efeito estufa (GEE) de Escopo 3 (cadeia de valor)?",
+        "question": "Emissões de GEE de Escopo 3",
         "griCode": "102-7",
         "dataFields": [
-          {"key": "scope3Total", "label": "Emissões Escopo 3 totais", "type": "number", "unit": "tCO₂e"},
-          {"key": "scope3Categories", "label": "Categorias incluídas", "type": "textarea", "placeholder": "Ex: Viagens a negócios, transporte de produtos, resíduos, compra de bens"}
+          {
+            "key": "scope3Total",
+            "label": "Emissões Escopo 3 totais",
+            "type": "number",
+            "unit": "tCO₂e"
+          },
+          {
+            "key": "scope3Categories",
+            "label": "Categorias incluídas",
+            "type": "textarea",
+            "placeholder": "Ex: Viagens a negócios, transporte de produtos, resíduos, compra de bens"
+          }
         ]
       },
       {
@@ -483,11 +906,21 @@
         "pillar": "GRI-E",
         "theme": "Energia",
         "criteria": "Políticas e compromissos energéticos",
-        "question": "A organização possui políticas e compromissos formais para a gestão e redução do consumo de energia?",
+        "question": "Políticas e compromissos energéticos",
         "griCode": "103-1",
         "dataFields": [
-          {"key": "energyPolicy", "label": "Política energética", "type": "textarea", "placeholder": "Metas de redução, compromissos de energia renovável, certificações ISO 50001"},
-          {"key": "renewableTarget", "label": "Meta de energia renovável", "type": "number", "unit": "%"}
+          {
+            "key": "energyPolicy",
+            "label": "Política energética",
+            "type": "textarea",
+            "placeholder": "Metas de redução, compromissos de energia renovável, certificações ISO 50001"
+          },
+          {
+            "key": "renewableTarget",
+            "label": "Meta de energia renovável",
+            "type": "number",
+            "unit": "%"
+          }
         ]
       },
       {
@@ -495,13 +928,33 @@
         "pillar": "GRI-E",
         "theme": "Energia",
         "criteria": "Consumo de energia e autogeração dentro da organização",
-        "question": "A organização mensura e reporta o consumo total de energia e a autogeração dentro de suas operações?",
+        "question": "Consumo de energia e autogeração dentro da organização",
         "griCode": "103-2",
         "dataFields": [
-          {"key": "totalEnergyConsumption", "label": "Consumo total de energia", "type": "number", "unit": "MWh"},
-          {"key": "renewableEnergy", "label": "Energia de fontes renováveis", "type": "number", "unit": "MWh"},
-          {"key": "nonRenewableEnergy", "label": "Energia de fontes não renováveis", "type": "number", "unit": "MWh"},
-          {"key": "selfGeneration", "label": "Autogeração", "type": "number", "unit": "MWh"}
+          {
+            "key": "totalEnergyConsumption",
+            "label": "Consumo total de energia",
+            "type": "number",
+            "unit": "MWh"
+          },
+          {
+            "key": "renewableEnergy",
+            "label": "Energia de fontes renováveis",
+            "type": "number",
+            "unit": "MWh"
+          },
+          {
+            "key": "nonRenewableEnergy",
+            "label": "Energia de fontes não renováveis",
+            "type": "number",
+            "unit": "MWh"
+          },
+          {
+            "key": "selfGeneration",
+            "label": "Autogeração",
+            "type": "number",
+            "unit": "MWh"
+          }
         ]
       },
       {
@@ -509,12 +962,27 @@
         "pillar": "GRI-E",
         "theme": "Energia",
         "criteria": "Consumo de energia a montante e a jusante",
-        "question": "A organização mensura e reporta o consumo de energia a montante e a jusante de sua cadeia de valor?",
+        "question": "Consumo de energia a montante e a jusante",
         "griCode": "103-3",
         "dataFields": [
-          {"key": "upstreamEnergy", "label": "Energia consumida a montante", "type": "number", "unit": "MWh"},
-          {"key": "downstreamEnergy", "label": "Energia consumida a jusante", "type": "number", "unit": "MWh"},
-          {"key": "energyDetails", "label": "Detalhamento", "type": "textarea", "placeholder": "Fontes de dados, escopos cobertos, estimativas"}
+          {
+            "key": "upstreamEnergy",
+            "label": "Energia consumida a montante",
+            "type": "number",
+            "unit": "MWh"
+          },
+          {
+            "key": "downstreamEnergy",
+            "label": "Energia consumida a jusante",
+            "type": "number",
+            "unit": "MWh"
+          },
+          {
+            "key": "energyDetails",
+            "label": "Detalhamento",
+            "type": "textarea",
+            "placeholder": "Fontes de dados, escopos cobertos, estimativas"
+          }
         ]
       },
       {
@@ -522,12 +990,26 @@
         "pillar": "GRI-E",
         "theme": "Energia",
         "criteria": "Intensidade energética",
-        "question": "A organização calcula e reporta sua intensidade energética por unidade de produto, receita ou outra métrica relevante?",
+        "question": "Intensidade energética",
         "griCode": "103-4",
         "dataFields": [
-          {"key": "energyIntensity", "label": "Intensidade energética", "type": "number"},
-          {"key": "intensityUnit", "label": "Unidade de referência", "type": "text", "placeholder": "Ex: MWh/R$ milhão, kWh/unidade produzida"},
-          {"key": "intensityTrend", "label": "Variação em relação ao período anterior", "type": "number", "unit": "%"}
+          {
+            "key": "energyIntensity",
+            "label": "Intensidade energética",
+            "type": "number"
+          },
+          {
+            "key": "intensityUnit",
+            "label": "Unidade de referência",
+            "type": "text",
+            "placeholder": "Ex: MWh/R$ milhão, kWh/unidade produzida"
+          },
+          {
+            "key": "intensityTrend",
+            "label": "Variação em relação ao período anterior",
+            "type": "number",
+            "unit": "%"
+          }
         ]
       },
       {
@@ -535,11 +1017,25 @@
         "pillar": "GRI-E",
         "theme": "Água e Efluentes",
         "criteria": "Interações com a água como um recurso compartilhado",
-        "question": "A organização descreve como interage com a água como um recurso compartilhado, incluindo avaliação de riscos hídricos?",
+        "question": "Interações com a água como um recurso compartilhado",
         "griCode": "303-1",
         "dataFields": [
-          {"key": "waterInteraction", "label": "Interação com recursos hídricos", "type": "textarea", "placeholder": "Fontes de captação, como a água é usada, riscos hídricos identificados"},
-          {"key": "waterStressAreas", "label": "Opera em áreas com estresse hídrico?", "type": "select", "options": ["Sim", "Não", "Parcialmente"]}
+          {
+            "key": "waterInteraction",
+            "label": "Interação com recursos hídricos",
+            "type": "textarea",
+            "placeholder": "Fontes de captação, como a água é usada, riscos hídricos identificados"
+          },
+          {
+            "key": "waterStressAreas",
+            "label": "Opera em áreas com estresse hídrico?",
+            "type": "select",
+            "options": [
+              "Sim",
+              "Não",
+              "Parcialmente"
+            ]
+          }
         ]
       },
       {
@@ -547,10 +1043,15 @@
         "pillar": "GRI-E",
         "theme": "Água e Efluentes",
         "criteria": "Gestão de impactos relacionados ao descarte de água",
-        "question": "A organização possui processos para gerir os impactos relacionados ao descarte de água e efluentes?",
+        "question": "Gestão de impactos relacionados ao descarte de água",
         "griCode": "303-2",
         "dataFields": [
-          {"key": "effluentManagement", "label": "Gestão de efluentes", "type": "textarea", "placeholder": "Tratamento, padrões de qualidade, monitoramento, destinação"}
+          {
+            "key": "effluentManagement",
+            "label": "Gestão de efluentes",
+            "type": "textarea",
+            "placeholder": "Tratamento, padrões de qualidade, monitoramento, destinação"
+          }
         ]
       },
       {
@@ -558,14 +1059,39 @@
         "pillar": "GRI-E",
         "theme": "Água e Efluentes",
         "criteria": "Captação de água",
-        "question": "A organização mensura e reporta o volume total de água captada, discriminando por fonte e área com estresse hídrico?",
+        "question": "Captação de água",
         "griCode": "303-3",
         "dataFields": [
-          {"key": "totalWithdrawal", "label": "Captação total de água", "type": "number", "unit": "m³"},
-          {"key": "surfaceWater", "label": "Água superficial", "type": "number", "unit": "m³"},
-          {"key": "groundwater", "label": "Água subterrânea", "type": "number", "unit": "m³"},
-          {"key": "municipalWater", "label": "Água de concessionárias", "type": "number", "unit": "m³"},
-          {"key": "waterStressWithdrawal", "label": "Captação em áreas com estresse hídrico", "type": "number", "unit": "m³"}
+          {
+            "key": "totalWithdrawal",
+            "label": "Captação total de água",
+            "type": "number",
+            "unit": "m³"
+          },
+          {
+            "key": "surfaceWater",
+            "label": "Água superficial",
+            "type": "number",
+            "unit": "m³"
+          },
+          {
+            "key": "groundwater",
+            "label": "Água subterrânea",
+            "type": "number",
+            "unit": "m³"
+          },
+          {
+            "key": "municipalWater",
+            "label": "Água de concessionárias",
+            "type": "number",
+            "unit": "m³"
+          },
+          {
+            "key": "waterStressWithdrawal",
+            "label": "Captação em áreas com estresse hídrico",
+            "type": "number",
+            "unit": "m³"
+          }
         ]
       },
       {
@@ -573,11 +1099,21 @@
         "pillar": "GRI-E",
         "theme": "Água e Efluentes",
         "criteria": "Consumo de água",
-        "question": "A organização mensura e reporta o consumo total de água e as variações ao longo do tempo?",
+        "question": "Consumo de água",
         "griCode": "303-5",
         "dataFields": [
-          {"key": "totalConsumption", "label": "Consumo total de água", "type": "number", "unit": "m³"},
-          {"key": "consumptionChange", "label": "Variação em relação ao período anterior", "type": "number", "unit": "%"}
+          {
+            "key": "totalConsumption",
+            "label": "Consumo total de água",
+            "type": "number",
+            "unit": "m³"
+          },
+          {
+            "key": "consumptionChange",
+            "label": "Variação em relação ao período anterior",
+            "type": "number",
+            "unit": "%"
+          }
         ]
       },
       {
@@ -585,10 +1121,15 @@
         "pillar": "GRI-E",
         "theme": "Resíduos",
         "criteria": "Geração de resíduos e impactos significativos relacionados a resíduos",
-        "question": "A organização descreve os impactos significativos reais e potenciais relacionados à geração de resíduos?",
+        "question": "Geração de resíduos e impactos significativos relacionados a resíduos",
         "griCode": "306-1",
         "dataFields": [
-          {"key": "wasteImpacts", "label": "Impactos significativos", "type": "textarea", "placeholder": "Impactos ambientais e sociais da geração de resíduos"}
+          {
+            "key": "wasteImpacts",
+            "label": "Impactos significativos",
+            "type": "textarea",
+            "placeholder": "Impactos ambientais e sociais da geração de resíduos"
+          }
         ]
       },
       {
@@ -596,10 +1137,15 @@
         "pillar": "GRI-E",
         "theme": "Resíduos",
         "criteria": "Gestão de impactos significativos relacionados a resíduos",
-        "question": "A organização descreve as ações tomadas para gerir impactos significativos relacionados à geração de resíduos?",
+        "question": "Gestão de impactos significativos relacionados a resíduos",
         "griCode": "306-2",
         "dataFields": [
-          {"key": "wasteManagement", "label": "Ações de gestão de resíduos", "type": "textarea", "placeholder": "Políticas de redução, reutilização, reciclagem, logística reversa"}
+          {
+            "key": "wasteManagement",
+            "label": "Ações de gestão de resíduos",
+            "type": "textarea",
+            "placeholder": "Políticas de redução, reutilização, reciclagem, logística reversa"
+          }
         ]
       },
       {
@@ -607,12 +1153,27 @@
         "pillar": "GRI-E",
         "theme": "Resíduos",
         "criteria": "Resíduos gerados",
-        "question": "A organização mensura e reporta o peso total de resíduos gerados, discriminando por tipo e composição?",
+        "question": "Resíduos gerados",
         "griCode": "306-3",
         "dataFields": [
-          {"key": "totalWaste", "label": "Total de resíduos gerados", "type": "number", "unit": "t"},
-          {"key": "hazardousWaste", "label": "Resíduos perigosos (Classe I)", "type": "number", "unit": "t"},
-          {"key": "nonHazardousWaste", "label": "Resíduos não perigosos (Classe II)", "type": "number", "unit": "t"}
+          {
+            "key": "totalWaste",
+            "label": "Total de resíduos gerados",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "hazardousWaste",
+            "label": "Resíduos perigosos (Classe I)",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "nonHazardousWaste",
+            "label": "Resíduos não perigosos (Classe II)",
+            "type": "number",
+            "unit": "t"
+          }
         ]
       },
       {
@@ -620,13 +1181,33 @@
         "pillar": "GRI-E",
         "theme": "Resíduos",
         "criteria": "Resíduos não destinados para disposição final",
-        "question": "A organização reporta o peso total de resíduos desviados de disposição final, discriminando por operação de recuperação?",
+        "question": "Resíduos não destinados para disposição final",
         "griCode": "306-4",
         "dataFields": [
-          {"key": "divertedTotal", "label": "Resíduos desviados de disposição final", "type": "number", "unit": "t"},
-          {"key": "recycled", "label": "Reciclados", "type": "number", "unit": "t"},
-          {"key": "composted", "label": "Compostados", "type": "number", "unit": "t"},
-          {"key": "reused", "label": "Reutilizados", "type": "number", "unit": "t"}
+          {
+            "key": "divertedTotal",
+            "label": "Resíduos desviados de disposição final",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "recycled",
+            "label": "Reciclados",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "composted",
+            "label": "Compostados",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "reused",
+            "label": "Reutilizados",
+            "type": "number",
+            "unit": "t"
+          }
         ]
       },
       {
@@ -634,12 +1215,27 @@
         "pillar": "GRI-E",
         "theme": "Resíduos",
         "criteria": "Resíduos destinados para disposição final",
-        "question": "A organização reporta o peso total de resíduos destinados para disposição final, discriminando por operação de disposição?",
+        "question": "Resíduos destinados para disposição final",
         "griCode": "306-5",
         "dataFields": [
-          {"key": "disposedTotal", "label": "Resíduos para disposição final", "type": "number", "unit": "t"},
-          {"key": "landfill", "label": "Aterro sanitário", "type": "number", "unit": "t"},
-          {"key": "incinerated", "label": "Incinerados", "type": "number", "unit": "t"}
+          {
+            "key": "disposedTotal",
+            "label": "Resíduos para disposição final",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "landfill",
+            "label": "Aterro sanitário",
+            "type": "number",
+            "unit": "t"
+          },
+          {
+            "key": "incinerated",
+            "label": "Incinerados",
+            "type": "number",
+            "unit": "t"
+          }
         ]
       },
       {
@@ -647,11 +1243,21 @@
         "pillar": "GRI-E",
         "theme": "Fornecedores Ambientais",
         "criteria": "Novos fornecedores selecionados com base em critérios ambientais",
-        "question": "A organização reporta o percentual de novos fornecedores selecionados com base em critérios ambientais?",
+        "question": "Novos fornecedores selecionados com base em critérios ambientais",
         "griCode": "308-1",
         "dataFields": [
-          {"key": "newSuppliersScreenedPct", "label": "% de novos fornecedores avaliados por critérios ambientais", "type": "number", "unit": "%"},
-          {"key": "screeningCriteria", "label": "Critérios ambientais aplicados", "type": "textarea", "placeholder": "Licenças, ISO 14001, gestão de resíduos, emissões"}
+          {
+            "key": "newSuppliersScreenedPct",
+            "label": "% de novos fornecedores avaliados por critérios ambientais",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "screeningCriteria",
+            "label": "Critérios ambientais aplicados",
+            "type": "textarea",
+            "placeholder": "Licenças, ISO 14001, gestão de resíduos, emissões"
+          }
         ]
       }
     ]
@@ -664,26 +1270,59 @@
         "pillar": "GRI-S",
         "theme": "Emprego",
         "criteria": "Novas contratações e rotatividade de empregados",
-        "question": "A organização reporta o número total e a taxa de novas contratações e de rotatividade de empregados, por faixa etária, gênero e região?",
+        "question": "Novas contratações e rotatividade de empregados",
         "griCode": "401-1",
         "dataFields": [
-          {"key": "newHires", "label": "Novas contratações no período", "type": "number"},
-          {"key": "hiringRate", "label": "Taxa de novas contratações", "type": "number", "unit": "%"},
-          {"key": "turnoverCount", "label": "Desligamentos no período", "type": "number"},
-          {"key": "turnoverRate", "label": "Taxa de rotatividade", "type": "number", "unit": "%"},
-          {"key": "hiringBreakdown", "label": "Detalhamento por gênero, faixa etária e região", "type": "textarea", "placeholder": "Ex: Homens: 55%, Mulheres: 45%; <30: 40%, 30-50: 45%, >50: 15%"}
+          {
+            "key": "newHires",
+            "label": "Novas contratações no período",
+            "type": "number"
+          },
+          {
+            "key": "hiringRate",
+            "label": "Taxa de novas contratações",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "turnoverCount",
+            "label": "Desligamentos no período",
+            "type": "number"
+          },
+          {
+            "key": "turnoverRate",
+            "label": "Taxa de rotatividade",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "hiringBreakdown",
+            "label": "Detalhamento por gênero, faixa etária e região",
+            "type": "textarea",
+            "placeholder": "Ex: Homens: 55%, Mulheres: 45%; <30: 40%, 30-50: 45%, >50: 15%"
+          }
         ]
       },
       {
         "id": "GRI-S.2",
         "pillar": "GRI-S",
         "theme": "Emprego",
-        "criteria": "Benefícios oferecidos a empregados em tempo integral",
-        "question": "A organização reporta os benefícios oferecidos a empregados em tempo integral que não são oferecidos a empregados temporários ou de período parcial?",
+        "criteria": "Benefícios oferecidos a empregados em tempo integral que não são oferecidos a empregados temporários ou de período parcial",
+        "question": "Benefícios oferecidos a empregados em tempo integral que não são oferecidos a empregados temporários ou de período parcial",
         "griCode": "401-2",
         "dataFields": [
-          {"key": "fullTimeBenefits", "label": "Benefícios para empregados em tempo integral", "type": "textarea", "placeholder": "Plano de saúde, previdência, seguro de vida, participação nos lucros, etc."},
-          {"key": "benefitGaps", "label": "Benefícios NÃO oferecidos a temporários/parciais", "type": "textarea", "placeholder": "Liste os benefícios exclusivos para empregados integrais"}
+          {
+            "key": "fullTimeBenefits",
+            "label": "Benefícios para empregados em tempo integral",
+            "type": "textarea",
+            "placeholder": "Plano de saúde, previdência, seguro de vida, participação nos lucros, etc."
+          },
+          {
+            "key": "benefitGaps",
+            "label": "Benefícios NÃO oferecidos a temporários/parciais",
+            "type": "textarea",
+            "placeholder": "Liste os benefícios exclusivos para empregados integrais"
+          }
         ]
       },
       {
@@ -691,13 +1330,31 @@
         "pillar": "GRI-S",
         "theme": "Emprego",
         "criteria": "Licença maternidade/paternidade",
-        "question": "A organização reporta dados sobre licença maternidade e paternidade, incluindo taxas de retorno e retenção após a licença?",
+        "question": "Licença maternidade/paternidade",
         "griCode": "401-3",
         "dataFields": [
-          {"key": "maternityLeaves", "label": "Licenças maternidade concedidas", "type": "number"},
-          {"key": "paternityLeaves", "label": "Licenças paternidade concedidas", "type": "number"},
-          {"key": "returnRate", "label": "Taxa de retorno ao trabalho após licença", "type": "number", "unit": "%"},
-          {"key": "retentionRate", "label": "Taxa de retenção 12 meses após retorno", "type": "number", "unit": "%"}
+          {
+            "key": "maternityLeaves",
+            "label": "Licenças maternidade concedidas",
+            "type": "number"
+          },
+          {
+            "key": "paternityLeaves",
+            "label": "Licenças paternidade concedidas",
+            "type": "number"
+          },
+          {
+            "key": "returnRate",
+            "label": "Taxa de retorno ao trabalho após licença",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "retentionRate",
+            "label": "Taxa de retenção 12 meses após retorno",
+            "type": "number",
+            "unit": "%"
+          }
         ]
       },
       {
@@ -705,11 +1362,26 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Sistema de gestão de saúde e segurança do trabalho",
-        "question": "A organização possui um sistema de gestão de saúde e segurança do trabalho implementado?",
+        "question": "Sistema de gestão de saúde e segurança do trabalho",
         "griCode": "403-1",
         "dataFields": [
-          {"key": "hasOhsSystem", "label": "Possui sistema de gestão de SST?", "type": "select", "options": ["Sim — certificado (ISO 45001)", "Sim — não certificado", "Não", "Em implementação"]},
-          {"key": "ohsScope", "label": "Escopo do sistema", "type": "textarea", "placeholder": "Unidades e trabalhadores cobertos pelo sistema de SST"}
+          {
+            "key": "hasOhsSystem",
+            "label": "Possui sistema de gestão de SST?",
+            "type": "select",
+            "options": [
+              "Sim — certificado (ISO 45001)",
+              "Sim — não certificado",
+              "Não",
+              "Em implementação"
+            ]
+          },
+          {
+            "key": "ohsScope",
+            "label": "Escopo do sistema",
+            "type": "textarea",
+            "placeholder": "Unidades e trabalhadores cobertos pelo sistema de SST"
+          }
         ]
       },
       {
@@ -717,11 +1389,21 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Identificação de perigos, avaliação de riscos e investigação de incidentes",
-        "question": "A organização possui processos para identificação de perigos, avaliação de riscos e investigação de incidentes de trabalho?",
+        "question": "Identificação de perigos, avaliação de riscos e investigação de incidentes",
         "griCode": "403-2",
         "dataFields": [
-          {"key": "hazardIdentification", "label": "Processo de identificação de perigos", "type": "textarea", "placeholder": "Metodologias, frequência de avaliação, participação dos trabalhadores"},
-          {"key": "incidentInvestigation", "label": "Processo de investigação de incidentes", "type": "textarea", "placeholder": "Metodologia, prazos, ações corretivas"}
+          {
+            "key": "hazardIdentification",
+            "label": "Processo de identificação de perigos",
+            "type": "textarea",
+            "placeholder": "Metodologias, frequência de avaliação, participação dos trabalhadores"
+          },
+          {
+            "key": "incidentInvestigation",
+            "label": "Processo de investigação de incidentes",
+            "type": "textarea",
+            "placeholder": "Metodologia, prazos, ações corretivas"
+          }
         ]
       },
       {
@@ -729,10 +1411,15 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Serviços de saúde ocupacional",
-        "question": "A organização disponibiliza serviços de saúde ocupacional para seus trabalhadores?",
+        "question": "Serviços de saúde ocupacional",
         "griCode": "403-3",
         "dataFields": [
-          {"key": "ohsServices", "label": "Serviços de saúde ocupacional", "type": "textarea", "placeholder": "PCMSO, exames periódicos, ambulatório, programa de ergonomia"}
+          {
+            "key": "ohsServices",
+            "label": "Serviços de saúde ocupacional",
+            "type": "textarea",
+            "placeholder": "PCMSO, exames periódicos, ambulatório, programa de ergonomia"
+          }
         ]
       },
       {
@@ -740,10 +1427,15 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Participação, consulta e comunicação dos trabalhadores sobre saúde e segurança ocupacional",
-        "question": "A organização possui mecanismos para participação, consulta e comunicação dos trabalhadores sobre saúde e segurança ocupacional?",
+        "question": "Participação, consulta e comunicação dos trabalhadores sobre saúde e segurança ocupacional",
         "griCode": "403-4",
         "dataFields": [
-          {"key": "workerParticipation", "label": "Mecanismos de participação", "type": "textarea", "placeholder": "CIPA, comitês de SST, canais de comunicação, DDS"}
+          {
+            "key": "workerParticipation",
+            "label": "Mecanismos de participação",
+            "type": "textarea",
+            "placeholder": "CIPA, comitês de SST, canais de comunicação, DDS"
+          }
         ]
       },
       {
@@ -751,11 +1443,21 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Formação dos trabalhadores em saúde e segurança ocupacional",
-        "question": "A organização oferece formação e treinamento em saúde e segurança ocupacional aos seus trabalhadores?",
+        "question": "Formação dos trabalhadores em saúde e segurança ocupacional",
         "griCode": "403-5",
         "dataFields": [
-          {"key": "ohsTrainingHours", "label": "Horas de treinamento SST no período", "type": "number", "unit": "h"},
-          {"key": "trainingPrograms", "label": "Programas de formação", "type": "textarea", "placeholder": "NRs, integração de novos trabalhadores, brigada de emergência"}
+          {
+            "key": "ohsTrainingHours",
+            "label": "Horas de treinamento SST no período",
+            "type": "number",
+            "unit": "h"
+          },
+          {
+            "key": "trainingPrograms",
+            "label": "Programas de formação",
+            "type": "textarea",
+            "placeholder": "NRs, integração de novos trabalhadores, brigada de emergência"
+          }
         ]
       },
       {
@@ -763,21 +1465,31 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Promoção da saúde dos trabalhadores",
-        "question": "A organização promove programas de promoção da saúde e bem-estar dos trabalhadores além das obrigações legais?",
+        "question": "Promoção da saúde dos trabalhadores",
         "griCode": "403-6",
         "dataFields": [
-          {"key": "healthPrograms", "label": "Programas de promoção da saúde", "type": "textarea", "placeholder": "Ginástica laboral, apoio psicológico, campanhas de saúde, vacinação"}
+          {
+            "key": "healthPrograms",
+            "label": "Programas de promoção da saúde",
+            "type": "textarea",
+            "placeholder": "Ginástica laboral, apoio psicológico, campanhas de saúde, vacinação"
+          }
         ]
       },
       {
         "id": "GRI-S.10",
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
-        "criteria": "Prevenção e mitigação de impactos na saúde e segurança ocupacional ligados a relações comerciais",
-        "question": "A organização adota medidas para prevenir e mitigar impactos na saúde e segurança ocupacional diretamente ligados às suas relações comerciais?",
+        "criteria": "Prevenção e mitigação de impactos na saúde e segurança ocupacional diretamente ligados a relações comerciais",
+        "question": "Prevenção e mitigação de impactos na saúde e segurança ocupacional diretamente ligados a relações comerciais",
         "griCode": "403-7",
         "dataFields": [
-          {"key": "supplyChainOhs", "label": "Medidas na cadeia de valor", "type": "textarea", "placeholder": "Auditorias em fornecedores, exigências contratuais de SST, treinamentos"}
+          {
+            "key": "supplyChainOhs",
+            "label": "Medidas na cadeia de valor",
+            "type": "textarea",
+            "placeholder": "Auditorias em fornecedores, exigências contratuais de SST, treinamentos"
+          }
         ]
       },
       {
@@ -785,12 +1497,26 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Trabalhadores abrangidos por um sistema de gestão de saúde e segurança ocupacional",
-        "question": "A organização reporta o número e o percentual de trabalhadores abrangidos por um sistema de gestão de saúde e segurança ocupacional?",
+        "question": "Trabalhadores abrangidos por um sistema de gestão de saúde e segurança ocupacional",
         "griCode": "403-8",
         "dataFields": [
-          {"key": "workersCovered", "label": "Trabalhadores cobertos pelo sistema de SST", "type": "number"},
-          {"key": "coveragePct", "label": "% dos trabalhadores cobertos", "type": "number", "unit": "%"},
-          {"key": "auditedPct", "label": "% cobertos por sistema auditado externamente", "type": "number", "unit": "%"}
+          {
+            "key": "workersCovered",
+            "label": "Trabalhadores cobertos pelo sistema de SST",
+            "type": "number"
+          },
+          {
+            "key": "coveragePct",
+            "label": "% dos trabalhadores cobertos",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "auditedPct",
+            "label": "% cobertos por sistema auditado externamente",
+            "type": "number",
+            "unit": "%"
+          }
         ]
       },
       {
@@ -798,14 +1524,36 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Lesões relacionadas ao trabalho",
-        "question": "A organização reporta dados sobre lesões relacionadas ao trabalho, incluindo taxas de frequência e gravidade?",
+        "question": "Lesões relacionadas ao trabalho",
         "griCode": "403-9",
         "dataFields": [
-          {"key": "fatalities", "label": "Óbitos por acidentes de trabalho", "type": "number"},
-          {"key": "seriousInjuries", "label": "Lesões graves (afastamento > 6 meses)", "type": "number"},
-          {"key": "recordableInjuries", "label": "Lesões registráveis", "type": "number"},
-          {"key": "frequencyRate", "label": "Taxa de frequência de acidentes", "type": "number", "placeholder": "Nº acidentes × 1.000.000 / horas trabalhadas"},
-          {"key": "hoursWorked", "label": "Total de horas trabalhadas no período", "type": "number", "unit": "h"}
+          {
+            "key": "fatalities",
+            "label": "Óbitos por acidentes de trabalho",
+            "type": "number"
+          },
+          {
+            "key": "seriousInjuries",
+            "label": "Lesões graves (afastamento > 6 meses)",
+            "type": "number"
+          },
+          {
+            "key": "recordableInjuries",
+            "label": "Lesões registráveis",
+            "type": "number"
+          },
+          {
+            "key": "frequencyRate",
+            "label": "Taxa de frequência de acidentes",
+            "type": "number",
+            "placeholder": "Nº acidentes × 1.000.000 / horas trabalhadas"
+          },
+          {
+            "key": "hoursWorked",
+            "label": "Total de horas trabalhadas no período",
+            "type": "number",
+            "unit": "h"
+          }
         ]
       },
       {
@@ -813,12 +1561,25 @@
         "pillar": "GRI-S",
         "theme": "Saúde e Segurança do Trabalho",
         "criteria": "Doenças relacionadas ao trabalho",
-        "question": "A organização reporta dados sobre doenças relacionadas ao trabalho, incluindo tipos e número de casos?",
+        "question": "Doenças relacionadas ao trabalho",
         "griCode": "403-10",
         "dataFields": [
-          {"key": "occupationalDiseases", "label": "Casos de doenças ocupacionais", "type": "number"},
-          {"key": "diseaseTypes", "label": "Tipos de doenças mais frequentes", "type": "textarea", "placeholder": "Ex: LER/DORT, perda auditiva, transtornos psicológicos"},
-          {"key": "diseaseDeaths", "label": "Óbitos por doenças ocupacionais", "type": "number"}
+          {
+            "key": "occupationalDiseases",
+            "label": "Casos de doenças ocupacionais",
+            "type": "number"
+          },
+          {
+            "key": "diseaseTypes",
+            "label": "Tipos de doenças mais frequentes",
+            "type": "textarea",
+            "placeholder": "Ex: LER/DORT, perda auditiva, transtornos psicológicos"
+          },
+          {
+            "key": "diseaseDeaths",
+            "label": "Óbitos por doenças ocupacionais",
+            "type": "number"
+          }
         ]
       },
       {
@@ -826,37 +1587,77 @@
         "pillar": "GRI-S",
         "theme": "Capacitação e Educação",
         "criteria": "Média de horas de formação por ano, por empregado",
-        "question": "A organização reporta a média de horas de formação e treinamento por ano, discriminando por gênero e categoria funcional?",
+        "question": "Média de horas de formação por ano, por empregado",
         "griCode": "404-1",
         "dataFields": [
-          {"key": "avgTrainingHours", "label": "Média de horas de treinamento por empregado", "type": "number", "unit": "h"},
-          {"key": "trainingHoursMale", "label": "Média horas — homens", "type": "number", "unit": "h"},
-          {"key": "trainingHoursFemale", "label": "Média horas — mulheres", "type": "number", "unit": "h"},
-          {"key": "trainingByCategory", "label": "Detalhamento por categoria funcional", "type": "textarea", "placeholder": "Ex: Diretoria: 40h, Gerência: 30h, Operacional: 20h"}
+          {
+            "key": "avgTrainingHours",
+            "label": "Média de horas de treinamento por empregado",
+            "type": "number",
+            "unit": "h"
+          },
+          {
+            "key": "trainingHoursMale",
+            "label": "Média horas — homens",
+            "type": "number",
+            "unit": "h"
+          },
+          {
+            "key": "trainingHoursFemale",
+            "label": "Média horas — mulheres",
+            "type": "number",
+            "unit": "h"
+          },
+          {
+            "key": "trainingByCategory",
+            "label": "Detalhamento por categoria funcional",
+            "type": "textarea",
+            "placeholder": "Ex: Diretoria: 40h, Gerência: 30h, Operacional: 20h"
+          }
         ]
       },
       {
         "id": "GRI-S.15",
         "pillar": "GRI-S",
         "theme": "Capacitação e Educação",
-        "criteria": "Programas para o desenvolvimento de competências dos empregados e apoio à transição de carreira",
-        "question": "A organização oferece programas para o desenvolvimento de competências dos empregados e programas de apoio à transição de carreira?",
+        "criteria": "Programas para o desenvolvimento de competências dos empregados e programas de apoio à transição de carreira",
+        "question": "Programas para o desenvolvimento de competências dos empregados e programas de apoio à transição de carreira",
         "griCode": "404-2",
         "dataFields": [
-          {"key": "developmentPrograms", "label": "Programas de desenvolvimento", "type": "textarea", "placeholder": "MBA, cursos técnicos, mentoria, programa de liderança"},
-          {"key": "careerTransition", "label": "Apoio à transição de carreira", "type": "textarea", "placeholder": "Outplacement, requalificação para demitidos ou aposentados"}
+          {
+            "key": "developmentPrograms",
+            "label": "Programas de desenvolvimento",
+            "type": "textarea",
+            "placeholder": "MBA, cursos técnicos, mentoria, programa de liderança"
+          },
+          {
+            "key": "careerTransition",
+            "label": "Apoio à transição de carreira",
+            "type": "textarea",
+            "placeholder": "Outplacement, requalificação para demitidos ou aposentados"
+          }
         ]
       },
       {
         "id": "GRI-S.16",
         "pillar": "GRI-S",
         "theme": "Capacitação e Educação",
-        "criteria": "Percentagem de empregados que recebem avaliações regulares de desempenho",
-        "question": "A organização reporta o percentual de empregados que recebem avaliações regulares de desempenho e desenvolvimento de carreira?",
+        "criteria": "Percentagem de empregados que recebem avaliações regulares de desempenho e desenvolvimento de carreira",
+        "question": "Percentagem de empregados que recebem avaliações regulares de desempenho e desenvolvimento de carreira",
         "griCode": "404-3",
         "dataFields": [
-          {"key": "performanceReviewPct", "label": "% empregados com avaliação de desempenho", "type": "number", "unit": "%"},
-          {"key": "reviewFrequency", "label": "Frequência das avaliações", "type": "text", "placeholder": "Ex: Anual, semestral, trimestral"}
+          {
+            "key": "performanceReviewPct",
+            "label": "% empregados com avaliação de desempenho",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "reviewFrequency",
+            "label": "Frequência das avaliações",
+            "type": "text",
+            "placeholder": "Ex: Anual, semestral, trimestral"
+          }
         ]
       },
       {
@@ -864,15 +1665,45 @@
         "pillar": "GRI-S",
         "theme": "Diversidade e Igualdade",
         "criteria": "Diversidade dos órgãos de governança e dos empregados",
-        "question": "A organização reporta a composição dos órgãos de governança e dos empregados por indicadores de diversidade (gênero, faixa etária, grupos minoritários)?",
+        "question": "Diversidade dos órgãos de governança e dos empregados",
         "griCode": "405-1",
         "dataFields": [
-          {"key": "womenGovernance", "label": "% mulheres nos órgãos de governança", "type": "number", "unit": "%"},
-          {"key": "womenTotal", "label": "% mulheres no quadro total", "type": "number", "unit": "%"},
-          {"key": "under30Pct", "label": "% empregados com menos de 30 anos", "type": "number", "unit": "%"},
-          {"key": "between30and50Pct", "label": "% empregados entre 30 e 50 anos", "type": "number", "unit": "%"},
-          {"key": "over50Pct", "label": "% empregados com mais de 50 anos", "type": "number", "unit": "%"},
-          {"key": "minorityGroups", "label": "Grupos minoritários representados", "type": "textarea", "placeholder": "PcD, étnico-raciais, LGBTQIA+ — dados disponíveis"}
+          {
+            "key": "womenGovernance",
+            "label": "% mulheres nos órgãos de governança",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "womenTotal",
+            "label": "% mulheres no quadro total",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "under30Pct",
+            "label": "% empregados com menos de 30 anos",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "between30and50Pct",
+            "label": "% empregados entre 30 e 50 anos",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "over50Pct",
+            "label": "% empregados com mais de 50 anos",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "minorityGroups",
+            "label": "Grupos minoritários representados",
+            "type": "textarea",
+            "placeholder": "PcD, étnico-raciais, LGBTQIA+ — dados disponíveis"
+          }
         ]
       },
       {
@@ -880,11 +1711,21 @@
         "pillar": "GRI-S",
         "theme": "Diversidade e Igualdade",
         "criteria": "Rácio entre o salário base e a remuneração de mulheres e homens",
-        "question": "A organização reporta o rácio entre o salário base e a remuneração total de mulheres e homens, por categoria funcional e localidade?",
+        "question": "Rácio entre o salário base e a remuneração de mulheres e homens",
         "griCode": "405-2",
         "dataFields": [
-          {"key": "genderPayRatio", "label": "Rácio salarial mulheres/homens (geral)", "type": "number", "placeholder": "Ex: 0.92 significa mulheres ganham 92% do salário masculino"},
-          {"key": "payRatioByCategory", "label": "Rácio por categoria funcional", "type": "textarea", "placeholder": "Ex: Diretoria: 0.95, Gerência: 0.90, Operacional: 0.97"}
+          {
+            "key": "genderPayRatio",
+            "label": "Rácio salarial mulheres/homens (geral)",
+            "type": "number",
+            "placeholder": "Ex: 0.92 significa mulheres ganham 92% do salário masculino"
+          },
+          {
+            "key": "payRatioByCategory",
+            "label": "Rácio por categoria funcional",
+            "type": "textarea",
+            "placeholder": "Ex: Diretoria: 0.95, Gerência: 0.90, Operacional: 0.97"
+          }
         ]
       },
       {
@@ -892,12 +1733,25 @@
         "pillar": "GRI-S",
         "theme": "Diversidade e Igualdade",
         "criteria": "Casos de discriminação e medidas corretivas tomadas",
-        "question": "A organização reporta o número de casos de discriminação ocorridos e as medidas corretivas tomadas?",
+        "question": "Casos de discriminação e medidas corretivas tomadas",
         "griCode": "406-1",
         "dataFields": [
-          {"key": "discriminationCases", "label": "Casos de discriminação no período", "type": "number"},
-          {"key": "casesResolved", "label": "Casos encerrados/resolvidos", "type": "number"},
-          {"key": "correctiveActions", "label": "Medidas corretivas adotadas", "type": "textarea", "placeholder": "Ações tomadas para cada caso — treinamento, sanção, mudança de processo"}
+          {
+            "key": "discriminationCases",
+            "label": "Casos de discriminação no período",
+            "type": "number"
+          },
+          {
+            "key": "casesResolved",
+            "label": "Casos encerrados/resolvidos",
+            "type": "number"
+          },
+          {
+            "key": "correctiveActions",
+            "label": "Medidas corretivas adotadas",
+            "type": "textarea",
+            "placeholder": "Ações tomadas para cada caso — treinamento, sanção, mudança de processo"
+          }
         ]
       },
       {
@@ -905,12 +1759,27 @@
         "pillar": "GRI-S",
         "theme": "Comunidades e Fornecedores",
         "criteria": "Operações com envolvimento da comunidade local, avaliações de impacto e programas de desenvolvimento",
-        "question": "A organização reporta operações com envolvimento da comunidade local, avaliações de impacto e programas de desenvolvimento comunitário?",
+        "question": "Operações com envolvimento da comunidade local, avaliações de impacto e programas de desenvolvimento",
         "griCode": "413-1",
         "dataFields": [
-          {"key": "communityEngagementPct", "label": "% de operações com engajamento comunitário", "type": "number", "unit": "%"},
-          {"key": "impactAssessments", "label": "Avaliações de impacto realizadas", "type": "textarea", "placeholder": "Estudos de impacto social, audiências públicas, consultas comunitárias"},
-          {"key": "developmentPrograms", "label": "Programas de desenvolvimento comunitário", "type": "textarea", "placeholder": "Projetos sociais, investimento social privado, voluntariado"}
+          {
+            "key": "communityEngagementPct",
+            "label": "% de operações com engajamento comunitário",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "impactAssessments",
+            "label": "Avaliações de impacto realizadas",
+            "type": "textarea",
+            "placeholder": "Estudos de impacto social, audiências públicas, consultas comunitárias"
+          },
+          {
+            "key": "developmentPrograms",
+            "label": "Programas de desenvolvimento comunitário",
+            "type": "textarea",
+            "placeholder": "Projetos sociais, investimento social privado, voluntariado"
+          }
         ]
       },
       {
@@ -918,11 +1787,21 @@
         "pillar": "GRI-S",
         "theme": "Comunidades e Fornecedores",
         "criteria": "Novos fornecedores selecionados com base em critérios sociais",
-        "question": "A organização reporta o percentual de novos fornecedores selecionados com base em critérios sociais?",
+        "question": "Novos fornecedores selecionados com base em critérios sociais",
         "griCode": "414-1",
         "dataFields": [
-          {"key": "socialScreeningPct", "label": "% de novos fornecedores avaliados por critérios sociais", "type": "number", "unit": "%"},
-          {"key": "socialCriteria", "label": "Critérios sociais aplicados", "type": "textarea", "placeholder": "Trabalho infantil, trabalho forçado, diversidade, saúde e segurança"}
+          {
+            "key": "socialScreeningPct",
+            "label": "% de novos fornecedores avaliados por critérios sociais",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "socialCriteria",
+            "label": "Critérios sociais aplicados",
+            "type": "textarea",
+            "placeholder": "Trabalho infantil, trabalho forçado, diversidade, saúde e segurança"
+          }
         ]
       },
       {
@@ -930,11 +1809,21 @@
         "pillar": "GRI-S",
         "theme": "Comunidades e Fornecedores",
         "criteria": "Contribuições políticas",
-        "question": "A organização divulga o valor total de contribuições políticas realizadas, discriminando por país e destinatário?",
+        "question": "Contribuições políticas",
         "griCode": "415-1",
         "dataFields": [
-          {"key": "politicalContributions", "label": "Valor total de contribuições políticas (R$)", "type": "number", "unit": "R$"},
-          {"key": "contributionDetails", "label": "Detalhamento por destinatário", "type": "textarea", "placeholder": "Partidos/candidatos, valores, países (ou declarar que não realiza contribuições)"}
+          {
+            "key": "politicalContributions",
+            "label": "Valor total de contribuições políticas (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "contributionDetails",
+            "label": "Detalhamento por destinatário",
+            "type": "textarea",
+            "placeholder": "Partidos/candidatos, valores, países (ou declarar que não realiza contribuições)"
+          }
         ]
       },
       {
@@ -942,13 +1831,30 @@
         "pillar": "GRI-S",
         "theme": "Privacidade",
         "criteria": "Queixas comprovadas relativas à violação da privacidade e perda de dados de clientes",
-        "question": "A organização reporta o número de queixas comprovadas relativas à violação da privacidade e perda de dados de clientes?",
+        "question": "Queixas comprovadas relativas à violação da privacidade e perda de dados de clientes",
         "griCode": "418-1",
         "dataFields": [
-          {"key": "privacyComplaints", "label": "Queixas comprovadas de violação de privacidade", "type": "number"},
-          {"key": "dataBreaches", "label": "Incidentes de perda/vazamento de dados", "type": "number"},
-          {"key": "regulatoryActions", "label": "Ações regulatórias recebidas (ANPD, etc.)", "type": "number"},
-          {"key": "incidentDetails", "label": "Detalhes dos incidentes e ações tomadas", "type": "textarea", "placeholder": "Natureza dos incidentes, dados afetados, medidas corretivas"}
+          {
+            "key": "privacyComplaints",
+            "label": "Queixas comprovadas de violação de privacidade",
+            "type": "number"
+          },
+          {
+            "key": "dataBreaches",
+            "label": "Incidentes de perda/vazamento de dados",
+            "type": "number"
+          },
+          {
+            "key": "regulatoryActions",
+            "label": "Ações regulatórias recebidas (ANPD, etc.)",
+            "type": "number"
+          },
+          {
+            "key": "incidentDetails",
+            "label": "Detalhes dos incidentes e ações tomadas",
+            "type": "textarea",
+            "placeholder": "Natureza dos incidentes, dados afetados, medidas corretivas"
+          }
         ]
       }
     ]
@@ -961,14 +1867,39 @@
         "pillar": "GRI-EC",
         "theme": "Desempenho Econômico",
         "criteria": "Valor econômico direto gerado e distribuído",
-        "question": "A organização reporta o valor econômico direto gerado e distribuído, incluindo receitas, custos operacionais, salários e investimentos na comunidade?",
+        "question": "Valor econômico direto gerado e distribuído",
         "griCode": "201-1",
         "dataFields": [
-          {"key": "revenue", "label": "Receitas (R$)", "type": "number", "unit": "R$"},
-          {"key": "operatingCosts", "label": "Custos operacionais (R$)", "type": "number", "unit": "R$"},
-          {"key": "employeeWages", "label": "Salários e benefícios (R$)", "type": "number", "unit": "R$"},
-          {"key": "communityInvestments", "label": "Investimentos na comunidade (R$)", "type": "number", "unit": "R$"},
-          {"key": "retainedValue", "label": "Valor econômico retido (R$)", "type": "number", "unit": "R$"}
+          {
+            "key": "revenue",
+            "label": "Receitas (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "operatingCosts",
+            "label": "Custos operacionais (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "employeeWages",
+            "label": "Salários e benefícios (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "communityInvestments",
+            "label": "Investimentos na comunidade (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "retainedValue",
+            "label": "Valor econômico retido (R$)",
+            "type": "number",
+            "unit": "R$"
+          }
         ]
       },
       {
@@ -976,25 +1907,60 @@
         "pillar": "GRI-EC",
         "theme": "Desempenho Econômico",
         "criteria": "Obrigações do plano de benefício definido e outros planos de aposentadoria",
-        "question": "A organização reporta suas obrigações com planos de benefício definido e outros planos de aposentadoria?",
+        "question": "Obrigações do plano de benefício definido e outros planos de aposentadoria",
         "griCode": "201-3",
         "dataFields": [
-          {"key": "hasPensionPlan", "label": "Possui plano de previdência complementar?", "type": "select", "options": ["Sim — benefício definido", "Sim — contribuição definida", "Sim — ambos", "Não"]},
-          {"key": "pensionCoverage", "label": "% de empregados cobertos", "type": "number", "unit": "%"},
-          {"key": "pensionObligations", "label": "Valor das obrigações (R$)", "type": "number", "unit": "R$"}
+          {
+            "key": "hasPensionPlan",
+            "label": "Possui plano de previdência complementar?",
+            "type": "select",
+            "options": [
+              "Sim — benefício definido",
+              "Sim — contribuição definida",
+              "Sim — ambos",
+              "Não"
+            ]
+          },
+          {
+            "key": "pensionCoverage",
+            "label": "% de empregados cobertos",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "pensionObligations",
+            "label": "Valor das obrigações (R$)",
+            "type": "number",
+            "unit": "R$"
+          }
         ]
       },
       {
         "id": "GRI-EC.3",
         "pillar": "GRI-EC",
         "theme": "Presença no Mercado",
-        "criteria": "Proporção entre o salário mais baixo e o salário mínimo local",
-        "question": "A organização reporta a proporção entre o salário mais baixo praticado e o salário mínimo local, com discriminação por gênero?",
+        "criteria": "Proporção entre o salário mais baixo e o salário mínimo local, com discriminação por gênero",
+        "question": "Proporção entre o salário mais baixo e o salário mínimo local, com discriminação por gênero",
         "griCode": "202-1",
         "dataFields": [
-          {"key": "lowestSalaryRatio", "label": "Proporção menor salário/salário mínimo", "type": "number", "placeholder": "Ex: 1.5 = 50% acima do mínimo"},
-          {"key": "lowestSalaryMale", "label": "Menor salário — homens (R$)", "type": "number", "unit": "R$"},
-          {"key": "lowestSalaryFemale", "label": "Menor salário — mulheres (R$)", "type": "number", "unit": "R$"}
+          {
+            "key": "lowestSalaryRatio",
+            "label": "Proporção menor salário/salário mínimo",
+            "type": "number",
+            "placeholder": "Ex: 1.5 = 50% acima do mínimo"
+          },
+          {
+            "key": "lowestSalaryMale",
+            "label": "Menor salário — homens (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "lowestSalaryFemale",
+            "label": "Menor salário — mulheres (R$)",
+            "type": "number",
+            "unit": "R$"
+          }
         ]
       },
       {
@@ -1002,11 +1968,21 @@
         "pillar": "GRI-EC",
         "theme": "Presença no Mercado",
         "criteria": "Proporção de membros da diretoria contratados na comunidade local",
-        "question": "A organização reporta a proporção de membros da alta diretoria contratados na comunidade local de operações significativas?",
+        "question": "Proporção de membros da diretoria contratados na comunidade local",
         "griCode": "202-2",
         "dataFields": [
-          {"key": "localSeniorMgmtPct", "label": "% da alta diretoria da comunidade local", "type": "number", "unit": "%"},
-          {"key": "localDefinition", "label": "Definição de 'comunidade local' utilizada", "type": "text", "placeholder": "Ex: mesmo estado, mesmo município, raio de 100km"}
+          {
+            "key": "localSeniorMgmtPct",
+            "label": "% da alta diretoria da comunidade local",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "localDefinition",
+            "label": "Definição de 'comunidade local' utilizada",
+            "type": "text",
+            "placeholder": "Ex: mesmo estado, mesmo município, raio de 100km"
+          }
         ]
       },
       {
@@ -1014,12 +1990,27 @@
         "pillar": "GRI-EC",
         "theme": "Impactos Econômicos e Compras",
         "criteria": "Investimentos em infraestrutura e apoio a serviços",
-        "question": "A organização reporta seus investimentos em infraestrutura e apoio a serviços voltados ao benefício público?",
+        "question": "Investimentos em infraestrutura e apoio a serviços",
         "griCode": "203-1",
         "dataFields": [
-          {"key": "infrastructureInvestment", "label": "Investimentos em infraestrutura (R$)", "type": "number", "unit": "R$"},
-          {"key": "serviceSupport", "label": "Apoio a serviços públicos (R$)", "type": "number", "unit": "R$"},
-          {"key": "investmentDetails", "label": "Descrição dos investimentos", "type": "textarea", "placeholder": "Projetos de infraestrutura, saúde, educação, transporte realizados"}
+          {
+            "key": "infrastructureInvestment",
+            "label": "Investimentos em infraestrutura (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "serviceSupport",
+            "label": "Apoio a serviços públicos (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "investmentDetails",
+            "label": "Descrição dos investimentos",
+            "type": "textarea",
+            "placeholder": "Projetos de infraestrutura, saúde, educação, transporte realizados"
+          }
         ]
       },
       {
@@ -1027,12 +2018,27 @@
         "pillar": "GRI-EC",
         "theme": "Impactos Econômicos e Compras",
         "criteria": "Proporção de gastos com fornecedores locais",
-        "question": "A organização reporta a proporção de gastos com fornecedores locais em operações significativas?",
+        "question": "Proporção de gastos com fornecedores locais",
         "griCode": "204-1",
         "dataFields": [
-          {"key": "localProcurementPct", "label": "% de gastos com fornecedores locais", "type": "number", "unit": "%"},
-          {"key": "localProcurementValue", "label": "Valor gasto com fornecedores locais (R$)", "type": "number", "unit": "R$"},
-          {"key": "localDefinition", "label": "Definição de 'local' utilizada", "type": "text", "placeholder": "Ex: mesmo estado, mesmo país"}
+          {
+            "key": "localProcurementPct",
+            "label": "% de gastos com fornecedores locais",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "localProcurementValue",
+            "label": "Valor gasto com fornecedores locais (R$)",
+            "type": "number",
+            "unit": "R$"
+          },
+          {
+            "key": "localDefinition",
+            "label": "Definição de 'local' utilizada",
+            "type": "text",
+            "placeholder": "Ex: mesmo estado, mesmo país"
+          }
         ]
       },
       {
@@ -1040,12 +2046,26 @@
         "pillar": "GRI-EC",
         "theme": "Anticorrupção",
         "criteria": "Operações avaliadas quanto a riscos relacionados à corrupção",
-        "question": "A organização avalia suas operações quanto a riscos relacionados à corrupção e reporta os resultados?",
+        "question": "Operações avaliadas quanto a riscos relacionados à corrupção",
         "griCode": "205-1",
         "dataFields": [
-          {"key": "assessedOperations", "label": "Nº de operações avaliadas para riscos de corrupção", "type": "number"},
-          {"key": "assessedPct", "label": "% do total de operações avaliadas", "type": "number", "unit": "%"},
-          {"key": "significantRisks", "label": "Riscos significativos identificados", "type": "textarea", "placeholder": "Natureza dos riscos, localidades, áreas sensíveis"}
+          {
+            "key": "assessedOperations",
+            "label": "Nº de operações avaliadas para riscos de corrupção",
+            "type": "number"
+          },
+          {
+            "key": "assessedPct",
+            "label": "% do total de operações avaliadas",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "significantRisks",
+            "label": "Riscos significativos identificados",
+            "type": "textarea",
+            "placeholder": "Natureza dos riscos, localidades, áreas sensíveis"
+          }
         ]
       },
       {
@@ -1053,13 +2073,31 @@
         "pillar": "GRI-EC",
         "theme": "Anticorrupção",
         "criteria": "Comunicação e capacitação em políticas e procedimentos de combate à corrupção",
-        "question": "A organização comunica e capacita seus empregados e parceiros em políticas e procedimentos de combate à corrupção?",
+        "question": "Comunicação e capacitação em políticas e procedimentos de combate à corrupção",
         "griCode": "205-2",
         "dataFields": [
-          {"key": "anticorruptionTrainedPct", "label": "% de empregados treinados em anticorrupção", "type": "number", "unit": "%"},
-          {"key": "governanceTrainedPct", "label": "% de membros de governança treinados", "type": "number", "unit": "%"},
-          {"key": "partnersCommunicated", "label": "Parceiros de negócios comunicados sobre políticas", "type": "number"},
-          {"key": "confirmedCases", "label": "Casos confirmados de corrupção no período", "type": "number"}
+          {
+            "key": "anticorruptionTrainedPct",
+            "label": "% de empregados treinados em anticorrupção",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "governanceTrainedPct",
+            "label": "% de membros de governança treinados",
+            "type": "number",
+            "unit": "%"
+          },
+          {
+            "key": "partnersCommunicated",
+            "label": "Parceiros de negócios comunicados sobre políticas",
+            "type": "number"
+          },
+          {
+            "key": "confirmedCases",
+            "label": "Casos confirmados de corrupção no período",
+            "type": "number"
+          }
         ]
       }
     ]
