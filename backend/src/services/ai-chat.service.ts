@@ -136,7 +136,7 @@ Quando for a primeira mensagem da conversa (histórico vazio), cumprimente o cli
     }));
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-haiku-4-5',
       max_tokens: 1024,
       system: systemPrompt,
       messages,
@@ -179,7 +179,7 @@ Quando for a primeira mensagem da conversa (histórico vazio), cumprimente o cli
     const systemPrompt = await this.buildSystemPrompt(userId);
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-haiku-4-5',
       max_tokens: 512,
       system: systemPrompt,
       messages: [{ role: 'user', content: 'Inicie a conversa me cumprimentando e dando um resumo do meu status ESG atual.' }],

@@ -165,7 +165,7 @@ export default function GaiaWidget() {
       {/* Chat panel */}
       <div className={`fixed z-[999] transition-all duration-300 ease-in-out ${
         open
-          ? 'bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[400px] h-full sm:h-[600px] sm:max-h-[80vh]'
+          ? 'bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[340px] h-full sm:h-[560px] sm:max-h-[80vh]'
           : 'bottom-6 right-6 w-0 h-0 opacity-0 pointer-events-none'
       }`}>
         {open && (
