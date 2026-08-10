@@ -121,7 +121,7 @@ Responda EXCLUSIVAMENTE com um JSON válido (sem markdown, sem \`\`\`), com esta
 Seja específico para o SETOR e PORTE da empresa. Use valores em reais. Cite regulamentações brasileiras (CONAMA, IBAMA, NRs, Lei 12.846, LGPD). No mínimo 3 riscos e 5 recomendações.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
     });

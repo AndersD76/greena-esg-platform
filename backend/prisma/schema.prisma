@@ -335,7 +335,7 @@ model AiAnalysis {
   id          Int      @id @default(autoincrement())
   diagnosisId String   @map("diagnosis_id")
   content     Json
-  model       String   @default("claude-sonnet-4-20250514")
+  model       String   @default("claude-3-5-sonnet-20241022")
   tokensUsed  Int?     @map("tokens_used")
   createdAt   DateTime @default(now()) @map("created_at")
 
