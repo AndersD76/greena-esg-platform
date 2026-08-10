@@ -59,30 +59,46 @@ export class PillarService {
   }
 
   async getAllQuestions(framework?: string) {
-    const frameworkFilter = framework
-      ? framework === 'ESG_GRI'
-        ? { in: ['ESG', 'GRI'] as string[] }
-        : framework
-      : undefined;
+    if (framework === 'ESG_GRI') {
+      return this.getAllQuestionsEsgGri();
+    }
+
+    const frameworkFilter = framework ? framework : undefined;
 
     const questions = await prisma.assessmentItem.findMany({
       where: frameworkFilter
-        ? {
-            criteria: {
-              theme: {
-                pillar: typeof frameworkFilter === 'string'
-                  ? { framework: frameworkFilter }
-                  : { framework: frameworkFilter },
-              },
-            },
-          }
+        ? { criteria: { theme: { pillar: { framework: frameworkFilter } } } }
         : undefined,
       include: {
         criteria: {
           include: {
-            theme: {
+            theme: { include: { pillar: true } },
+          },
+        },
+      },
+    });
+
+    return this.sortQuestions(questions);
+  }
+
+  private async getAllQuestionsEsgGri() {
+    const esgQuestions = await prisma.assessmentItem.findMany({
+      where: { criteria: { theme: { pillar: { framework: 'ESG' } } } },
+      include: {
+        criteria: {
+          include: {
+            theme: { include: { pillar: true } },
+          },
+        },
+        esgMappings: {
+          include: {
+            griItem: {
               include: {
-                pillar: true,
+                criteria: {
+                  include: {
+                    theme: { include: { pillar: true } },
+                  },
+                },
               },
             },
           },
@@ -90,17 +106,46 @@ export class PillarService {
       },
     });
 
+    const mappedGriIds = new Set<number>();
+    for (const q of esgQuestions) {
+      for (const m of q.esgMappings) {
+        mappedGriIds.add(m.griAssessmentItemId);
+      }
+    }
+
+    const griOnlyQuestions = await prisma.assessmentItem.findMany({
+      where: {
+        criteria: { theme: { pillar: { framework: 'GRI' } } },
+        id: { notIn: [...mappedGriIds] },
+      },
+      include: {
+        criteria: {
+          include: {
+            theme: { include: { pillar: true } },
+          },
+        },
+      },
+    });
+
+    const enriched = esgQuestions.map(q => ({
+      ...q,
+      griItems: q.esgMappings.map(m => m.griItem),
+      esgMappings: undefined,
+    }));
+
+    const sorted = this.sortQuestions(enriched);
+    const sortedGriOnly = this.sortQuestions(griOnlyQuestions);
+
+    return [...sorted, ...sortedGriOnly];
+  }
+
+  private sortQuestions<T extends { criteria: { theme: { pillar: { sortOrder: number }; order: number }; order: number }; order: number }>(questions: T[]): T[] {
     return questions.sort((a, b) => {
       const pillarA = a.criteria.theme.pillar.sortOrder;
       const pillarB = b.criteria.theme.pillar.sortOrder;
-
       if (pillarA !== pillarB) return pillarA - pillarB;
-      if (a.criteria.theme.order !== b.criteria.theme.order) {
-        return a.criteria.theme.order - b.criteria.theme.order;
-      }
-      if (a.criteria.order !== b.criteria.order) {
-        return a.criteria.order - b.criteria.order;
-      }
+      if (a.criteria.theme.order !== b.criteria.theme.order) return a.criteria.theme.order - b.criteria.theme.order;
+      if (a.criteria.order !== b.criteria.order) return a.criteria.order - b.criteria.order;
       return a.order - b.order;
     });
   }

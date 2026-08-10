@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { pillarService, AssessmentItem, Pillar, DataField } from '../services/pillar.service';
+import { pillarService, AssessmentItem, Pillar, DataField, GriItem } from '../services/pillar.service';
 import { responseService, ResponseData } from '../services/response.service';
 import { diagnosisService } from '../services/diagnosis.service';
 import { Card } from '../components/common/Card';
@@ -119,23 +119,60 @@ export default function Questionnaire() {
     }
   }
 
+  function getGriEvaluation(griItemId: number): ResponseData['evaluation'] {
+    const griResp = responses[griItemId];
+    if (!griResp?.data) return 'Não iniciado';
+    const values = Object.values(griResp.data);
+    if (values.length === 0) return 'Não iniciado';
+    const filled = values.filter(v => v !== '' && v !== null && v !== undefined);
+    if (filled.length === 0) return 'Não iniciado';
+    if (filled.length === values.length) return 'Totalmente implementado';
+    if (filled.length >= values.length / 2) return 'Implementado parcialmente';
+    return 'Em andamento';
+  }
+
   async function handleSaveResponse() {
     if (!diagnosisId || !currentQuestion) return;
 
     const response = responses[currentQuestion.id];
-    if (!response?.evaluation) {
-      alert('Por favor, selecione uma avaliacao');
+    const isGriOnly = !!currentQuestion.griCode && !currentQuestion.griItems;
+    if (!isGriOnly && !response?.evaluation) {
+      alert('Por favor, selecione uma avaliação');
       return;
     }
 
     try {
       setSaving(true);
-      await responseService.upsert(diagnosisId, {
-        assessmentItemId: currentQuestion.id,
-        evaluation: response.evaluation,
-        observations: response.observations,
-        data: response.data || null,
-      });
+
+      if (isGriOnly) {
+        const griEval = getGriEvaluation(currentQuestion.id);
+        await responseService.upsert(diagnosisId, {
+          assessmentItemId: currentQuestion.id,
+          evaluation: griEval,
+          observations: response?.observations,
+          data: response?.data || null,
+        });
+      } else {
+        await responseService.upsert(diagnosisId, {
+          assessmentItemId: currentQuestion.id,
+          evaluation: response.evaluation,
+          observations: response.observations,
+          data: response.data || null,
+        });
+      }
+
+      if (currentQuestion.griItems && currentQuestion.griItems.length > 0) {
+        for (const gri of currentQuestion.griItems) {
+          const griResp = responses[gri.id];
+          const griEval = getGriEvaluation(gri.id);
+          await responseService.upsert(diagnosisId, {
+            assessmentItemId: gri.id,
+            evaluation: griEval,
+            observations: griResp?.observations,
+            data: griResp?.data || null,
+          });
+        }
+      }
 
       setShowObservations(false);
 
@@ -502,11 +539,78 @@ export default function Questionnaire() {
                   </div>
                 )}
 
+                {currentQuestion.griItems && currentQuestion.griItems.length > 0 && (
+                  <div className="mb-8 space-y-4">
+                    {currentQuestion.griItems.map((gri: GriItem) => {
+                      const griResp = responses[gri.id] || {};
+                      return (
+                        <div key={gri.id} className="p-5 rounded-xl border-2 border-dashed" style={{ borderColor: '#4F46E540', backgroundColor: '#4F46E508' }}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
+                              GRI {gri.griCode}
+                            </span>
+                            <span className="text-xs text-gray-400">{gri.criteria.theme.pillar.name}</span>
+                          </div>
+                          <p className="text-sm font-medium text-gray-700 mb-3">{gri.question}</p>
+                          {gri.dataFields && gri.dataFields.length > 0 && (
+                            <div className="space-y-3">
+                              {gri.dataFields.map((field: DataField) => {
+                                const fieldValue = (griResp.data as Record<string, unknown>)?.[field.key] ?? '';
+                                const updateGriField = (value: unknown) => {
+                                  setResponses(prev => ({
+                                    ...prev,
+                                    [gri.id]: {
+                                      ...prev[gri.id],
+                                      evaluation: prev[gri.id]?.evaluation || 'Em andamento',
+                                      data: { ...(prev[gri.id]?.data || {}), [field.key]: value },
+                                    },
+                                  }));
+                                };
+                                return (
+                                  <div key={field.key}>
+                                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                                      {field.label}
+                                      {field.unit && <span className="text-gray-400 font-normal ml-1">({field.unit})</span>}
+                                    </label>
+                                    {field.type === 'textarea' ? (
+                                      <textarea value={String(fieldValue)} onChange={e => updateGriField(e.target.value)}
+                                        rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-transparent resize-none text-sm"
+                                        placeholder={field.placeholder} />
+                                    ) : field.type === 'number' ? (
+                                      <input type="number" value={fieldValue === '' ? '' : Number(fieldValue)}
+                                        onChange={e => updateGriField(e.target.value === '' ? '' : Number(e.target.value))}
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-transparent text-sm"
+                                        placeholder={field.placeholder || '0'} />
+                                    ) : field.type === 'select' ? (
+                                      <select value={String(fieldValue)} onChange={e => updateGriField(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-transparent text-sm appearance-none cursor-pointer"
+                                        style={{
+                                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+                                          backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center', paddingRight: '36px',
+                                        }}>
+                                        <option value="">Selecione...</option>
+                                        {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                                      </select>
+                                    ) : (
+                                      <input type="text" value={String(fieldValue)} onChange={e => updateGriField(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-300 focus:border-transparent text-sm"
+                                        placeholder={field.placeholder} />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {!currentQuestion.griCode && (
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-600 mb-3">
-                    {currentQuestion.griCode
-                      ? 'Qual o nível de conformidade com esta divulgação?'
-                      : 'Qual o nível de maturidade desta prática na sua empresa?'}
+                    Qual o nível de maturidade desta prática na sua empresa?
                   </label>
                   <select
                     value={currentResponse.evaluation || ''}
@@ -563,6 +667,7 @@ export default function Questionnaire() {
                     </div>
                   )}
                 </div>
+                )}
 
                 <div className="border-t pt-4">
                   <button type="button" onClick={() => setShowObservations(!showObservations)}
@@ -593,7 +698,7 @@ export default function Questionnaire() {
                     className="px-4 py-2 text-gray-500 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm">
                     Pular
                   </button>
-                  <button onClick={handleSaveResponse} disabled={!currentResponse.evaluation || saving}
+                  <button onClick={handleSaveResponse} disabled={(!currentResponse.evaluation && !currentQuestion.griCode) || saving}
                     className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105"
                     style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
                     {saving ? (

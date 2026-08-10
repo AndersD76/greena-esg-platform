@@ -21,6 +21,22 @@ export interface DataField {
   options?: string[];
 }
 
+export interface GriItem {
+  id: number;
+  question: string;
+  griCode?: string;
+  dataFields?: DataField[];
+  criteria: {
+    id: number;
+    name: string;
+    theme: {
+      id: number;
+      name: string;
+      pillar: Pillar;
+    };
+  };
+}
+
 export interface AssessmentItem {
   id: number;
   question: string;
@@ -28,6 +44,7 @@ export interface AssessmentItem {
   griCode?: string;
   frameworkTag: string;
   dataFields?: DataField[];
+  griItems?: GriItem[];
   criteria: {
     id: number;
     name: string;
