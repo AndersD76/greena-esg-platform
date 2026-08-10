@@ -145,7 +145,7 @@ function PillarPerformance({ breakdown }: { breakdown: PillarBreakdown }) {
         ))}
       </div>
       {(breakdown.strengths.length > 0 || breakdown.weaknesses.length > 0) && (
-        <div className="px-6 pb-6 grid grid-cols-2 gap-4">
+        <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {breakdown.strengths.length > 0 && (
             <div className="p-3 rounded-xl" style={{ backgroundColor: '#F0FDF4' }}>
               <h5 className="text-xs font-bold uppercase tracking-wide mb-2 text-green-700">Pontos Fortes</h5>
@@ -261,7 +261,7 @@ export default function Report() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             Voltar
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center flex-wrap gap-2">
             <button
               onClick={async () => {
                 try {
@@ -354,7 +354,7 @@ export default function Report() {
         <div className="bg-white rounded-2xl shadow-md p-8 mb-6 print:shadow-none print:rounded-none">
           <h2 className="text-xl font-black mb-6" style={{ color: COLORS.primary }}>Resumo Executivo</h2>
 
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
             {/* 1 — Certificação */}
             <div className="flex flex-col items-center text-center">
               <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Certificação</h4>

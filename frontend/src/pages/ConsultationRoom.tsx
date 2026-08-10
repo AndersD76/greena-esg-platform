@@ -149,7 +149,7 @@ export default function ConsultationRoom() {
     <div className="min-h-screen bg-brand-100">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/consultations')}
@@ -199,7 +199,7 @@ export default function ConsultationRoom() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="grid lg:grid-cols-3 gap-6" style={{ height: 'calc(100vh - 160px)' }}>
+        <div className="grid lg:grid-cols-3 gap-6 lg:h-[calc(100vh-160px)]">
           {/* Video Area */}
           <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             {canJoin && consultation.meetingUrl ? (

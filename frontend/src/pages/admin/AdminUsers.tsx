@@ -227,11 +227,11 @@ export default function AdminUsers() {
   const labelClass = 'block text-xs font-semibold text-gray-500 mb-1';
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {msg && <div className="fixed top-4 right-4 bg-brand-900 text-white px-6 py-3 rounded-lg shadow-lg z-[60] text-sm font-medium animate-fade-in">{msg}</div>}
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-brand-900">Usuários</h1>
           <p className="text-sm text-gray-400">{pagination.total} cadastrados</p>
@@ -244,7 +244,7 @@ export default function AdminUsers() {
       </div>
 
       {/* Search & Filter */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar nome, email ou empresa..." className="flex-1 px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700/30" />
         <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="px-3 py-2 text-sm border border-gray-200 rounded-lg">
           <option value="">Todos</option><option value="user">Usuário</option><option value="admin">Admin</option><option value="superadmin">Superadmin</option>
@@ -252,8 +252,8 @@ export default function AdminUsers() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>

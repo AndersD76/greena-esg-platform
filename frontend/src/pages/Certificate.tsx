@@ -152,7 +152,7 @@ export default function Certificate() {
         {/* Certificate Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-4" style={{ borderColor: medalColors[certificate.level] }}>
           {/* Header Section */}
-          <div className="relative p-12 text-center" style={{ background: `linear-gradient(135deg, ${medalColors[certificate.level]}20 0%, white 100%)` }}>
+          <div className="relative p-6 sm:p-12 text-center" style={{ background: `linear-gradient(135deg, ${medalColors[certificate.level]}20 0%, white 100%)` }}>
             <div className="absolute top-6 right-6">
               {certificate.isValid ? (
                 <span className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold flex items-center gap-2">
@@ -171,14 +171,14 @@ export default function Certificate() {
               alt={`Selo ${certificate.level === 'gold' ? 'Ouro' : certificate.level === 'silver' ? 'Prata' : 'Bronze'}`}
               className="w-40 h-40 object-contain mx-auto mb-6"
             />
-            <h1 className="text-5xl font-black mb-6" style={{ color: medalColors[certificate.level] }}>
+            <h1 className="text-3xl sm:text-5xl font-black mb-6" style={{ color: medalColors[certificate.level] }}>
               Certificado {certificationLevel.name}
             </h1>
             <p className="text-2xl text-gray-600 font-semibold mb-2">{certificationLevel.title}</p>
             <p className="text-lg text-gray-500 italic max-w-2xl mx-auto">{certificationLevel.message}</p>
 
             {/* Score Badge */}
-            <div className="mt-8 inline-flex items-center gap-4 px-8 py-4 rounded-2xl border-2" style={{ borderColor: medalColors[certificate.level], backgroundColor: medalColors[certificate.level] + '10' }}>
+            <div className="mt-8 inline-flex items-center gap-4 px-4 sm:px-8 py-4 rounded-2xl border-2" style={{ borderColor: medalColors[certificate.level], backgroundColor: medalColors[certificate.level] + '10' }}>
               <div className="text-center">
                 <div className="text-sm text-gray-600 font-semibold mb-1">Pontuação ESG</div>
                 <div className="text-5xl font-black" style={{ color: medalColors[certificate.level] }}>
@@ -196,10 +196,10 @@ export default function Certificate() {
           </div>
 
           {/* Certificate Details */}
-          <div className="p-12 border-t-4" style={{ borderColor: medalColors[certificate.level] + '40' }}>
+          <div className="p-6 sm:p-12 border-t-4" style={{ borderColor: medalColors[certificate.level] + '40' }}>
             <div className="text-center mb-12">
               <h2 className="text-3xl font-black text-gray-800 mb-3">Certificamos que</h2>
-              <p className="text-4xl font-black mb-2" style={{ color: medalColors[certificate.level] }}>
+              <p className="text-2xl sm:text-4xl font-black mb-2" style={{ color: medalColors[certificate.level] }}>
                 {user.companyName || user.name}
               </p>
               <p className="text-lg text-gray-600">
@@ -289,7 +289,7 @@ export default function Certificate() {
 
           {/* Footer Signature */}
           <div className="px-12 py-8 border-t-2" style={{ borderColor: medalColors[certificate.level] + '30', backgroundColor: medalColors[certificate.level] + '05' }}>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
               <div>
                 <div className="text-sm text-gray-500 font-semibold mb-2">Autenticidade</div>
                 <p className="text-xs text-gray-600">

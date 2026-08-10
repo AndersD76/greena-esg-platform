@@ -93,11 +93,11 @@ export default function PublicProfile() {
 
           {/* Scores */}
           {scores && (
-            <div className="px-10 py-8 border-t" style={{ borderColor: color + '30' }}>
+            <div className="px-5 sm:px-10 py-8 border-t" style={{ borderColor: color + '30' }}>
               {/* Overall */}
               <div className="text-center mb-6">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Score ESG Geral</p>
-                <span className="text-6xl font-black" style={{ color }}>{scores.overall.toFixed(0)}</span>
+                <span className="text-4xl sm:text-6xl font-black" style={{ color }}>{scores.overall.toFixed(0)}</span>
                 <span className="text-lg text-gray-400 ml-1">/100</span>
               </div>
 
@@ -124,7 +124,7 @@ export default function PublicProfile() {
 
           {/* Certificate */}
           {certificate && (
-            <div className="px-10 py-6 border-t" style={{ borderColor: color + '30', backgroundColor: color + '05' }}>
+            <div className="px-5 sm:px-10 py-6 border-t" style={{ borderColor: color + '30', backgroundColor: color + '05' }}>
               <div className="flex items-center gap-6">
                 <img src={qrUrl} alt="QR Code" className="w-24 h-24 rounded-lg border border-gray-200" />
                 <div className="flex-1">
@@ -146,7 +146,7 @@ export default function PublicProfile() {
           )}
 
           {/* Footer */}
-          <div className="px-10 py-6 bg-[#152F27] text-center">
+          <div className="px-5 sm:px-10 py-6 bg-[#152F27] text-center">
             <p className="text-white/60 text-xs">Verificado pela plataforma</p>
             <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-8 mx-auto mt-2 opacity-70" />
             {completedAt && <p className="text-white/40 text-[10px] mt-2">Última avaliação: {new Date(completedAt).toLocaleDateString('pt-BR')}</p>}

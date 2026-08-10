@@ -170,7 +170,7 @@ export default function AdminDiagnoses() {
     : 0;
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-brand-900">Diagnosticos</h1>
@@ -178,7 +178,7 @@ export default function AdminDiagnoses() {
         </div>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {[
           { value: '', label: 'Todos' },
           { value: 'completed', label: 'Concluidos' },
@@ -191,8 +191,8 @@ export default function AdminDiagnoses() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuario</th>

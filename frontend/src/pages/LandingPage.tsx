@@ -4,6 +4,7 @@ import { SEO } from '../components/SEO';
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const [demoStep, setDemoStep] = useState(0);
   const [demoAnswers, setDemoAnswers] = useState<number[]>([]);
@@ -111,8 +112,31 @@ export default function LandingPage() {
               <Link to="/register" className="px-5 py-2 text-sm font-semibold text-white rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
                 Cadastro
               </Link>
+              <button
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Menu de navegação"
+              >
+                {mobileMenuOpen ? (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-100 mt-3 pt-3 pb-2 flex flex-col gap-2">
+              <a href="#sobre" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Sobre</a>
+              <a href="#pilares" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Pilares ESG</a>
+              <a href="#planos" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Planos</a>
+              <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">Contato</Link>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -121,7 +145,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6" style={{ color: '#152F27' }}>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6" style={{ color: '#152F27' }}>
                 Diagnóstico<br/>ESG completo
               </h1>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg">
@@ -192,7 +216,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Metodologia</p>
-            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Avaliação completa dos 3 pilares ESG</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Avaliação completa dos 3 pilares ESG</h2>
           </div>
           <div className="grid lg:grid-cols-3 gap-8">
             {[
@@ -234,7 +258,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Certificação</p>
-            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Níveis de Certificação ESG</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Níveis de Certificação ESG</h2>
             <p className="text-lg text-gray-500">Sua conquista reconhecida</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -259,7 +283,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#7B9965' }}>Planos</p>
-            <h2 className="text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Planos para sua jornada ESG</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4" style={{ color: '#152F27' }}>Planos para sua jornada ESG</h2>
             <p className="text-lg text-gray-500">Comece gratuitamente e evolua conforme sua necessidade</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -310,7 +334,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-semibold uppercase tracking-wider mb-3" style={{ color: '#e2f7d0' }}>Consultoria</p>
-            <h2 className="text-4xl font-bold text-white mb-4">Consultoria Especializada <span style={{ color: '#e2f7d0' }}>Inclusa</span></h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">Consultoria Especializada <span style={{ color: '#e2f7d0' }}>Inclusa</span></h2>
             <p className="text-lg text-white/70 max-w-2xl mx-auto">Assinantes contam com horas de consultoria ESG para acelerar sua transformação</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -348,7 +372,7 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="py-24 px-6" style={{ backgroundColor: '#f5ffeb' }}>
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6" style={{ color: '#152F27' }}>Pronto para liderar a sustentabilidade?</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6" style={{ color: '#152F27' }}>Pronto para liderar a sustentabilidade?</h2>
           <p className="text-lg text-gray-500 mb-10 max-w-xl mx-auto">Junte-se a empresas que já estão transformando seus negócios com práticas ESG de excelência.</p>
           <Link to="/register" className="inline-flex items-center gap-3 px-10 py-4 text-white font-semibold rounded-full transition-all hover:opacity-90" style={{ backgroundColor: '#152F27' }}>
             Começar agora
@@ -359,8 +383,8 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer style={{ backgroundColor: '#152F27' }}>
-        <div className="max-w-7xl mx-auto px-8 py-16">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
+        <div className="max-w-7xl mx-auto px-8 py-10 md:py-16">
+          <div className="grid md:grid-cols-4 gap-8 md:gap-12 mb-12">
             <div>
               <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-14 mb-4 brightness-0 invert" />
                             <div className="flex gap-3 mt-6">

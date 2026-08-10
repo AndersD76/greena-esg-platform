@@ -143,7 +143,7 @@ export default function Consultations() {
     <div className="min-h-screen bg-brand-100">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-brand-900 mb-1">Consultorias ESG</h1>
             <p className="text-sm text-gray-500">Agende e gerencie suas consultorias com especialistas</p>
@@ -248,7 +248,7 @@ export default function Consultations() {
                       )}
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {consultation.status === 'scheduled' && (
                         <>
                           <button

@@ -289,7 +289,7 @@ export default function Checkout() {
                     s.num
                   )}
                 </div>
-                <span className={`ml-2 font-semibold ${step >= s.num ? 'text-gray-800' : 'text-gray-400'}`}>
+                <span className={`ml-2 font-semibold hidden sm:inline ${step >= s.num ? 'text-gray-800' : 'text-gray-400'}`}>
                   {s.label}
                 </span>
                 {i < 3 && (
@@ -529,7 +529,7 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="col-span-2">
                       <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
                         Endereço *
@@ -558,7 +558,7 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-bold mb-2" style={{ color: '#152F27' }}>
                         Cidade
@@ -684,7 +684,7 @@ export default function Checkout() {
         {/* Step 3 - PIX QR Code */}
         {step === 3 && selectedPlan && pixData && (
           <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white p-12 rounded-3xl shadow-lg">
+            <div className="bg-white p-6 sm:p-12 rounded-3xl shadow-lg">
               <h2 className="text-3xl font-black mb-2" style={{ color: '#152F27' }}>
                 Pague com PIX
               </h2>
@@ -755,7 +755,7 @@ export default function Checkout() {
         {/* Step 4 - Confirmação */}
         {step === 4 && selectedPlan && (
           <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white p-12 rounded-3xl shadow-lg">
+            <div className="bg-white p-6 sm:p-12 rounded-3xl shadow-lg">
               <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center" style={{ backgroundColor: '#7B996520' }}>
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7B9965" strokeWidth="2">
                   <polyline points="20 6 9 17 4 12"/>
@@ -787,7 +787,7 @@ export default function Checkout() {
                 </ul>
               </div>
 
-              <div className="flex gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/dashboard"
                   className="px-8 py-4 rounded-xl font-black text-white transition-all hover:opacity-90"

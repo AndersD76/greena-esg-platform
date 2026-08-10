@@ -42,7 +42,7 @@ function DateFilter({ startDate, endDate, onStartChange, onEndChange, onApply }:
 }) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
-      <div className="flex gap-4 items-end">
+      <div className="flex flex-wrap gap-4 items-end">
         <div>
           <label className="block text-xs font-semibold text-gray-500 mb-1">De</label>
           <input type="date" value={startDate} onChange={e => onStartChange(e.target.value)}
@@ -132,7 +132,7 @@ export default function AdminReports() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-brand-900">Relatórios</h1>
         <p className="text-sm text-gray-400">Métricas de acesso, plataforma e consultorias</p>
@@ -457,8 +457,8 @@ export default function AdminReports() {
               </div>
 
               {/* Tabela detalhada */}
-              <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-                <table className="w-full text-sm">
+              <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+                <table className="w-full text-sm min-w-[600px]">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
                       <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>

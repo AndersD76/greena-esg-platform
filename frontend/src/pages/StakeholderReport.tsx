@@ -277,10 +277,10 @@ export default function StakeholderReport() {
           {/* ═══ HEADER INSTITUCIONAL ═══ */}
           <div className="rounded-2xl shadow-md overflow-hidden mb-6 print:shadow-none print:rounded-none" style={{ background: `linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.accent} 100%)` }}>
             <div className="px-8 py-8">
-              <div className="flex justify-between items-start">
+              <div className="flex flex-col sm:flex-row justify-between gap-3">
                 <div>
                   <img src="/images/assets/logo-engreena.png" alt="engreena" className="h-16 mb-4 print:h-12" style={{ filter: 'brightness(10)' }} />
-                  <h1 className="text-3xl font-black text-white mb-1">Relatório {frameworkLabel} — Stakeholders</h1>
+                  <h1 className="text-xl sm:text-3xl font-black text-white mb-1">Relatório {frameworkLabel} — Stakeholders</h1>
                   <p className="text-white/60 text-sm">Avaliação concluída em {new Date(report.completedAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div className="text-right">
@@ -309,7 +309,7 @@ export default function StakeholderReport() {
             <h2 className="text-xl font-black mb-2" style={{ color: COLORS.primary }}>Resumo Executivo</h2>
             <p className="text-sm text-gray-500 mb-6">Visão consolidada do desempenho ESG da organização</p>
 
-            <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
               {/* Certificação */}
               <div className="flex flex-col items-center text-center">
                 <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Certificação</h4>

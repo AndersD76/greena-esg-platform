@@ -322,7 +322,7 @@ function FullReportView({ diagnosisId, onBack }: { diagnosisId: string; onBack: 
         <div className="bg-white rounded-2xl shadow-md p-8 mb-6 print:shadow-none print:rounded-none">
           <h2 className="text-xl font-black mb-2" style={{ color: COLORS.primary }}>Resumo Executivo</h2>
           <p className="text-sm text-gray-500 mb-6">Visão consolidada do desempenho ESG da organização</p>
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
             <div className="flex flex-col items-center text-center">
               <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Certificação</h4>
               <img src={`/images/assets/selo-${levelPt === 'Ouro' ? 'ouro' : levelPt === 'Prata' ? 'prata' : 'bronze'}.png`} alt={`Selo ${levelPt}`} className="w-24 h-24 object-contain mb-2" />
@@ -566,7 +566,7 @@ export default function Reports() {
         {/* Framework Tabs */}
         {showFrameworkTabs && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 mb-4">
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {[{ key: 'all', label: 'Todos' }, ...availableFrameworks.map((fw) => ({
                 key: fw,
                 label: fw === 'ESG_GRI' ? 'ESG+GRI' : fw,
@@ -589,7 +589,7 @@ export default function Reports() {
 
         {/* Status Filters */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
               { key: 'all' as const, label: `Todos (${diagnoses.length})` },
               { key: 'completed' as const, label: `Concluídos (${completedDiagnoses.length})` },
@@ -658,7 +658,7 @@ export default function Reports() {
                       </div>
 
                       {diagnosis.status === 'completed' && (
-                        <div className="flex items-center gap-6 mt-3">
+                        <div className="flex flex-wrap items-center gap-3 mt-3">
                           <div>
                             <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Geral</p>
                             <div className="flex items-center gap-2">

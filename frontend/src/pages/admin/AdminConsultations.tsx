@@ -151,9 +151,9 @@ export default function AdminConsultations() {
   const inputClass = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-900 transition-colors';
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {msg && <div className="fixed top-4 right-4 bg-brand-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">{msg}</div>}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-brand-900">Consultorias</h1>
           <p className="text-sm text-gray-400">{pagination.total} registradas</p>
@@ -169,7 +169,7 @@ export default function AdminConsultations() {
         </button>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {[
           { value: '', label: 'Todas' },
           { value: 'scheduled', label: 'Agendadas' },
@@ -184,8 +184,8 @@ export default function AdminConsultations() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+        <table className="w-full text-sm min-w-[600px]">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               <th className="text-left px-4 py-3 font-semibold text-gray-500">Usuário</th>

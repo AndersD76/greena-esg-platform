@@ -65,7 +65,7 @@ export default function Contact() {
       <section className="relative py-24 px-6 overflow-hidden" style={{ background: 'linear-gradient(135deg, #152F27 0%, #2d5a45 100%)' }}>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center text-white">
-            <h1 className="text-6xl font-black mb-6">Entre em Contato</h1>
+            <h1 className="text-3xl sm:text-6xl font-black mb-6">Entre em Contato</h1>
             <p className="text-2xl opacity-90 max-w-3xl mx-auto">
               Estamos prontos para ajudar sua empresa na transformação ESG
             </p>
@@ -77,7 +77,7 @@ export default function Contact() {
       <section className="py-24 px-6 bg-gray-50">
         <div className="max-w-3xl mx-auto">
             {/* Contact Form */}
-            <div className="bg-white p-10 rounded-3xl shadow-lg">
+            <div className="bg-white p-5 sm:p-10 rounded-3xl shadow-lg">
               <h2 className="text-3xl font-black mb-6" style={{ color: '#152F27' }}>
                 Envie sua mensagem
               </h2>
@@ -205,7 +205,7 @@ export default function Contact() {
       {/* CTA */}
       <section className="py-20 px-6" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
         <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-5xl font-black mb-6">Pronto para Começar?</h2>
+          <h2 className="text-3xl sm:text-5xl font-black mb-6">Pronto para Começar?</h2>
           <p className="text-xl mb-8 opacity-90">
             Cadastre-se gratuitamente e inicie sua avaliação ESG hoje mesmo
           </p>

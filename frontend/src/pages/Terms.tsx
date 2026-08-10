@@ -26,7 +26,7 @@ export default function Terms() {
       {/* Hero */}
       <section className="py-16 px-6" style={{ background: 'linear-gradient(135deg, #152F27 0%, #7B9965 100%)' }}>
         <div className="max-w-4xl mx-auto text-center text-white">
-          <h1 className="text-5xl font-black mb-4">Termos de Uso</h1>
+          <h1 className="text-3xl sm:text-5xl font-black mb-4">Termos de Uso</h1>
           <p className="text-xl opacity-90">Última atualização: Janeiro de 2025</p>
         </div>
       </section>

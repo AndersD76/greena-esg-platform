@@ -285,9 +285,9 @@ export default function Dashboard() {
       {/* ═══════ HERO ═══════ */}
       <div className="bg-brand-900">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-white">{greeting}{userName ? `, ${userName}` : ''}</h1>
+              <h1 className="text-xl md:text-3xl font-bold text-white">{greeting}{userName ? `, ${userName}` : ''}</h1>
               <p className="text-sm text-white/50 mt-1">Painel {frameworkName(activeFramework)} — Visão Geral</p>
             </div>
             <div className="flex items-center gap-3">
@@ -386,10 +386,10 @@ export default function Dashboard() {
                     {ipScores ? `${ipScores.answeredCount}/${ipScores.totalCount} respostas — ` : ''}clique para continuar
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   {ipScores && (
                     <>
-                      <div className="w-40 h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="hidden sm:block sm:w-40 h-3 bg-gray-100 rounded-full overflow-hidden">
                         <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${(ipScores.answeredCount / (ipScores.totalCount || 75)) * 100}%` }} />
                       </div>
                       <span className="text-lg font-bold text-amber-700">{Math.round((ipScores.answeredCount / (ipScores.totalCount || 75)) * 100)}%</span>
@@ -424,7 +424,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* ROW 1, COL 1 — Certificado + Score */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
-              <div className="flex items-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center gap-6">
                 {/* Selo */}
                 {(() => {
                   const level = overall >= 70 ? 'ouro' : overall >= 40 ? 'prata' : 'bronze';
@@ -655,7 +655,7 @@ export default function Dashboard() {
                       <p className="text-xs text-gray-400">{new Date(d.completedAt!).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {selectedDiagnosisId !== d.id && (
                       <button onClick={() => { setActiveFramework(d.framework || 'ESG'); handleSelectDiagnosis(d.id); }} className="px-4 py-1.5 text-xs font-semibold text-brand-900 border border-brand-700/30 rounded-full hover:bg-brand-100">Visualizar</button>
                     )}

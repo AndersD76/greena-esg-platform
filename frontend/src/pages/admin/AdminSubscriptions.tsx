@@ -185,11 +185,11 @@ export default function AdminSubscriptions() {
   const totalRevenue = subscriptions.filter(s => s.status === 'active').reduce((sum, s) => sum + Number(s.plan.price), 0);
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {msg && <div className="fixed top-4 right-4 bg-brand-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">{msg}</div>}
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-brand-900">Assinaturas</h1>
           <p className="text-sm text-gray-400">{pagination.total} registradas &mdash; {activeCount} ativas &mdash; Receita: {fmt(totalRevenue)}/m&ecirc;s</p>
@@ -206,7 +206,7 @@ export default function AdminSubscriptions() {
       </div>
 
       {/* Filter buttons */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {[
           { value: '', label: 'Todas' },
           { value: 'active', label: 'Ativas' },
@@ -237,7 +237,7 @@ export default function AdminSubscriptions() {
               </p>
               <div className="space-y-2">
                 {expiring.map((s) => (
-                  <div key={s.id} className="flex items-center gap-3 bg-white/70 rounded-lg px-3 py-2">
+                  <div key={s.id} className="flex flex-wrap items-center gap-3 bg-white/70 rounded-lg px-3 py-2">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-brand-900">{s.user.name}</p>
                       <p className="text-xs text-gray-500">
@@ -264,8 +264,8 @@ export default function AdminSubscriptions() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+        <table className="w-full text-sm min-w-[650px]">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               <th className="text-left px-4 py-3 font-semibold text-gray-500">Cliente</th>

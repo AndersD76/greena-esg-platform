@@ -473,7 +473,7 @@ export default function Results() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 mt-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
                       <div>
                         <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Investimento</span>
                         <p className="text-sm font-bold text-brand-900">{action.investmentLabel}</p>
@@ -498,7 +498,7 @@ export default function Results() {
 
         {/* Certificate Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-xl bg-amber-50 flex items-center justify-center">
                 <svg className="w-7 h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -551,7 +551,7 @@ export default function Results() {
         </div>
 
         {/* Actions */}
-        <div className="flex justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
             className="px-6 py-2.5 text-sm font-medium text-brand-900 border border-gray-200 rounded-full transition-all hover:bg-gray-50"

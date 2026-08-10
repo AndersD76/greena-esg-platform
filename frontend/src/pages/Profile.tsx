@@ -181,7 +181,7 @@ export default function Profile() {
 
         {/* Profile Header Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold text-white bg-brand-900">
               {profile?.name ? getInitials(profile.name) : 'U'}
             </div>
