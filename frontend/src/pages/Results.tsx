@@ -63,6 +63,10 @@ export default function Results() {
   const [certificate, setCertificate] = useState<any>(null);
   const [issuingCert, setIssuingCert] = useState(false);
   const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
+  const [aiEnabled, setAiEnabled] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     loadResults();
@@ -93,6 +97,12 @@ export default function Results() {
       try {
         const certRes = await api.get(`/certificates/diagnosis/${diagnosisId}`);
         if (certRes.data) setCertificate(certRes.data);
+      } catch {}
+
+      // Check AI consultant status
+      try {
+        const aiStatusRes = await api.get('/diagnoses/ai/status');
+        setAiEnabled(aiStatusRes.data.enabled);
       } catch {}
     } catch (error) {
       console.error('Erro ao carregar resultados:', error);
@@ -320,6 +330,176 @@ export default function Results() {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* AI Consultant */}
+        {aiEnabled && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+            <div className="px-8 py-6 border-b border-gray-100" style={{ background: 'linear-gradient(135deg, #152F27 0%, #1a4a3a 100%)' }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">Consultor IA ESG</h2>
+                    <p className="text-xs text-white/50">Análise estratégica personalizada por inteligência artificial</p>
+                  </div>
+                </div>
+                {!aiAnalysis && (
+                  <button
+                    onClick={async () => {
+                      if (!diagnosisId) return;
+                      setAiLoading(true);
+                      setAiError(null);
+                      try {
+                        const res = await api.post(`/diagnoses/${diagnosisId}/ai-analysis`);
+                        setAiAnalysis(res.data.analysis);
+                      } catch (err: any) {
+                        setAiError(err?.response?.data?.error || 'Erro ao gerar análise');
+                      } finally {
+                        setAiLoading(false);
+                      }
+                    }}
+                    disabled={aiLoading}
+                    className="px-6 py-2.5 text-sm font-bold text-brand-900 bg-white rounded-full hover:bg-gray-100 transition-all disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {aiLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-brand-900 border-t-transparent" />
+                        Analisando...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        Gerar Análise IA
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {aiError && (
+              <div className="px-8 py-4 bg-red-50 text-red-700 text-sm">{aiError}</div>
+            )}
+
+            {aiLoading && !aiAnalysis && (
+              <div className="px-8 py-16 text-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-3 border-brand-900/20 border-t-brand-900 mx-auto mb-4" />
+                <p className="text-sm font-semibold text-brand-900">O consultor IA está analisando seu diagnóstico...</p>
+                <p className="text-xs text-gray-400 mt-1">Isso pode levar alguns segundos</p>
+              </div>
+            )}
+
+            {aiAnalysis && (
+              <div className="p-8 space-y-6">
+                {/* Executive Summary */}
+                <div className="bg-brand-100/50 rounded-xl p-5 border border-brand-900/10">
+                  <h3 className="text-sm font-bold text-brand-900 uppercase tracking-wide mb-2">Sumário Executivo</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed">{aiAnalysis.executiveSummary}</p>
+                </div>
+
+                {/* Strengths */}
+                {aiAnalysis.strengths?.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-bold text-brand-900 mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs">+</span>
+                      Pontos Fortes
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                      {aiAnalysis.strengths.map((s: string, i: number) => (
+                        <div key={i} className="bg-green-50 rounded-lg p-3 text-sm text-green-800 border border-green-100">{s}</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Critical Risks */}
+                {aiAnalysis.criticalRisks?.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-bold text-brand-900 mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xs">!</span>
+                      Riscos Críticos
+                    </h3>
+                    <div className="space-y-2">
+                      {aiAnalysis.criticalRisks.map((r: any, i: number) => (
+                        <div key={i} className="bg-red-50 rounded-lg p-4 border border-red-100">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-bold text-red-800">{r.area}</p>
+                              <p className="text-xs text-red-700 mt-1">{r.risk}</p>
+                            </div>
+                            <span className="flex-shrink-0 px-2 py-1 rounded-lg bg-red-100 text-[10px] font-bold text-red-800">{r.financialImpact}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Strategic Recommendations */}
+                {aiAnalysis.strategicRecommendations?.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-bold text-brand-900 mb-3 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs">&#8594;</span>
+                      Recomendações Estratégicas
+                    </h3>
+                    <div className="space-y-2">
+                      {aiAnalysis.strategicRecommendations.map((rec: any, i: number) => (
+                        <div key={i} className="bg-white rounded-lg p-4 border border-gray-200">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <p className="text-sm font-bold text-brand-900">{rec.title}</p>
+                            <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              rec.priority === 'alta' ? 'bg-red-100 text-red-700' :
+                              rec.priority === 'média' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-green-100 text-green-700'
+                            }`}>{rec.priority}</span>
+                          </div>
+                          <p className="text-xs text-gray-600 mb-2">{rec.description}</p>
+                          <div className="flex gap-4 text-[10px] text-gray-400 font-medium">
+                            <span>Investimento: <strong className="text-gray-600">{rec.estimatedInvestment}</strong></span>
+                            <span>Retorno: <strong className="text-gray-600">{rec.expectedReturn}</strong></span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Benchmark */}
+                {aiAnalysis.benchmarkInsight && (
+                  <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-100">
+                    <h3 className="text-sm font-bold text-indigo-900 mb-2">Benchmark do Setor</h3>
+                    <p className="text-sm text-indigo-700 leading-relaxed">{aiAnalysis.benchmarkInsight}</p>
+                  </div>
+                )}
+
+                {/* Regulatory Alerts */}
+                {aiAnalysis.regulatoryAlerts?.length > 0 && (
+                  <div className="bg-amber-50 rounded-xl p-5 border border-amber-100">
+                    <h3 className="text-sm font-bold text-amber-900 mb-2">Alertas Regulatórios</h3>
+                    <ul className="space-y-1">
+                      {aiAnalysis.regulatoryAlerts.map((a: string, i: number) => (
+                        <li key={i} className="text-xs text-amber-800 flex items-start gap-2">
+                          <span className="mt-0.5">&#9888;</span> {a}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* ESG Narrative */}
+                {aiAnalysis.esgNarrative && (
+                  <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                    <h3 className="text-sm font-bold text-brand-900 mb-2">Narrativa ESG — Pronta para Publicação</h3>
+                    <p className="text-xs text-gray-400 mb-3">Use este texto no relatório de sustentabilidade, LinkedIn ou propostas comerciais</p>
+                    <div className="bg-white rounded-lg p-4 border border-gray-100 text-sm text-gray-700 leading-relaxed whitespace-pre-line">{aiAnalysis.esgNarrative}</div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

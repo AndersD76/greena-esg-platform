@@ -2,9 +2,11 @@ import { Response } from 'express';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { DiagnosisService } from '../services/diagnosis.service';
 import { SubscriptionService } from '../services/subscription.service';
+import { AiConsultantService } from '../services/ai-consultant.service';
 
 const diagnosisService = new DiagnosisService();
 const subscriptionService = new SubscriptionService();
+const aiConsultantService = new AiConsultantService();
 
 export class DiagnosisController {
   async create(req: AuthRequest, res: Response) {
@@ -208,5 +210,22 @@ export class DiagnosisController {
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
+  }
+
+  async getAiAnalysis(req: AuthRequest, res: Response) {
+    try {
+      const { id } = req.params;
+      if (!aiConsultantService.isEnabled()) {
+        return res.status(503).json({ error: 'Consultor IA não disponível', enabled: false });
+      }
+      const analysis = await aiConsultantService.generate(id);
+      res.json({ enabled: true, analysis });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async getAiStatus(_req: AuthRequest, res: Response) {
+    res.json({ enabled: aiConsultantService.isEnabled() });
   }
 }

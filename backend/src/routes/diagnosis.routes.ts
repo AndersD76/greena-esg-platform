@@ -26,4 +26,8 @@ router.get('/:id/action-plans', requirePaidPlan, (req, res) => diagnosisControll
 router.get('/:id/simulate-actions', requirePaidPlan, (req, res) => diagnosisController.getSimulatedActions(req, res));
 router.patch('/:id/action-plans/:actionId/status', requirePaidPlan, (req, res) => diagnosisController.updateActionStatus(req, res));
 
+// Consultor IA
+router.get('/ai/status', (req, res) => diagnosisController.getAiStatus(req, res));
+router.post('/:id/ai-analysis', requirePaidPlan, (req, res) => diagnosisController.getAiAnalysis(req, res));
+
 export default router;

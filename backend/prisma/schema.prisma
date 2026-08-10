@@ -122,6 +122,7 @@ model Diagnosis {
   strategicInsights StrategicInsight[]
   certificates      Certificate[]
   pillarScores      DiagnosisScore[]
+  aiAnalyses        AiAnalysis[]
 
   @@map("diagnoses")
 }
@@ -328,6 +329,19 @@ model FrameworkMapping {
 
   @@unique([esgAssessmentItemId, griAssessmentItemId])
   @@map("framework_mappings")
+}
+
+model AiAnalysis {
+  id          Int      @id @default(autoincrement())
+  diagnosisId String   @map("diagnosis_id")
+  content     Json
+  model       String   @default("claude-sonnet-4-20250514")
+  tokensUsed  Int?     @map("tokens_used")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+
+  @@map("ai_analyses")
 }
 
 model ConsultationMessage {
