@@ -53,6 +53,9 @@ export function Header() {
                   <Link to="/reports" className={navLinkClass('/reports', true)}>
                     Relatórios
                   </Link>
+                  <Link to="/ai-chat" className={navLinkClass('/ai-chat', true)}>
+                    Consultor IA
+                  </Link>
                   <Link to="/consultations" className={navLinkClass('/consultations')}>
                     Consultorias
                   </Link>

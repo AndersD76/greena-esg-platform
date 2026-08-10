@@ -38,6 +38,7 @@ model User {
   subscriptions   UserSubscription[]
   certificates    Certificate[]
   consultations   Consultation[]
+  aiChatMessages  AiChatMessage[]
 
   @@map("users")
 }
@@ -329,6 +330,18 @@ model FrameworkMapping {
 
   @@unique([esgAssessmentItemId, griAssessmentItemId])
   @@map("framework_mappings")
+}
+
+model AiChatMessage {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  role      String   // 'user' | 'assistant'
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("ai_chat_messages")
 }
 
 model AiAnalysis {

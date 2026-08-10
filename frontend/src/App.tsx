@@ -36,6 +36,7 @@ import {
 import SimplifiedQuestionnaire from './pages/SimplifiedQuestionnaire';
 import PublicProfile from './pages/PublicProfile';
 import StakeholderReport from './pages/StakeholderReport';
+import AiChat from './pages/AiChat';
 import { usePageTracking } from './hooks/usePageTracking';
 import { usePlan } from './hooks/usePlan';
 import UpgradeRequired from './components/UpgradeRequired';
@@ -273,6 +274,16 @@ function AppRoutes() {
               <PrivateRoute>
                 <PaidRoute>
                   <StakeholderReport />
+                </PaidRoute>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ai-chat"
+            element={
+              <PrivateRoute>
+                <PaidRoute>
+                  <AiChat />
                 </PaidRoute>
               </PrivateRoute>
             }
