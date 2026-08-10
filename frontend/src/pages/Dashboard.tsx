@@ -661,6 +661,7 @@ export default function Dashboard() {
                     )}
                     {!isFreePlan && (
                       <>
+                        <Link to={`/diagnosis/${d.id}/results`}><button className="px-4 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full hover:bg-emerald-100">Resultados</button></Link>
                         <Link to={`/diagnosis/${d.id}/insights`}><button className="px-4 py-1.5 text-xs font-semibold text-white bg-brand-900 rounded-full hover:bg-brand-900/90">Ações</button></Link>
                         <Link to="/reports"><button className="px-4 py-1.5 text-xs font-medium text-brand-900 border border-gray-200 rounded-full hover:bg-white">Relatório</button></Link>
                       </>
